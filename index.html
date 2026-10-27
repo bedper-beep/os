@@ -39,7 +39,6 @@
         .dock-icon.youtube { background: #ff0000; }
         .dock-icon.music { background: #1db954; }
         .dock-icon.movies { background: #ff9900; }
-        .dock-icon.settings { background: #555; }
     </style>
 </head>
 <body>
@@ -73,22 +72,23 @@
         <!-- Windows -->
         <div class="window" id="window-tiktok">
             <div class="window-header">
-                <span>TikTok</span>
+                <span>TikTok (Proxied)</span>
                 <button class="close-btn" onclick="closeApp('tiktok')"></button>
             </div>
             <div class="window-content">
-                <!-- Embeds the TikTok app we built earlier via a proxy! -->
-                <iframe src="https://www.tiktok.com/embed" allow="autoplay; fullscreen"></iframe>
+                <!-- Using a different proxy to bypass Linewize -->
+                <iframe src="https://translate.google.com/translate?sl=auto&tl=en&u=https://www.tiktok.com/foryou" allow="autoplay; fullscreen"></iframe>
             </div>
         </div>
 
         <div class="window" id="window-youtube">
             <div class="window-header">
-                <span>YouTube</span>
+                <span>YouTube (Invidious Stealth)</span>
                 <button class="close-btn" onclick="closeApp('youtube')"></button>
             </div>
             <div class="window-content">
-                <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1" allow="autoplay; fullscreen"></iframe>
+                <!-- Invidious is a YouTube frontend that bypasses school blocks -->
+                <iframe src="https://inv.nadeko.net/" allow="autoplay; fullscreen"></iframe>
             </div>
         </div>
 
@@ -122,18 +122,13 @@
     </div>
 
     <script>
-        // Clock Logic
         setInterval(() => {
             const now = new Date();
             document.getElementById('clock').innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
         }, 1000);
 
-        // Window Management
         function openApp(appName) {
-            // Close all other windows first
             document.querySelectorAll('.window').forEach(w => w.classList.remove('active'));
-            
-            // Open requested window
             const win = document.getElementById(`window-${appName}`);
             if(win) win.classList.add('active');
         }
