@@ -11,27 +11,25 @@
         
         body { background: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2000&auto=format&fit=crop') no-repeat center center fixed; background-size: cover; height: 100vh; overflow: hidden; display: flex; flex-direction: column; transition: background 0.5s; }
         
-        /* Top Bar */
         .top-bar { height: 35px; background: rgba(0,0,0,0.6); backdrop-filter: blur(15px); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; color: white; font-size: 13px; font-weight: 600; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.1); }
         .top-left { display: flex; gap: 15px; align-items: center; }
         .top-right { display: flex; gap: 15px; align-items: center; }
         
-        /* Desktop Grid */
         .desktop { flex: 1; position: relative; padding: 30px; display: grid; grid-template-columns: repeat(auto-fill, 90px); grid-auto-rows: 100px; gap: 20px; align-content: flex-start; }
         .app-icon { display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: 0.2s; color: white; }
         .app-icon:hover .icon-box { transform: scale(1.05); }
         .icon-box { width: 65px; height: 65px; border-radius: 16px; display: flex; justify-content: center; align-items: center; font-size: 30px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); margin-bottom: 8px; transition: 0.2s; }
         .app-icon span { font-size: 13px; font-weight: 500; text-shadow: 0 1px 3px rgba(0,0,0,0.8); text-align: center; }
         
-        .bg-aether { background: #4285F4; color: white; }
+        .bg-tiktok { background: #000; border: 1px solid #25f4ee; color: white; }
         .bg-youtube { background: #ff0000; color: white; }
+        .bg-movies { background: #ff9900; color: white; }
         .bg-music { background: #1db954; color: white; }
+        .bg-web { background: #0078D7; color: white; }
         .bg-ai { background: #8b5cf6; color: white; }
         .bg-games { background: #a970ff; color: white; }
         .bg-settings { background: #3f3f46; color: white; }
-        .bg-notes { background: #fbbf24; color: black; }
 
-        /* Windows */
         .window { position: absolute; top: 10%; left: 15%; width: 70%; height: 75%; background: rgba(20, 20, 25, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; display: none; flex-direction: column; box-shadow: 0 20px 50px rgba(0,0,0,0.5); z-index: 100; overflow: hidden; }
         .window.active { display: flex; animation: openWin 0.2s ease-out; }
         @keyframes openWin { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
@@ -42,23 +40,32 @@
         .window-content { flex: 1; background: #000; position: relative; display: flex; flex-direction: column; }
         .window-content iframe { width: 100%; height: 100%; border: none; }
 
-        /* Music App */
-        .music-app { display: flex; flex-direction: column; height: 100%; background: #121212; padding: 20px; overflow-y: auto; }
+        /* Custom App Layouts */
+        .app-layout { display: flex; flex-direction: column; height: 100%; background: #0f0f0f; }
         .app-search-bar { padding: 15px; background: #181818; display: flex; gap: 10px; border-bottom: 1px solid #333; }
         .app-search-bar input { flex: 1; padding: 10px 20px; border-radius: 20px; border: 1px solid #333; background: #000; color: white; outline: none; }
         .app-search-bar button { padding: 10px 20px; border-radius: 20px; border: none; font-weight: bold; cursor: pointer; }
+        
+        .video-grid { flex: 1; padding: 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; overflow-y: auto; }
+        .video-card { background: #1f1f1f; border-radius: 8px; overflow: hidden; cursor: pointer; transition: 0.2s; }
+        .video-card:hover { transform: scale(1.02); }
+        .video-card img { width: 100%; aspect-ratio: 16/9; object-fit: cover; }
+        .video-card h4 { padding: 10px; font-size: 14px; color: white; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        
+        .video-player-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: none; flex-direction: column; z-index: 10; }
+        .video-player-overlay.active { display: flex; }
+        .video-player-overlay iframe, .video-player-overlay video { flex: 1; width: 100%; border: none; }
+        .close-player { padding: 10px; background: #ff0000; color: white; text-align: center; font-weight: bold; cursor: pointer; }
+
+        /* Music, Notes, Games, Settings */
+        .music-app { display: flex; flex-direction: column; height: 100%; background: #121212; padding: 20px; overflow-y: auto; }
         .music-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
         .music-card { background: #181818; padding: 15px; border-radius: 8px; text-align: center; cursor: pointer; transition: 0.2s; }
         .music-card:hover { background: #282828; }
         .music-card img { width: 100%; aspect-ratio: 1; border-radius: 5px; margin-bottom: 10px; }
         .music-card h4 { font-size: 14px; color: white; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .music-card p { font-size: 12px; color: #b3b3b3; }
-
-        /* Notes App */
-        .notes-app { display: flex; flex-direction: column; height: 100%; background: #121212; padding: 20px; }
-        .notes-app textarea { flex: 1; background: #000; color: white; border: 1px solid #333; border-radius: 8px; padding: 20px; outline: none; resize: none; font-size: 16px; line-height: 1.5; }
-
-        /* AI, Settings, Games */
+        
         .ai-app { display: flex; flex-direction: column; height: 100%; background: #121212; padding: 20px; }
         .ai-messages { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; }
         .msg { padding: 12px 18px; border-radius: 12px; max-width: 80%; font-size: 14px; line-height: 1.5; }
@@ -67,10 +74,12 @@
         .ai-input { display: flex; gap: 10px; }
         .ai-input input { flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #333; background: #000; color: white; outline: none; }
         .ai-input button { padding: 12px 20px; border-radius: 8px; border: none; background: #8b5cf6; color: white; font-weight: bold; cursor: pointer; }
+        
         .settings-app { padding: 30px; background: #121212; height: 100%; color: white; }
         .bg-options { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 30px; }
         .bg-opt { width: 180px; height: 100px; border-radius: 8px; cursor: pointer; border: 2px solid transparent; background-size: cover; background-position: center; }
         .upload-btn { background: #0078D7; color: white; padding: 12px 20px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        
         .games-app { padding: 20px; background: #121212; height: 100%; overflow-y: auto; }
         .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; }
         .game-card { background: #1f1f23; border: 1px solid #333; border-radius: 8px; overflow: hidden; cursor: pointer; text-align: center; }
@@ -98,22 +107,53 @@
     </div>
 
     <div class="desktop">
-        <div class="app-icon" onclick="openApp('aether')"><div class="icon-box bg-aether"><i class="fas fa-globe"></i></div><span>Aether</span></div>
+        <div class="app-icon" onclick="openApp('tiktok')"><div class="icon-box bg-tiktok"><i class="fab fa-tiktok"></i></div><span>TikTok</span></div>
+        <div class="app-icon" onclick="openApp('youtube')"><div class="icon-box bg-youtube"><i class="fab fa-youtube"></i></div><span>YouTube</span></div>
+        <div class="app-icon" onclick="openApp('movies')"><div class="icon-box bg-movies"><i class="fas fa-film"></i></div><span>Movies</span></div>
         <div class="app-icon" onclick="openApp('music')"><div class="icon-box bg-music"><i class="fas fa-music"></i></div><span>Music</span></div>
         <div class="app-icon" onclick="openApp('games')"><div class="icon-box bg-games"><i class="fas fa-gamepad"></i></div><span>Games</span></div>
-        <div class="app-icon" onclick="openApp('notes')"><div class="icon-box bg-notes"><i class="fas fa-sticky-note"></i></div><span>Notepad</span></div>
         <div class="app-icon" onclick="openApp('ai')"><div class="icon-box bg-ai"><i class="fas fa-robot"></i></div><span>AI Chat</span></div>
         <div class="app-icon" onclick="openApp('settings')"><div class="icon-box bg-settings"><i class="fas fa-cog"></i></div><span>Settings</span></div>
 
-        <!-- Aether Proxy App (Your working link) -->
-        <div class="window" id="window-aether" style="width: 85%; height: 85%; left: 7.5%; top: 7.5%;">
-            <div class="window-header"><span>Aether Proxy</span><div class="window-controls"><button class="win-btn btn-green" onclick="fullscreen('aether')"></button><button class="win-btn btn-red" onclick="closeApp('aether')"></button></div></div>
-            <div class="window-content">
-                <iframe id="iframe-aether" src="https://apushistory.storage.googleapis.com/study.html" allowfullscreen></iframe>
+        <!-- TIKTOK NATIVE APP -->
+        <div class="window" id="window-tiktok">
+            <div class="window-header"><span>TikTok Native</span><div class="window-controls"><button class="win-btn btn-green" onclick="fullscreen('tiktok')"></button><button class="win-btn btn-red" onclick="closeApp('tiktok')"></button></div></div>
+            <div class="window-content app-layout">
+                <div class="app-search-bar">
+                    <input type="text" id="tiktok-search" placeholder="Search user..." onkeypress="if(event.key === 'Enter') searchTikTok()">
+                    <button style="background:#25f4ee; color:black;" onclick="searchTikTok()">Search</button>
+                </div>
+                <div class="video-grid" id="tiktok-grid"></div>
+                <div class="video-player-overlay" id="tiktok-player">
+                    <div class="close-player" onclick="closeTikTokPlayer()">Close Video</div>
+                    <video id="tiktok-video" controls autoplay></video>
+                </div>
             </div>
         </div>
 
-        <!-- Music App -->
+        <!-- YOUTUBE NATIVE APP -->
+        <div class="window" id="window-youtube">
+            <div class="window-header"><span>YouTube Native</span><div class="window-controls"><button class="win-btn btn-green" onclick="fullscreen('youtube')"></button><button class="win-btn btn-red" onclick="closeApp('youtube')"></button></div></div>
+            <div class="window-content app-layout">
+                <div class="app-search-bar">
+                    <input type="text" id="youtube-search" placeholder="Search YouTube..." onkeypress="if(event.key === 'Enter') searchYouTube()">
+                    <button style="background:#ff0000; color:white;" onclick="searchYouTube()">Search</button>
+                </div>
+                <div class="video-grid" id="youtube-grid"></div>
+                <div class="video-player-overlay" id="youtube-player">
+                    <div class="close-player" onclick="closeYouTubePlayer()">Close Video</div>
+                    <iframe id="youtube-iframe" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- MOVIES LOOPHOLE -->
+        <div class="window" id="window-movies">
+            <div class="window-header"><span>Movies (CDN Bypass)</span><div class="window-controls"><button class="win-btn btn-green" onclick="fullscreen('movies')"></button><button class="win-btn btn-red" onclick="closeApp('movies')"></button></div></div>
+            <div class="window-content"><iframe id="iframe-movies" src="https://corsproxy.org/?https%3A%2F%2F2embed.cc%2Fembed%2F299534" allow="autoplay; fullscreen"></iframe></div>
+        </div>
+
+        <!-- MUSIC -->
         <div class="window" id="window-music">
             <div class="window-header"><span>Music</span><div class="window-controls"><button class="win-btn btn-green" onclick="fullscreen('music')"></button><button class="win-btn btn-red" onclick="closeApp('music')"></button></div></div>
             <div class="window-content music-app">
@@ -126,15 +166,7 @@
             </div>
         </div>
 
-        <!-- Notes App -->
-        <div class="window" id="window-notes">
-            <div class="window-header"><span>Notepad</span><div class="window-controls"><button class="win-btn btn-green" onclick="fullscreen('notes')"></button><button class="win-btn btn-red" onclick="closeApp('notes')"></button></div></div>
-            <div class="window-content notes-app">
-                <textarea id="notes-area" placeholder="Type your notes here... (Saves automatically)" oninput="saveNotes()"></textarea>
-            </div>
-        </div>
-
-        <!-- Games App -->
+        <!-- GAMES -->
         <div class="window" id="window-games">
             <div class="window-header"><span>Games</span><div class="window-controls"><button class="win-btn btn-green" onclick="fullscreen('games')"></button><button class="win-btn btn-red" onclick="closeApp('games')"></button></div></div>
             <div class="window-content games-app">
@@ -147,7 +179,7 @@
             </div>
         </div>
 
-        <!-- AI Chat -->
+        <!-- AI CHAT -->
         <div class="window" id="window-ai">
             <div class="window-header"><span>Ghost AI</span><div class="window-controls"><button class="win-btn btn-green" onclick="fullscreen('ai')"></button><button class="win-btn btn-red" onclick="closeApp('ai')"></button></div></div>
             <div class="window-content ai-app">
@@ -156,7 +188,7 @@
             </div>
         </div>
 
-        <!-- Settings -->
+        <!-- SETTINGS -->
         <div class="window" id="window-settings">
             <div class="window-header"><span>Settings</span><div class="window-controls"><button class="win-btn btn-green" onclick="fullscreen('settings')"></button><button class="win-btn btn-red" onclick="closeApp('settings')"></button></div></div>
             <div class="window-content settings-app">
@@ -164,10 +196,8 @@
                 <div class="bg-options">
                     <div class="bg-opt" style="background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=500');" onclick="setBG('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2000')"></div>
                     <div class="bg-opt" style="background-image: url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=500');" onclick="setBG('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2000')"></div>
-                    <div class="bg-opt" style="background-image: url('https://images.unsplash.com/photo-1533130061792-64b345e4a833?q=80&w=500');" onclick="setBG('https://images.unsplash.com/photo-1533130061792-64b345e4a833?q=80&w=2000')"></div>
                 </div>
                 <h2>Custom Wallpaper</h2>
-                <p style="margin-bottom: 10px; color: #aaa; font-size: 13px;">Upload an image from your Chromebook.</p>
                 <input type="file" id="bg-upload" class="upload-btn" accept="image/*" onchange="uploadBG(event)">
             </div>
         </div>
@@ -181,10 +211,10 @@
     </div>
 
     <div class="dock">
-        <div class="dock-icon bg-aether" onclick="openApp('aether')"><i class="fas fa-globe"></i></div>
+        <div class="dock-icon bg-tiktok" onclick="openApp('tiktok')"><i class="fab fa-tiktok"></i></div>
+        <div class="dock-icon bg-youtube" onclick="openApp('youtube')"><i class="fab fa-youtube"></i></div>
+        <div class="dock-icon bg-movies" onclick="openApp('movies')"><i class="fas fa-film"></i></div>
         <div class="dock-icon bg-music" onclick="openApp('music')"><i class="fas fa-music"></i></div>
-        <div class="dock-icon bg-games" onclick="openApp('games')"><i class="fas fa-gamepad"></i></div>
-        <div class="dock-icon bg-notes" onclick="openApp('notes')"><i class="fas fa-sticky-note"></i></div>
         <div class="dock-icon bg-ai" onclick="openApp('ai')"><i class="fas fa-robot"></i></div>
         <div class="dock-icon bg-settings" onclick="openApp('settings')"><i class="fas fa-cog"></i></div>
     </div>
@@ -201,6 +231,8 @@
             document.getElementById(`window-${appName}`).classList.remove('active');
             if(appName === 'music') document.getElementById('music-audio').pause();
             if(appName === 'game-player') document.getElementById('game-iframe').src = '';
+            if(appName === 'tiktok') { document.getElementById('tiktok-video').pause(); closeTikTokPlayer(); }
+            if(appName === 'youtube') { closeYouTubePlayer(); }
         }
 
         function fullscreen(id) {
@@ -224,6 +256,64 @@
             document.getElementById('game-iframe').src = url;
             document.getElementById('game-title').innerText = "Playing Game...";
             openApp('game-player');
+        }
+
+        // --- TIKTOK NATIVE ---
+        async function searchTikTok() {
+            const q = document.getElementById('tiktok-search').value;
+            if(!q) return;
+            const grid = document.getElementById('tiktok-grid');
+            grid.innerHTML = '<div style="color:white;">Searching...</div>';
+            try {
+                const res = await fetch(`https://www.tikwm.com/api/user/posts?unique_id=${q}&count=12`);
+                const data = await res.json();
+                grid.innerHTML = '';
+                if(data.code === 0 && data.data && data.data.videos) {
+                    data.data.videos.forEach(v => {
+                        const div = document.createElement('div');
+                        div.className = 'video-card';
+                        div.innerHTML = `<img src="${v.cover}"><h4>@${v.author.unique_id}</h4>`;
+                        div.onclick = () => {
+                            document.getElementById('tiktok-video').src = v.play;
+                            document.getElementById('tiktok-player').classList.add('active');
+                        };
+                        grid.appendChild(div);
+                    });
+                } else { grid.innerHTML = '<div style="color:white;">User not found.</div>'; }
+            } catch(e) { grid.innerHTML = '<div style="color:red;">API Blocked.</div>'; }
+        }
+        function closeTikTokPlayer() {
+            document.getElementById('tiktok-player').classList.remove('active');
+            document.getElementById('tiktok-video').pause();
+            document.getElementById('tiktok-video').src = "";
+        }
+
+        // --- YOUTUBE NATIVE ---
+        async function searchYouTube() {
+            const q = document.getElementById('youtube-search').value;
+            if(!q) return;
+            const grid = document.getElementById('youtube-grid');
+            grid.innerHTML = '<div style="color:white;">Searching...</div>';
+            try {
+                const res = await fetch(`https://inv.nadeko.net/api/v1/search?q=${q}&type=video`);
+                const data = await res.json();
+                grid.innerHTML = '';
+                data.slice(0, 12).forEach(v => {
+                    if(!v.videoId) return;
+                    const div = document.createElement('div');
+                    div.className = 'video-card';
+                    div.innerHTML = `<img src="${v.videoThumbnails[0].url}"><h4>${v.title}</h4>`;
+                    div.onclick = () => {
+                        document.getElementById('youtube-iframe').src = `https://www.youtube.com/embed/${v.videoId}?autoplay=1`;
+                        document.getElementById('youtube-player').classList.add('active');
+                    };
+                    grid.appendChild(div);
+                });
+            } catch(e) { grid.innerHTML = '<div style="color:red;">API Blocked.</div>'; }
+        }
+        function closeYouTubePlayer() {
+            document.getElementById('youtube-player').classList.remove('active');
+            document.getElementById('youtube-iframe').src = "";
         }
 
         // --- MUSIC ---
@@ -250,15 +340,6 @@
                 });
             } catch(e) { grid.innerHTML = '<div style="color:red;">API Blocked.</div>'; }
         }
-
-        // --- NOTES ---
-        function saveNotes() {
-            localStorage.setItem('ghostNotes', document.getElementById('notes-area').value);
-        }
-        window.onload = () => {
-            const saved = localStorage.getItem('ghostNotes');
-            if(saved) document.getElementById('notes-area').value = saved;
-        };
 
         // --- AI CHAT ---
         async function sendAI() {
