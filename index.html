@@ -2,360 +2,294 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GhostOS</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Vanguard 3D | GitHub Edition</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; user-select: none; }
+        body { margin: 0; overflow: hidden; background: #87CEEB; font-family: 'Inter', sans-serif; }
+        canvas { display: block; }
         
-        body { background: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2000&auto=format&fit=crop') no-repeat center center fixed; background-size: cover; height: 100vh; overflow: hidden; display: flex; flex-direction: column; transition: background 0.5s; }
+        /* Crosshair */
+        #crosshair { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 24px; height: 24px; pointer-events: none; z-index: 10; }
+        #crosshair::before, #crosshair::after { content: ''; position: absolute; background: #00ffcc; box-shadow: 0 0 6px #00ffcc; }
+        #crosshair::before { top: 11px; left: 0; width: 24px; height: 2px; }
+        #crosshair::after { top: 0; left: 11px; width: 2px; height: 24px; }
         
-        .top-bar { height: 35px; background: rgba(0,0,0,0.6); backdrop-filter: blur(15px); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; color: white; font-size: 13px; font-weight: 600; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .top-left { display: flex; gap: 15px; align-items: center; }
-        .top-right { display: flex; gap: 15px; align-items: center; }
+        /* UI */
+        #ui { position: absolute; top: 20px; left: 20px; color: white; z-index: 10; font-weight: 800; text-shadow: 0 2px 5px black; font-size: 20px; }
+        .weapon-name { color: #00ffcc; font-size: 14px; margin-top: 5px; font-weight: 600; letter-spacing: 1px; }
         
-        .desktop { flex: 1; position: relative; padding: 30px; display: grid; grid-template-columns: repeat(auto-fill, 90px); grid-auto-rows: 100px; gap: 20px; align-content: flex-start; }
-        .app-icon { display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: 0.2s; color: white; }
-        .app-icon:hover .icon-box { transform: scale(1.05); }
-        .icon-box { width: 65px; height: 65px; border-radius: 16px; display: flex; justify-content: center; align-items: center; font-size: 30px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); margin-bottom: 8px; transition: 0.2s; }
-        .app-icon span { font-size: 13px; font-weight: 500; text-shadow: 0 1px 3px rgba(0,0,0,0.8); text-align: center; }
+        /* Instructions */
+        #instructions { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); color: white; z-index: 10; text-align: center; background: rgba(0,0,0,0.7); padding: 15px 30px; border-radius: 12px; border: 1px solid #00ffcc; backdrop-filter: blur(5px); }
+        #instructions h3 { margin: 0 0 10px 0; color: #00ffcc; }
         
-        .bg-tiktok { background: #000; border: 1px solid #25f4ee; color: white; }
-        .bg-youtube { background: #ff0000; color: white; }
-        .bg-movies { background: #ff9900; color: white; }
-        .bg-music { background: #1db954; color: white; }
-        .bg-web { background: #0078D7; color: white; }
-        .bg-ai { background: #8b5cf6; color: white; }
-        .bg-games { background: #a970ff; color: white; }
-        .bg-settings { background: #3f3f46; color: white; }
-
-        .window { position: absolute; top: 10%; left: 15%; width: 70%; height: 75%; background: rgba(20, 20, 25, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; display: none; flex-direction: column; box-shadow: 0 20px 50px rgba(0,0,0,0.5); z-index: 100; overflow: hidden; }
-        .window.active { display: flex; animation: openWin 0.2s ease-out; }
-        @keyframes openWin { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-        .window-header { height: 40px; background: rgba(0,0,0,0.5); display: flex; justify-content: space-between; align-items: center; padding: 0 15px; color: white; font-weight: 600; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .window-controls { display: flex; gap: 10px; }
-        .win-btn { width: 14px; height: 14px; border-radius: 50%; cursor: pointer; border: none; }
-        .btn-red { background: #ff5f56; } .btn-green { background: #27c93f; }
-        .window-content { flex: 1; background: #000; position: relative; display: flex; flex-direction: column; }
-        .window-content iframe { width: 100%; height: 100%; border: none; }
-
-        /* Custom App Layouts */
-        .app-layout { display: flex; flex-direction: column; height: 100%; background: #0f0f0f; }
-        .app-search-bar { padding: 15px; background: #181818; display: flex; gap: 10px; border-bottom: 1px solid #333; }
-        .app-search-bar input { flex: 1; padding: 10px 20px; border-radius: 20px; border: 1px solid #333; background: #000; color: white; outline: none; }
-        .app-search-bar button { padding: 10px 20px; border-radius: 20px; border: none; font-weight: bold; cursor: pointer; }
-        
-        .video-grid { flex: 1; padding: 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; overflow-y: auto; }
-        .video-card { background: #1f1f1f; border-radius: 8px; overflow: hidden; cursor: pointer; transition: 0.2s; }
-        .video-card:hover { transform: scale(1.02); }
-        .video-card img { width: 100%; aspect-ratio: 16/9; object-fit: cover; }
-        .video-card h4 { padding: 10px; font-size: 14px; color: white; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        
-        .video-player-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: none; flex-direction: column; z-index: 10; }
-        .video-player-overlay.active { display: flex; }
-        .video-player-overlay iframe, .video-player-overlay video { flex: 1; width: 100%; border: none; }
-        .close-player { padding: 10px; background: #ff0000; color: white; text-align: center; font-weight: bold; cursor: pointer; }
-
-        /* Music, Notes, Games, Settings */
-        .music-app { display: flex; flex-direction: column; height: 100%; background: #121212; padding: 20px; overflow-y: auto; }
-        .music-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
-        .music-card { background: #181818; padding: 15px; border-radius: 8px; text-align: center; cursor: pointer; transition: 0.2s; }
-        .music-card:hover { background: #282828; }
-        .music-card img { width: 100%; aspect-ratio: 1; border-radius: 5px; margin-bottom: 10px; }
-        .music-card h4 { font-size: 14px; color: white; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .music-card p { font-size: 12px; color: #b3b3b3; }
-        
-        .ai-app { display: flex; flex-direction: column; height: 100%; background: #121212; padding: 20px; }
-        .ai-messages { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; }
-        .msg { padding: 12px 18px; border-radius: 12px; max-width: 80%; font-size: 14px; line-height: 1.5; }
-        .msg.user { background: #0078D7; color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
-        .msg.bot { background: #2a2a2a; color: white; align-self: flex-start; border-bottom-left-radius: 2px; }
-        .ai-input { display: flex; gap: 10px; }
-        .ai-input input { flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #333; background: #000; color: white; outline: none; }
-        .ai-input button { padding: 12px 20px; border-radius: 8px; border: none; background: #8b5cf6; color: white; font-weight: bold; cursor: pointer; }
-        
-        .settings-app { padding: 30px; background: #121212; height: 100%; color: white; }
-        .bg-options { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 30px; }
-        .bg-opt { width: 180px; height: 100px; border-radius: 8px; cursor: pointer; border: 2px solid transparent; background-size: cover; background-position: center; }
-        .upload-btn { background: #0078D7; color: white; padding: 12px 20px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        
-        .games-app { padding: 20px; background: #121212; height: 100%; overflow-y: auto; }
-        .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; }
-        .game-card { background: #1f1f23; border: 1px solid #333; border-radius: 8px; overflow: hidden; cursor: pointer; text-align: center; }
-        .game-card img { width: 100%; height: 120px; object-fit: cover; }
-        .game-card p { padding: 10px; font-weight: bold; font-size: 14px; }
-
-        /* Floating Dock */
-        .dock { height: 70px; background: rgba(30,30,35,0.7); backdrop-filter: blur(25px); margin: 0 auto 20px auto; border-radius: 24px; display: flex; align-items: center; padding: 0 25px; gap: 20px; border: 1px solid rgba(255,255,255,0.15); z-index: 1000; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .dock-icon { width: 50px; height: 50px; border-radius: 14px; display: flex; justify-content: center; align-items: center; font-size: 24px; color: white; cursor: pointer; transition: 0.2s; }
-        .dock-icon:hover { transform: scale(1.15) translateY(-8px); }
+        /* Damage Flash */
+        #damage-flash { position: absolute; inset: 0; background: red; opacity: 0; pointer-events: none; z-index: 5; transition: opacity 0.1s; }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
-
-    <div class="top-bar">
-        <div class="top-left">
-            <i class="fas fa-bars icon-btn"></i>
-            <span style="font-weight: 800;">GhostOS</span>
-        </div>
-        <div class="top-right">
-            <i class="fas fa-battery-three-quarters icon-btn" style="color: #27c93f;"></i>
-            <i class="fas fa-wifi icon-btn"></i>
-            <span id="clock">12:00 PM</span>
-        </div>
+    <div id="crosshair"></div>
+    <div id="damage-flash"></div>
+    
+    <div id="ui">
+        <div>HP: <span id="hp" style="color:#ff4444;">100</span></div>
+        <div>KILLS: <span id="score" style="color:#00ffcc;">0</span></div>
+        <div class="weapon-name">M4A1 TACTICAL</div>
     </div>
 
-    <div class="desktop">
-        <div class="app-icon" onclick="openApp('tiktok')"><div class="icon-box bg-tiktok"><i class="fab fa-tiktok"></i></div><span>TikTok</span></div>
-        <div class="app-icon" onclick="openApp('youtube')"><div class="icon-box bg-youtube"><i class="fab fa-youtube"></i></div><span>YouTube</span></div>
-        <div class="app-icon" onclick="openApp('movies')"><div class="icon-box bg-movies"><i class="fas fa-film"></i></div><span>Movies</span></div>
-        <div class="app-icon" onclick="openApp('music')"><div class="icon-box bg-music"><i class="fas fa-music"></i></div><span>Music</span></div>
-        <div class="app-icon" onclick="openApp('games')"><div class="icon-box bg-games"><i class="fas fa-gamepad"></i></div><span>Games</span></div>
-        <div class="app-icon" onclick="openApp('ai')"><div class="icon-box bg-ai"><i class="fas fa-robot"></i></div><span>AI Chat</span></div>
-        <div class="app-icon" onclick="openApp('settings')"><div class="icon-box bg-settings"><i class="fas fa-cog"></i></div><span>Settings</span></div>
-
-        <!-- TIKTOK NATIVE APP -->
-        <div class="window" id="window-tiktok">
-            <div class="window-header"><span>TikTok Native</span><div class="window-controls"><button class="win-btn btn-green" onclick="fullscreen('tiktok')"></button><button class="win-btn btn-red" onclick="closeApp('tiktok')"></button></div></div>
-            <div class="window-content app-layout">
-                <div class="app-search-bar">
-                    <input type="text" id="tiktok-search" placeholder="Search user..." onkeypress="if(event.key === 'Enter') searchTikTok()">
-                    <button style="background:#25f4ee; color:black;" onclick="searchTikTok()">Search</button>
-                </div>
-                <div class="video-grid" id="tiktok-grid"></div>
-                <div class="video-player-overlay" id="tiktok-player">
-                    <div class="close-player" onclick="closeTikTokPlayer()">Close Video</div>
-                    <video id="tiktok-video" controls autoplay></video>
-                </div>
-            </div>
-        </div>
-
-        <!-- YOUTUBE NATIVE APP -->
-        <div class="window" id="window-youtube">
-            <div class="window-header"><span>YouTube Native</span><div class="window-controls"><button class="win-btn btn-green" onclick="fullscreen('youtube')"></button><button class="win-btn btn-red" onclick="closeApp('youtube')"></button></div></div>
-            <div class="window-content app-layout">
-                <div class="app-search-bar">
-                    <input type="text" id="youtube-search" placeholder="Search YouTube..." onkeypress="if(event.key === 'Enter') searchYouTube()">
-                    <button style="background:#ff0000; color:white;" onclick="searchYouTube()">Search</button>
-                </div>
-                <div class="video-grid" id="youtube-grid"></div>
-                <div class="video-player-overlay" id="youtube-player">
-                    <div class="close-player" onclick="closeYouTubePlayer()">Close Video</div>
-                    <iframe id="youtube-iframe" allowfullscreen></iframe>
-                </div>
-            </div>
-        </div>
-
-        <!-- MOVIES LOOPHOLE -->
-        <div class="window" id="window-movies">
-            <div class="window-header"><span>Movies (CDN Bypass)</span><div class="window-controls"><button class="win-btn btn-green" onclick="fullscreen('movies')"></button><button class="win-btn btn-red" onclick="closeApp('movies')"></button></div></div>
-            <div class="window-content"><iframe id="iframe-movies" src="https://corsproxy.org/?https%3A%2F%2F2embed.cc%2Fembed%2F299534" allow="autoplay; fullscreen"></iframe></div>
-        </div>
-
-        <!-- MUSIC -->
-        <div class="window" id="window-music">
-            <div class="window-header"><span>Music</span><div class="window-controls"><button class="win-btn btn-green" onclick="fullscreen('music')"></button><button class="win-btn btn-red" onclick="closeApp('music')"></button></div></div>
-            <div class="window-content music-app">
-                <div class="app-search-bar" style="padding:0; border:none; margin-bottom:20px; background:transparent;">
-                    <input type="text" id="music-search" placeholder="Search songs..." onkeypress="if(event.key === 'Enter') searchMusic()" style="background:#2a2a2a;">
-                    <button style="background:#1db954; color:black;" onclick="searchMusic()">Search</button>
-                </div>
-                <div class="music-grid" id="music-grid"></div>
-                <audio id="music-audio" controls style="width:100%; margin-top:20px; display:none;"></audio>
-            </div>
-        </div>
-
-        <!-- GAMES -->
-        <div class="window" id="window-games">
-            <div class="window-header"><span>Games</span><div class="window-controls"><button class="win-btn btn-green" onclick="fullscreen('games')"></button><button class="win-btn btn-red" onclick="closeApp('games')"></button></div></div>
-            <div class="window-content games-app">
-                <div class="games-grid">
-                    <div class="game-card" onclick="playGame('https://www.crazygames.com/embed/retro-bowl')"><img src="https://imgs.crazygames.com/retro-bowl_16x9/20220106142828/retro-bowl_16x9-cover"><p>Retro Bowl</p></div>
-                    <div class="game-card" onclick="playGame('https://www.crazygames.com/embed/slope')"><img src="https://imgs.crazygames.com/slope_16x9/20210804113951/slope_16x9-cover"><p>Slope</p></div>
-                    <div class="game-card" onclick="playGame('https://www.crazygames.com/embed/tunnel-rush')"><img src="https://imgs.crazygames.com/tunnel-rush_16x9/20210212082734/tunnel-rush_16x9-cover"><p>Tunnel Rush</p></div>
-                    <div class="game-card" onclick="playGame('https://play2048.co/')"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/2048_logo.svg/1200px-2048_logo.svg.png" style="object-fit:contain; background:#faf8ef;"><p>2048</p></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- AI CHAT -->
-        <div class="window" id="window-ai">
-            <div class="window-header"><span>Ghost AI</span><div class="window-controls"><button class="win-btn btn-green" onclick="fullscreen('ai')"></button><button class="win-btn btn-red" onclick="closeApp('ai')"></button></div></div>
-            <div class="window-content ai-app">
-                <div class="ai-messages" id="ai-messages"><div class="msg bot">Hello! I am Ghost AI.</div></div>
-                <div class="ai-input"><input type="text" id="ai-input" placeholder="Type a message..." onkeypress="if(event.key === 'Enter') sendAI()"><button onclick="sendAI()">Send</button></div>
-            </div>
-        </div>
-
-        <!-- SETTINGS -->
-        <div class="window" id="window-settings">
-            <div class="window-header"><span>Settings</span><div class="window-controls"><button class="win-btn btn-green" onclick="fullscreen('settings')"></button><button class="win-btn btn-red" onclick="closeApp('settings')"></button></div></div>
-            <div class="window-content settings-app">
-                <h2>Wallpaper</h2>
-                <div class="bg-options">
-                    <div class="bg-opt" style="background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=500');" onclick="setBG('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2000')"></div>
-                    <div class="bg-opt" style="background-image: url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=500');" onclick="setBG('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2000')"></div>
-                </div>
-                <h2>Custom Wallpaper</h2>
-                <input type="file" id="bg-upload" class="upload-btn" accept="image/*" onchange="uploadBG(event)">
-            </div>
-        </div>
-
-        <!-- Game Player Modal -->
-        <div class="window" id="window-game-player" style="width: 80%; height: 80%; left: 10%; top: 10%;">
-            <div class="window-header"><span id="game-title">Game</span><div class="window-controls"><button class="win-btn btn-green" onclick="fullscreen('game-iframe')"></button><button class="win-btn btn-red" onclick="closeApp('game-player')"></button></div></div>
-            <div class="window-content"><iframe id="game-iframe" src="" allowfullscreen></iframe></div>
-        </div>
-
-    </div>
-
-    <div class="dock">
-        <div class="dock-icon bg-tiktok" onclick="openApp('tiktok')"><i class="fab fa-tiktok"></i></div>
-        <div class="dock-icon bg-youtube" onclick="openApp('youtube')"><i class="fab fa-youtube"></i></div>
-        <div class="dock-icon bg-movies" onclick="openApp('movies')"><i class="fas fa-film"></i></div>
-        <div class="dock-icon bg-music" onclick="openApp('music')"><i class="fas fa-music"></i></div>
-        <div class="dock-icon bg-ai" onclick="openApp('ai')"><i class="fas fa-robot"></i></div>
-        <div class="dock-icon bg-settings" onclick="openApp('settings')"><i class="fas fa-cog"></i></div>
+    <div id="instructions">
+        <h3>CLICK TO DEPLOY</h3>
+        <p style="margin: 5px 0; font-size: 14px;">WASD Move | Space Jump | Left Click Shoot</p>
+        <p style="margin: 5px 0; font-size: 14px;">Mouse Look | ESC to Unlock</p>
     </div>
 
     <script>
-        setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}); }, 1000);
-
-        function openApp(appName) {
-            document.querySelectorAll('.window').forEach(w => w.classList.remove('active'));
-            document.getElementById(`window-${appName}`).classList.add('active');
+        let scene, camera, renderer, weapon;
+        let enemies = [];
+        let score = 0, hp = 100;
+        let moveForward, moveBackward, moveLeft, moveRight, canJump;
+        let velocity = new THREE.Vector3();
+        let prevTime = performance.now();
+        let pitch = 0, yaw = 0;
+        let canShoot = true;
+        
+        // Procedural Textures (No external images needed, saves load time)
+        function createGrassTexture() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 256; canvas.height = 256;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#3b7a57'; ctx.fillRect(0, 0, 256, 256);
+            for(let i=0; i<5000; i++) {
+                ctx.fillStyle = Math.random() > 0.5 ? '#4CAF50' : '#2E7D32';
+                ctx.fillRect(Math.random()*256, Math.random()*256, 2, 2);
+            }
+            const tex = new THREE.CanvasTexture(canvas);
+            tex.wrapS = THREE.RepeatWrapping; tex.wrapT = THREE.RepeatWrapping;
+            tex.repeat.set(100, 100);
+            return tex;
         }
 
-        function closeApp(appName) {
-            document.getElementById(`window-${appName}`).classList.remove('active');
-            if(appName === 'music') document.getElementById('music-audio').pause();
-            if(appName === 'game-player') document.getElementById('game-iframe').src = '';
-            if(appName === 'tiktok') { document.getElementById('tiktok-video').pause(); closeTikTokPlayer(); }
-            if(appName === 'youtube') { closeYouTubePlayer(); }
+        function createConcreteTexture() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 128; canvas.height = 128;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#666666'; ctx.fillRect(0, 0, 128, 128);
+            for(let i=0; i<1000; i++) {
+                ctx.fillStyle = Math.random() > 0.5 ? '#777777' : '#555555';
+                ctx.fillRect(Math.random()*128, Math.random()*128, 4, 4);
+            }
+            return new THREE.CanvasTexture(canvas);
         }
 
-        function fullscreen(id) {
-            const element = document.getElementById(`iframe-${id}`) || document.getElementById(`window-${id}`);
-            if (element.requestFullscreen) { element.requestFullscreen(); } 
-            else if (element.webkitRequestFullscreen) { element.webkitRequestFullscreen(); }
+        function init() {
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x87CEEB); 
+            scene.fog = new THREE.Fog(0x87CEEB, 50, 200);
+            
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.y = 2.5;
+
+            renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: "high-performance" });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+
+            // Lighting
+            scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+            const dir = new THREE.DirectionalLight(0xffffff, 0.8);
+            dir.position.set(100, 200, 50);
+            scene.add(dir);
+
+            // Ground with Grass Texture
+            const grassTex = createGrassTexture();
+            const groundGeo = new THREE.PlaneGeometry(500, 500);
+            const groundMat = new THREE.MeshLambertMaterial({ map: grassTex });
+            const ground = new THREE.Mesh(groundGeo, groundMat);
+            ground.rotation.x = -Math.PI / 2;
+            scene.add(ground);
+
+            // Buildings with Concrete Texture
+            const concreteTex = createConcreteTexture();
+            const blockMat = new THREE.MeshLambertMaterial({ map: concreteTex });
+            for(let i=0; i<60; i++) {
+                const w = Math.random()*10 + 4, h = Math.random()*15 + 4, d = Math.random()*10 + 4;
+                const block = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), blockMat);
+                block.position.set(Math.random()*200 - 100, h/2, Math.random()*200 - 100);
+                scene.add(block);
+            }
+
+            // Weapon Build (M4A1 Style)
+            weapon = new THREE.Group();
+            
+            // Main Body
+            const body = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.12, 0.8), new THREE.MeshLambertMaterial({color: 0x222222}));
+            body.position.set(0, 0, -0.2);
+            
+            // Barrel
+            const barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.5), new THREE.MeshLambertMaterial({color: 0x111111}));
+            barrel.rotation.x = Math.PI / 2; barrel.position.set(0, 0, -0.7);
+            
+            // Scope
+            const scope = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.2), new THREE.MeshLambertMaterial({color: 0x000000}));
+            scope.rotation.x = Math.PI / 2; scope.position.set(0, 0.1, -0.2);
+            
+            // Magazine
+            const mag = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.2, 0.1), new THREE.MeshLambertMaterial({color: 0x333333}));
+            mag.position.set(0, -0.12, -0.1);
+
+            weapon.add(body); weapon.add(barrel); weapon.add(scope); weapon.add(mag);
+            weapon.position.set(0.25, -0.25, -0.4);
+            camera.add(weapon);
+            scene.add(camera);
+
+            for(let i=0; i<12; i++) spawnEnemy();
+
+            document.addEventListener('keydown', onKeyDown);
+            document.addEventListener('keyup', onKeyUp);
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mousedown', onMouseDown);
+            document.addEventListener('pointerlockchange', onPLC);
+            window.addEventListener('resize', onResize);
+
+            animate();
         }
 
-        function setBG(url) { document.body.style.backgroundImage = `url('${url}')`; }
+        function shoot() {
+            if(!canShoot) return;
+            canShoot = false;
+            
+            // Realistic Recoil
+            pitch += 0.05; 
+            weapon.position.z += 0.1; // Kickback
+            
+            setTimeout(() => { weapon.position.z -= 0.1; }, 50);
+            setTimeout(() => canShoot = true, 120); // Fire rate
 
-        function uploadBG(event) {
-            const file = event.target.files[0];
-            if(file) {
-                const reader = new FileReader();
-                reader.onload = (e) => { setBG(e.target.result); };
-                reader.readAsDataURL(file);
+            // Raycast
+            const raycaster = new THREE.Raycaster();
+            raycaster.setFromCamera(new THREE.Vector2(0, 0), camera);
+            
+            const intersects = raycaster.intersectObjects(enemies);
+            if (intersects.length > 0) {
+                const hit = intersects[0].object;
+                scene.remove(hit);
+                enemies = enemies.filter(e => e !== hit);
+                score += 1;
+                document.getElementById('score').innerText = score;
+                spawnEnemy();
             }
         }
 
-        function playGame(url) {
-            document.getElementById('game-iframe').src = url;
-            document.getElementById('game-title').innerText = "Playing Game...";
-            openApp('game-player');
+        function onMouseDown(e) {
+            if (document.pointerLockElement === document.body) {
+                if (e.button === 0) shoot();
+            } else {
+                document.body.requestPointerLock();
+            }
         }
 
-        // --- TIKTOK NATIVE ---
-        async function searchTikTok() {
-            const q = document.getElementById('tiktok-search').value;
-            if(!q) return;
-            const grid = document.getElementById('tiktok-grid');
-            grid.innerHTML = '<div style="color:white;">Searching...</div>';
-            try {
-                const res = await fetch(`https://www.tikwm.com/api/user/posts?unique_id=${q}&count=12`);
-                const data = await res.json();
-                grid.innerHTML = '';
-                if(data.code === 0 && data.data && data.data.videos) {
-                    data.data.videos.forEach(v => {
-                        const div = document.createElement('div');
-                        div.className = 'video-card';
-                        div.innerHTML = `<img src="${v.cover}"><h4>@${v.author.unique_id}</h4>`;
-                        div.onclick = () => {
-                            document.getElementById('tiktok-video').src = v.play;
-                            document.getElementById('tiktok-player').classList.add('active');
-                        };
-                        grid.appendChild(div);
-                    });
-                } else { grid.innerHTML = '<div style="color:white;">User not found.</div>'; }
-            } catch(e) { grid.innerHTML = '<div style="color:red;">API Blocked.</div>'; }
-        }
-        function closeTikTokPlayer() {
-            document.getElementById('tiktok-player').classList.remove('active');
-            document.getElementById('tiktok-video').pause();
-            document.getElementById('tiktok-video').src = "";
+        function onMouseMove(e) {
+            if (document.pointerLockElement === document.body) {
+                yaw -= e.movementX * 0.002;
+                pitch -= e.movementY * 0.002;
+                pitch = Math.max(-Math.PI/2, Math.min(Math.PI/2, pitch));
+            }
         }
 
-        // --- YOUTUBE NATIVE ---
-        async function searchYouTube() {
-            const q = document.getElementById('youtube-search').value;
-            if(!q) return;
-            const grid = document.getElementById('youtube-grid');
-            grid.innerHTML = '<div style="color:white;">Searching...</div>';
-            try {
-                const res = await fetch(`https://inv.nadeko.net/api/v1/search?q=${q}&type=video`);
-                const data = await res.json();
-                grid.innerHTML = '';
-                data.slice(0, 12).forEach(v => {
-                    if(!v.videoId) return;
-                    const div = document.createElement('div');
-                    div.className = 'video-card';
-                    div.innerHTML = `<img src="${v.videoThumbnails[0].url}"><h4>${v.title}</h4>`;
-                    div.onclick = () => {
-                        document.getElementById('youtube-iframe').src = `https://www.youtube.com/embed/${v.videoId}?autoplay=1`;
-                        document.getElementById('youtube-player').classList.add('active');
-                    };
-                    grid.appendChild(div);
-                });
-            } catch(e) { grid.innerHTML = '<div style="color:red;">API Blocked.</div>'; }
-        }
-        function closeYouTubePlayer() {
-            document.getElementById('youtube-player').classList.remove('active');
-            document.getElementById('youtube-iframe').src = "";
+        function onKeyDown(e) {
+            switch(e.code) {
+                case 'KeyW': moveForward = true; break;
+                case 'KeyS': moveBackward = true; break;
+                case 'KeyA': moveLeft = true; break;
+                case 'KeyD': moveRight = true; break;
+                case 'Space': if (canJump) { velocity.y += 12; canJump = false; } break;
+            }
         }
 
-        // --- MUSIC ---
-        async function searchMusic() {
-            const q = document.getElementById('music-search').value;
-            if(!q) return;
-            const grid = document.getElementById('music-grid');
-            grid.innerHTML = '<div style="color:white;">Searching...</div>';
-            try {
-                const res = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(q)}&entity=song&limit=18`);
-                const data = await res.json();
-                grid.innerHTML = '';
-                data.results.forEach(i => {
-                    const div = document.createElement('div');
-                    div.className = 'music-card';
-                    div.innerHTML = `<img src="${i.artworkUrl100.replace('100x100', '300x300')}"><h4>${i.trackName}</h4><p>${i.artistName}</p>`;
-                    div.onclick = () => {
-                        const audio = document.getElementById('music-audio');
-                        audio.src = i.previewUrl;
-                        audio.style.display = 'block';
-                        audio.play();
-                    };
-                    grid.appendChild(div);
-                });
-            } catch(e) { grid.innerHTML = '<div style="color:red;">API Blocked.</div>'; }
+        function onKeyUp(e) {
+            switch(e.code) {
+                case 'KeyW': moveForward = false; break;
+                case 'KeyS': moveBackward = false; break;
+                case 'KeyA': moveLeft = false; break;
+                case 'KeyD': moveRight = false; break;
+            }
         }
 
-        // --- AI CHAT ---
-        async function sendAI() {
-            const input = document.getElementById('ai-input').value;
-            if(!input) return;
-            const chat = document.getElementById('ai-messages');
-            chat.innerHTML += `<div class="msg user">${input}</div>`;
-            document.getElementById('ai-input').value = '';
-            chat.scrollTop = chat.scrollHeight;
-            try {
-                const res = await fetch(`https://text.pollinations.ai/${encodeURIComponent(input)}`);
-                const text = await res.text();
-                chat.innerHTML += `<div class="msg bot">${text}</div>`;
-                chat.scrollTop = chat.scrollHeight;
-            } catch (e) { chat.innerHTML += `<div class="msg bot">Connection error.</div>`; }
+        function onPLC() {
+            document.getElementById('instructions').style.display = document.pointerLockElement === document.body ? 'none' : 'block';
         }
+
+        function onResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function spawnEnemy() {
+            const geo = new THREE.BoxGeometry(1.2, 2.2, 1.2);
+            const mat = new THREE.MeshLambertMaterial({ color: 0xcc0000 });
+            const enemy = new THREE.Mesh(geo, mat);
+            enemy.position.set(Math.random()*150 - 75, 1.1, Math.random()*150 - 75);
+            enemy.userData = { speed: 0.04 };
+            scene.add(enemy);
+            enemies.push(enemy);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            const time = performance.now();
+            const delta = (time - prevTime) / 1000;
+
+            // Physics
+            velocity.x -= velocity.x * 10.0 * delta;
+            velocity.z -= velocity.z * 10.0 * delta;
+            velocity.y -= 9.8 * 2.0 * delta;
+
+            const dirZ = Number(moveForward) - Number(moveBackward);
+            const dirX = Number(moveRight) - Number(moveLeft);
+            const dir = new THREE.Vector3(dirX, 0, dirZ).normalize();
+
+            velocity.z -= dir.z * 50.0 * delta;
+            velocity.x -= dir.x * 50.0 * delta;
+
+            camera.position.x += velocity.x * delta;
+            camera.position.z += velocity.z * delta;
+            camera.position.y += velocity.y * delta;
+
+            // Ground Collision
+            if (camera.position.y < 2.5) {
+                velocity.y = 0; camera.position.y = 2.5; canJump = true;
+            }
+
+            // Recoil Recovery
+            if (pitch > 0 && !document.pointerLockElement) pitch -= 0.01; 
+
+            camera.rotation.order = 'YXZ';
+            camera.rotation.y = yaw;
+            camera.rotation.x = pitch;
+
+            // Weapon Bobbing
+            weapon.position.y = -0.25 + Math.sin(time * 0.01) * 0.015 * (Math.abs(velocity.x) + Math.abs(velocity.z));
+
+            // Enemy Logic
+            enemies.forEach(enemy => {
+                enemy.lookAt(camera.position.x, enemy.position.y, camera.position.z);
+                enemy.translateZ(enemy.userData.speed);
+                
+                // Damage Player
+                if (enemy.position.distanceTo(camera.position) < 2) {
+                    hp -= 1;
+                    document.getElementById('hp').innerText = Math.floor(hp);
+                    document.getElementById('damage-flash').style.opacity = 0.4;
+                    setTimeout(() => document.getElementById('damage-flash').style.opacity = 0, 100);
+                    if (hp <= 0) { alert("MISSION FAILED"); window.location.reload(); }
+                }
+            });
+
+            renderer.render(scene, camera);
+            prevTime = time;
+        }
+
+        init();
     </script>
 </body>
 </html>
