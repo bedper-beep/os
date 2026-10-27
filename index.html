@@ -9,11 +9,10 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; user-select: none; }
         
-        /* Background */
         body { background: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2000&auto=format&fit=crop') no-repeat center center fixed; background-size: cover; height: 100vh; overflow: hidden; display: flex; flex-direction: column; transition: background 0.5s; }
         
         /* Top Bar */
-        .top-bar { height: 35px; background: rgba(0,0,0,0.5); backdrop-filter: blur(15px); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; color: white; font-size: 13px; font-weight: 600; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .top-bar { height: 35px; background: rgba(0,0,0,0.6); backdrop-filter: blur(15px); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; color: white; font-size: 13px; font-weight: 600; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.1); }
         .top-left { display: flex; gap: 15px; align-items: center; }
         .top-right { display: flex; gap: 15px; align-items: center; }
         .search-bar { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 15px; padding: 4px 12px; display: flex; align-items: center; gap: 8px; width: 200px; }
@@ -27,13 +26,13 @@
         .icon-box { width: 65px; height: 65px; border-radius: 16px; display: flex; justify-content: center; align-items: center; font-size: 30px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); margin-bottom: 8px; transition: 0.2s; }
         .app-icon span { font-size: 13px; font-weight: 500; text-shadow: 0 1px 3px rgba(0,0,0,0.8); text-align: center; }
         
-        /* Icon Colors */
         .bg-tiktok { background: #000; border: 1px solid #25f4ee; color: white; }
         .bg-youtube { background: #ff0000; color: white; }
         .bg-movies { background: #ff9900; color: white; }
         .bg-music { background: #1db954; color: white; }
         .bg-search { background: #0078D7; color: white; }
         .bg-ai { background: #8b5cf6; color: white; }
+        .bg-games { background: #a970ff; color: white; }
         .bg-settings { background: #3f3f46; color: white; }
 
         /* Windows */
@@ -47,7 +46,15 @@
         .window-content { flex: 1; background: #000; position: relative; }
         .window-content iframe { width: 100%; height: 100%; border: none; }
 
-        /* Custom Music UI */
+        /* Games App */
+        .games-app { padding: 20px; background: #121212; height: 100%; overflow-y: auto; }
+        .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; }
+        .game-card { background: #1f1f23; border: 1px solid #333; border-radius: 8px; overflow: hidden; cursor: pointer; text-align: center; }
+        .game-card:hover { border-color: #a970ff; }
+        .game-card img { width: 100%; height: 120px; object-fit: cover; }
+        .game-card p { padding: 10px; font-weight: bold; font-size: 14px; }
+
+        /* Music App */
         .music-app { display: flex; flex-direction: column; height: 100%; background: #121212; padding: 20px; overflow-y: auto; }
         .music-header { display: flex; gap: 10px; margin-bottom: 20px; }
         .music-header input { flex: 1; padding: 12px; border-radius: 30px; border: none; background: #2a2a2a; color: white; outline: none; }
@@ -59,7 +66,7 @@
         .music-card h4 { font-size: 14px; color: white; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .music-card p { font-size: 12px; color: #b3b3b3; }
 
-        /* AI Chat */
+        /* AI */
         .ai-app { display: flex; flex-direction: column; height: 100%; background: #121212; padding: 20px; }
         .ai-messages { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; }
         .msg { padding: 12px 18px; border-radius: 12px; max-width: 80%; font-size: 14px; line-height: 1.5; }
@@ -84,7 +91,6 @@
 </head>
 <body>
 
-    <!-- Top Bar -->
     <div class="top-bar">
         <div class="top-left">
             <i class="fas fa-bars icon-btn"></i>
@@ -102,80 +108,64 @@
         </div>
     </div>
 
-    <!-- Desktop Grid -->
     <div class="desktop">
-        <div class="app-icon" onclick="openApp('tiktok')">
-            <div class="icon-box bg-tiktok"><i class="fab fa-tiktok"></i></div>
-            <span>TikTok</span>
-        </div>
-        <div class="app-icon" onclick="openApp('youtube')">
-            <div class="icon-box bg-youtube"><i class="fab fa-youtube"></i></div>
-            <span>YouTube</span>
-        </div>
-        <div class="app-icon" onclick="openApp('movies')">
-            <div class="icon-box bg-movies"><i class="fas fa-film"></i></div>
-            <span>Movies</span>
-        </div>
-        <div class="app-icon" onclick="openApp('music')">
-            <div class="icon-box bg-music"><i class="fas fa-music"></i></div>
-            <span>Music</span>
-        </div>
-        <div class="app-icon" onclick="openApp('search')">
-            <div class="icon-box bg-search"><i class="fas fa-search"></i></div>
-            <span>Ghost Search</span>
-        </div>
-        <div class="app-icon" onclick="openApp('ai')">
-            <div class="icon-box bg-ai"><i class="fas fa-robot"></i></div>
-            <span>AI Chat</span>
-        </div>
-        <div class="app-icon" onclick="openApp('settings')">
-            <div class="icon-box bg-settings"><i class="fas fa-cog"></i></div>
-            <span>Settings</span>
-        </div>
+        <div class="app-icon" onclick="openApp('tiktok')"><div class="icon-box bg-tiktok"><i class="fab fa-tiktok"></i></div><span>TikTok</span></div>
+        <div class="app-icon" onclick="openApp('youtube')"><div class="icon-box bg-youtube"><i class="fab fa-youtube"></i></div><span>YouTube</span></div>
+        <div class="app-icon" onclick="openApp('movies')"><div class="icon-box bg-movies"><i class="fas fa-film"></i></div><span>Movies</span></div>
+        <div class="app-icon" onclick="openApp('music')"><div class="icon-box bg-music"><i class="fas fa-music"></i></div><span>Music</span></div>
+        <div class="app-icon" onclick="openApp('games')"><div class="icon-box bg-games"><i class="fas fa-gamepad"></i></div><span>Games</span></div>
+        <div class="app-icon" onclick="openApp('search')"><div class="icon-box bg-search"><i class="fas fa-search"></i></div><span>Ghost Search</span></div>
+        <div class="app-icon" onclick="openApp('ai')"><div class="icon-box bg-ai"><i class="fas fa-robot"></i></div><span>AI Chat</span></div>
+        <div class="app-icon" onclick="openApp('settings')"><div class="icon-box bg-settings"><i class="fas fa-cog"></i></div><span>Settings</span></div>
 
         <!-- Windows -->
         <div class="window" id="window-tiktok">
             <div class="window-header"><span>TikTok</span><div class="window-controls"><button class="win-btn btn-red" onclick="closeApp('tiktok')"></button></div></div>
-            <div class="window-content"><iframe src="https://corsproxy.io/?https://www.tiktok.com/embed" allow="autoplay; fullscreen"></iframe></div>
+            <div class="window-content"><iframe src="https://www.tiktok.com/embed" allow="autoplay; fullscreen"></iframe></div>
         </div>
 
         <div class="window" id="window-youtube">
             <div class="window-header"><span>YouTube Pro</span><div class="window-controls"><button class="win-btn btn-green" onclick="fullscreen('youtube')"><i class="fas fa-expand" style="font-size:8px; color:black;"></i></button><button class="win-btn btn-red" onclick="closeApp('youtube')"></button></div></div>
-            <div class="window-content"><iframe id="iframe-youtube" src="https://inv.nadeko.net/" allow="autoplay; fullscreen"></iframe></div>
+            <div class="window-content"><iframe id="iframe-youtube" src="https://piped.video/" allow="autoplay; fullscreen"></iframe></div>
         </div>
 
         <div class="window" id="window-movies">
             <div class="window-header"><span>Movies</span><div class="window-controls"><button class="win-btn btn-red" onclick="closeApp('movies')"></button></div></div>
-            <div class="window-content"><iframe src="https://multiembed.mov/?video_id=299534&tmdb=1" allow="autoplay; fullscreen"></iframe></div>
+            <div class="window-content"><iframe src="https://vidsrc.to/embed/movie/299534" allow="autoplay; fullscreen"></iframe></div>
         </div>
 
         <div class="window" id="window-music">
             <div class="window-header"><span>Spotify Pro</span><div class="window-controls"><button class="win-btn btn-red" onclick="closeApp('music')"></button></div></div>
             <div class="window-content music-app">
-                <div class="music-header">
-                    <input type="text" id="music-search" placeholder="Search songs, artists..." onkeypress="if(event.key === 'Enter') searchMusic()">
-                    <button onclick="searchMusic()">Search</button>
-                </div>
+                <div class="music-header"><input type="text" id="music-search" placeholder="Search songs..." onkeypress="if(event.key === 'Enter') searchMusic()"><button onclick="searchMusic()">Search</button></div>
                 <div class="music-grid" id="music-grid"></div>
-                <audio id="music-audio" controls style="width:100%; margin-top:20px; display:none; background: #282828; border-radius: 8px;"></audio>
+                <audio id="music-audio" controls style="width:100%; margin-top:20px; display:none;"></audio>
+            </div>
+        </div>
+
+        <!-- Games App -->
+        <div class="window" id="window-games">
+            <div class="window-header"><span>Games</span><div class="window-controls"><button class="win-btn btn-red" onclick="closeApp('games')"></button></div></div>
+            <div class="window-content games-app">
+                <div class="games-grid">
+                    <div class="game-card" onclick="playGame('https://www.crazygames.com/embed/retro-bowl')"><img src="https://imgs.crazygames.com/retro-bowl_16x9/20220106142828/retro-bowl_16x9-cover"><p>Retro Bowl</p></div>
+                    <div class="game-card" onclick="playGame('https://www.crazygames.com/embed/slope')"><img src="https://imgs.crazygames.com/slope_16x9/20210804113951/slope_16x9-cover"><p>Slope</p></div>
+                    <div class="game-card" onclick="playGame('https://www.crazygames.com/embed/tunnel-rush')"><img src="https://imgs.crazygames.com/tunnel-rush_16x9/20210212082734/tunnel-rush_16x9-cover"><p>Tunnel Rush</p></div>
+                    <div class="game-card" onclick="playGame('https://play2048.co/')"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/2048_logo.svg/1200px-2048_logo.svg.png" style="object-fit:contain; background:#faf8ef;"><p>2048</p></div>
+                </div>
             </div>
         </div>
 
         <div class="window" id="window-search">
             <div class="window-header"><span>Ghost Search (No History)</span><div class="window-controls"><button class="win-btn btn-red" onclick="closeApp('search')"></button></div></div>
-            <div class="window-content"><iframe src="https://lite.duckduckgo.com/lite/" allowfullscreen></iframe></div>
+            <div class="window-content"><iframe src="https://search.marginalia.nu/" allowfullscreen></iframe></div>
         </div>
 
         <div class="window" id="window-ai">
             <div class="window-header"><span>Ghost AI</span><div class="window-controls"><button class="win-btn btn-red" onclick="closeApp('ai')"></button></div></div>
             <div class="window-content ai-app">
-                <div class="ai-messages" id="ai-messages">
-                    <div class="msg bot">Hello! I am Ghost AI. Ask me anything.</div>
-                </div>
-                <div class="ai-input">
-                    <input type="text" id="ai-input" placeholder="Type a message..." onkeypress="if(event.key === 'Enter') sendAI()">
-                    <button onclick="sendAI()">Send</button>
-                </div>
+                <div class="ai-messages" id="ai-messages"><div class="msg bot">Hello! I am Ghost AI.</div></div>
+                <div class="ai-input"><input type="text" id="ai-input" placeholder="Type a message..." onkeypress="if(event.key === 'Enter') sendAI()"><button onclick="sendAI()">Send</button></div>
             </div>
         </div>
 
@@ -191,27 +181,31 @@
             </div>
         </div>
 
+        <!-- Game Player Modal (Overrides window) -->
+        <div class="window" id="window-game-player" style="width: 80%; height: 80%; left: 10%; top: 10%;">
+            <div class="window-header"><span id="game-title">Game</span><div class="window-controls"><button class="win-btn btn-red" onclick="closeApp('game-player')"></button></div></div>
+            <div class="window-content"><iframe id="game-iframe" src="" allowfullscreen></iframe></div>
+        </div>
+
     </div>
 
-    <!-- Floating Dock -->
     <div class="dock">
         <div class="dock-icon bg-tiktok" onclick="openApp('tiktok')"><i class="fab fa-tiktok"></i></div>
         <div class="dock-icon bg-youtube" onclick="openApp('youtube')"><i class="fab fa-youtube"></i></div>
         <div class="dock-icon bg-music" onclick="openApp('music')"><i class="fas fa-music"></i></div>
+        <div class="dock-icon bg-games" onclick="openApp('games')"><i class="fas fa-gamepad"></i></div>
         <div class="dock-icon bg-search" onclick="openApp('search')"><i class="fas fa-search"></i></div>
         <div class="dock-icon bg-ai" onclick="openApp('ai')"><i class="fas fa-robot"></i></div>
         <div class="dock-icon bg-settings" onclick="openApp('settings')"><i class="fas fa-cog"></i></div>
     </div>
 
     <script>
-        // Clock
         setInterval(() => {
             const now = new Date();
             document.getElementById('clock').innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
             document.getElementById('date').innerText = now.toLocaleDateString([], {weekday: 'short', month: 'short', day: 'numeric'});
         }, 1000);
 
-        // Window Management
         function openApp(appName) {
             document.querySelectorAll('.window').forEach(w => w.classList.remove('active'));
             document.getElementById(`window-${appName}`).classList.add('active');
@@ -220,6 +214,7 @@
         function closeApp(appName) {
             document.getElementById(`window-${appName}`).classList.remove('active');
             if(appName === 'music') document.getElementById('music-audio').pause();
+            if(appName === 'game-player') document.getElementById('game-iframe').src = '';
         }
 
         function fullscreen(appName) {
@@ -230,18 +225,21 @@
 
         function setBG(url) { document.body.style.backgroundImage = `url('${url}')`; }
 
-        // Music
+        function playGame(url) {
+            document.getElementById('game-iframe').src = url;
+            document.getElementById('game-title').innerText = "Playing Game...";
+            openApp('game-player');
+        }
+
         async function searchMusic() {
             const q = document.getElementById('music-search').value;
             if(!q) return;
             const grid = document.getElementById('music-grid');
             grid.innerHTML = '<div style="color:white;">Searching...</div>';
-            
             try {
                 const res = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(q)}&entity=song&limit=18`);
                 const data = await res.json();
                 grid.innerHTML = '';
-                
                 data.results.forEach(i => {
                     const div = document.createElement('div');
                     div.className = 'music-card';
@@ -257,7 +255,6 @@
             } catch(e) { grid.innerHTML = '<div style="color:red;">API Blocked.</div>'; }
         }
 
-        // AI Chat
         async function sendAI() {
             const input = document.getElementById('ai-input').value;
             if(!input) return;
@@ -265,7 +262,6 @@
             chat.innerHTML += `<div class="msg user">${input}</div>`;
             document.getElementById('ai-input').value = '';
             chat.scrollTop = chat.scrollHeight;
-            
             try {
                 const res = await fetch(`https://text.pollinations.ai/${encodeURIComponent(input)}`);
                 const text = await res.text();
