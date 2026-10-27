@@ -6,29 +6,44 @@
     <title>GhostOS</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; user-select: none; }
         
+        /* Background */
         body { background: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2000&auto=format&fit=crop') no-repeat center center fixed; background-size: cover; height: 100vh; overflow: hidden; display: flex; flex-direction: column; transition: background 0.5s; }
         
         /* Top Bar */
-        .top-bar { height: 30px; background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); display: flex; justify-content: space-between; align-items: center; padding: 0 15px; color: white; font-size: 13px; font-weight: 600; z-index: 1000; }
+        .top-bar { height: 35px; background: rgba(0,0,0,0.5); backdrop-filter: blur(15px); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; color: white; font-size: 13px; font-weight: 600; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .top-left { display: flex; gap: 15px; align-items: center; }
+        .top-right { display: flex; gap: 15px; align-items: center; }
+        .search-bar { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 15px; padding: 4px 12px; display: flex; align-items: center; gap: 8px; width: 200px; }
+        .search-bar input { background: transparent; border: none; color: white; outline: none; font-size: 12px; width: 100%; }
+        .icon-btn { cursor: pointer; transition: 0.2s; } .icon-btn:hover { color: #a1a1aa; }
         
-        /* Desktop Icons */
-        .desktop { flex: 1; position: relative; padding: 20px; display: flex; flex-direction: column; gap: 20px; align-items: flex-start; flex-wrap: wrap; height: calc(100vh - 120px); align-content: flex-start;}
-        .icon { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 80px; cursor: pointer; padding: 10px; border-radius: 8px; transition: 0.2s; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
-        .icon:hover { background: rgba(255,255,255,0.2); }
-        .icon i { font-size: 40px; margin-bottom: 8px; }
-        .icon span { font-size: 12px; font-weight: 600; text-align: center; }
+        /* Desktop Grid */
+        .desktop { flex: 1; position: relative; padding: 30px; display: grid; grid-template-columns: repeat(auto-fill, 90px); grid-auto-rows: 100px; gap: 20px; align-content: flex-start; }
+        .app-icon { display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: 0.2s; color: white; }
+        .app-icon:hover .icon-box { transform: scale(1.05); }
+        .icon-box { width: 65px; height: 65px; border-radius: 16px; display: flex; justify-content: center; align-items: center; font-size: 30px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); margin-bottom: 8px; transition: 0.2s; }
+        .app-icon span { font-size: 13px; font-weight: 500; text-shadow: 0 1px 3px rgba(0,0,0,0.8); text-align: center; }
         
+        /* Icon Colors */
+        .bg-tiktok { background: #000; border: 1px solid #25f4ee; color: white; }
+        .bg-youtube { background: #ff0000; color: white; }
+        .bg-movies { background: #ff9900; color: white; }
+        .bg-music { background: #1db954; color: white; }
+        .bg-search { background: #0078D7; color: white; }
+        .bg-ai { background: #8b5cf6; color: white; }
+        .bg-settings { background: #3f3f46; color: white; }
+
         /* Windows */
-        .window { position: absolute; top: 5%; left: 10%; width: 80%; height: 85%; background: rgba(20, 20, 25, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; display: none; flex-direction: column; box-shadow: 0 20px 50px rgba(0,0,0,0.5); z-index: 100; overflow: hidden; }
-        .window.active { display: flex; }
-        .window-header { height: 40px; background: rgba(0,0,0,0.5); display: flex; justify-content: space-between; align-items: center; padding: 0 15px; color: white; font-weight: bold; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .window { position: absolute; top: 10%; left: 15%; width: 70%; height: 75%; background: rgba(20, 20, 25, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; display: none; flex-direction: column; box-shadow: 0 20px 50px rgba(0,0,0,0.5); z-index: 100; overflow: hidden; }
+        .window.active { display: flex; animation: openWin 0.2s ease-out; }
+        @keyframes openWin { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        .window-header { height: 40px; background: rgba(0,0,0,0.5); display: flex; justify-content: space-between; align-items: center; padding: 0 15px; color: white; font-weight: 600; border-bottom: 1px solid rgba(255,255,255,0.1); }
         .window-controls { display: flex; gap: 10px; }
-        .win-btn { width: 15px; height: 15px; border-radius: 50%; cursor: pointer; border: none; display: flex; justify-content: center; align-items: center; }
-        .btn-red { background: #ff5f56; }
-        .btn-green { background: #27c93f; }
+        .win-btn { width: 14px; height: 14px; border-radius: 50%; cursor: pointer; border: none; }
+        .btn-red { background: #ff5f56; } .btn-green { background: #27c93f; }
         .window-content { flex: 1; background: #000; position: relative; }
         .window-content iframe { width: 100%; height: 100%; border: none; }
 
@@ -44,106 +59,130 @@
         .music-card h4 { font-size: 14px; color: white; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .music-card p { font-size: 12px; color: #b3b3b3; }
 
-        /* Settings UI */
+        /* AI Chat */
+        .ai-app { display: flex; flex-direction: column; height: 100%; background: #121212; padding: 20px; }
+        .ai-messages { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; }
+        .msg { padding: 12px 18px; border-radius: 12px; max-width: 80%; font-size: 14px; line-height: 1.5; }
+        .msg.user { background: #0078D7; color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
+        .msg.bot { background: #2a2a2a; color: white; align-self: flex-start; border-bottom-left-radius: 2px; }
+        .ai-input { display: flex; gap: 10px; }
+        .ai-input input { flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #333; background: #000; color: white; outline: none; }
+        .ai-input button { padding: 12px 20px; border-radius: 8px; border: none; background: #8b5cf6; color: white; font-weight: bold; cursor: pointer; }
+
+        /* Settings */
         .settings-app { padding: 30px; background: #121212; height: 100%; color: white; }
         .settings-app h2 { margin-bottom: 20px; }
         .bg-options { display: flex; gap: 20px; flex-wrap: wrap; }
-        .bg-opt { width: 150px; height: 90px; border-radius: 8px; cursor: pointer; border: 2px solid transparent; background-size: cover; background-position: center; }
+        .bg-opt { width: 180px; height: 100px; border-radius: 8px; cursor: pointer; border: 2px solid transparent; background-size: cover; background-position: center; }
         .bg-opt:hover { border-color: white; }
 
-        /* Dock */
-        .dock { height: 70px; background: rgba(20,20,25,0.8); backdrop-filter: blur(20px); margin: 0 auto 15px auto; border-radius: 20px; display: flex; align-items: center; padding: 0 20px; gap: 15px; border: 1px solid rgba(255,255,255,0.1); z-index: 1000; }
-        .dock-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 24px; color: white; cursor: pointer; transition: 0.2s; }
-        .dock-icon:hover { transform: scale(1.2) translateY(-5px); }
-        .dock-icon.tiktok { background: #000; border: 1px solid #25f4ee; }
-        .dock-icon.youtube { background: #ff0000; }
-        .dock-icon.music { background: #1db954; }
-        .dock-icon.movies { background: #ff9900; }
-        .dock-icon.search { background: #0078D7; }
-        .dock-icon.settings { background: #555; }
+        /* Floating Dock */
+        .dock { height: 70px; background: rgba(30,30,35,0.7); backdrop-filter: blur(25px); margin: 0 auto 20px auto; border-radius: 24px; display: flex; align-items: center; padding: 0 25px; gap: 20px; border: 1px solid rgba(255,255,255,0.15); z-index: 1000; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .dock-icon { width: 50px; height: 50px; border-radius: 14px; display: flex; justify-content: center; align-items: center; font-size: 24px; color: white; cursor: pointer; transition: 0.2s; }
+        .dock-icon:hover { transform: scale(1.15) translateY(-8px); }
     </style>
 </head>
 <body>
 
+    <!-- Top Bar -->
     <div class="top-bar">
-        <div>👻 GhostOS</div>
-        <div id="clock">12:00 PM</div>
+        <div class="top-left">
+            <i class="fas fa-bars icon-btn"></i>
+            <span style="font-weight: 800;">GhostOS</span>
+            <div class="search-bar">
+                <i class="fas fa-search" style="font-size: 12px; color: #aaa;"></i>
+                <input type="text" placeholder="Search Ghost..." onclick="openApp('search')" readonly>
+            </div>
+        </div>
+        <div class="top-right">
+            <i class="fas fa-battery-three-quarters icon-btn" style="color: #27c93f;"></i>
+            <i class="fas fa-wifi icon-btn"></i>
+            <span id="clock">12:00 PM</span>
+            <span id="date">Tue, Oct 27</span>
+        </div>
     </div>
 
+    <!-- Desktop Grid -->
     <div class="desktop">
-        <div class="icon" onclick="openApp('search')"><i class="fas fa-search"></i><span>Search</span></div>
-        <div class="icon" onclick="openApp('tiktok')"><i class="fab fa-tiktok"></i><span>TikTok</span></div>
-        <div class="icon" onclick="openApp('youtube')"><i class="fab fa-youtube" style="color: #ff0000;"></i><span>YouTube</span></div>
-        <div class="icon" onclick="openApp('movies')"><i class="fas fa-film" style="color: #ff9900;"></i><span>Movies</span></div>
-        <div class="icon" onclick="openApp('music')"><i class="fas fa-music" style="color: #1db954;"></i><span>Music</span></div>
-        <div class="icon" onclick="openApp('settings')"><i class="fas fa-cog"></i><span>Settings</span></div>
-
-        <!-- Search Window -->
-        <div class="window" id="window-search">
-            <div class="window-header"><span>Ghost Search (No History)</span><button class="win-btn btn-red" onclick="closeApp('search')"></button></div>
-            <div class="window-content"><iframe src="https://lite.duckduckgo.com/lite/" allowfullscreen></iframe></div>
+        <div class="app-icon" onclick="openApp('tiktok')">
+            <div class="icon-box bg-tiktok"><i class="fab fa-tiktok"></i></div>
+            <span>TikTok</span>
+        </div>
+        <div class="app-icon" onclick="openApp('youtube')">
+            <div class="icon-box bg-youtube"><i class="fab fa-youtube"></i></div>
+            <span>YouTube</span>
+        </div>
+        <div class="app-icon" onclick="openApp('movies')">
+            <div class="icon-box bg-movies"><i class="fas fa-film"></i></div>
+            <span>Movies</span>
+        </div>
+        <div class="app-icon" onclick="openApp('music')">
+            <div class="icon-box bg-music"><i class="fas fa-music"></i></div>
+            <span>Music</span>
+        </div>
+        <div class="app-icon" onclick="openApp('search')">
+            <div class="icon-box bg-search"><i class="fas fa-search"></i></div>
+            <span>Ghost Search</span>
+        </div>
+        <div class="app-icon" onclick="openApp('ai')">
+            <div class="icon-box bg-ai"><i class="fas fa-robot"></i></div>
+            <span>AI Chat</span>
+        </div>
+        <div class="app-icon" onclick="openApp('settings')">
+            <div class="icon-box bg-settings"><i class="fas fa-cog"></i></div>
+            <span>Settings</span>
         </div>
 
-        <!-- YouTube Window (With Fullscreen) -->
-        <div class="window" id="window-youtube">
-            <div class="window-header">
-                <span>YouTube Pro</span>
-                <div class="window-controls">
-                    <button class="win-btn btn-green" onclick="fullscreen('youtube')"><i class="fas fa-expand" style="font-size:10px; color:black;"></i></button>
-                    <button class="win-btn btn-red" onclick="closeApp('youtube')"></button>
-                </div>
-            </div>
-            <div class="window-content">
-                <iframe id="iframe-youtube" src="https://inv.nadeko.net/" allow="autoplay; fullscreen"></iframe>
-            </div>
-        </div>
-
-        <!-- TikTok Window -->
+        <!-- Windows -->
         <div class="window" id="window-tiktok">
-            <div class="window-header">
-                <span>TikTok Proxied</span>
-                <button class="win-btn btn-red" onclick="closeApp('tiktok')"></button>
-            </div>
-            <div class="window-content">
-                <iframe src="https://corsproxy.io/?https://www.tiktok.com/embed" allow="autoplay; fullscreen"></iframe>
-            </div>
+            <div class="window-header"><span>TikTok</span><div class="window-controls"><button class="win-btn btn-red" onclick="closeApp('tiktok')"></button></div></div>
+            <div class="window-content"><iframe src="https://corsproxy.io/?https://www.tiktok.com/embed" allow="autoplay; fullscreen"></iframe></div>
         </div>
 
-        <!-- Movies Window -->
+        <div class="window" id="window-youtube">
+            <div class="window-header"><span>YouTube Pro</span><div class="window-controls"><button class="win-btn btn-green" onclick="fullscreen('youtube')"><i class="fas fa-expand" style="font-size:8px; color:black;"></i></button><button class="win-btn btn-red" onclick="closeApp('youtube')"></button></div></div>
+            <div class="window-content"><iframe id="iframe-youtube" src="https://inv.nadeko.net/" allow="autoplay; fullscreen"></iframe></div>
+        </div>
+
         <div class="window" id="window-movies">
-            <div class="window-header">
-                <span>Movies (MultiEmbed)</span>
-                <button class="win-btn btn-red" onclick="closeApp('movies')"></button>
-            </div>
-            <div class="window-content">
-                <iframe src="https://multiembed.mov/?video_id=299534&tmdb=1" allow="autoplay; fullscreen"></iframe>
-            </div>
+            <div class="window-header"><span>Movies</span><div class="window-controls"><button class="win-btn btn-red" onclick="closeApp('movies')"></button></div></div>
+            <div class="window-content"><iframe src="https://multiembed.mov/?video_id=299534&tmdb=1" allow="autoplay; fullscreen"></iframe></div>
         </div>
 
-        <!-- Music Window (Custom) -->
         <div class="window" id="window-music">
-            <div class="window-header">
-                <span>Spotify Pro</span>
-                <button class="win-btn btn-red" onclick="closeApp('music')"></button>
-            </div>
+            <div class="window-header"><span>Spotify Pro</span><div class="window-controls"><button class="win-btn btn-red" onclick="closeApp('music')"></button></div></div>
             <div class="window-content music-app">
                 <div class="music-header">
                     <input type="text" id="music-search" placeholder="Search songs, artists..." onkeypress="if(event.key === 'Enter') searchMusic()">
                     <button onclick="searchMusic()">Search</button>
                 </div>
                 <div class="music-grid" id="music-grid"></div>
-                <audio id="music-audio" controls style="width:100%; margin-top:20px; display:none;"></audio>
+                <audio id="music-audio" controls style="width:100%; margin-top:20px; display:none; background: #282828; border-radius: 8px;"></audio>
             </div>
         </div>
 
-        <!-- Settings Window -->
-        <div class="window" id="window-settings">
-            <div class="window-header">
-                <span>Settings</span>
-                <button class="win-btn btn-red" onclick="closeApp('settings')"></button>
+        <div class="window" id="window-search">
+            <div class="window-header"><span>Ghost Search (No History)</span><div class="window-controls"><button class="win-btn btn-red" onclick="closeApp('search')"></button></div></div>
+            <div class="window-content"><iframe src="https://lite.duckduckgo.com/lite/" allowfullscreen></iframe></div>
+        </div>
+
+        <div class="window" id="window-ai">
+            <div class="window-header"><span>Ghost AI</span><div class="window-controls"><button class="win-btn btn-red" onclick="closeApp('ai')"></button></div></div>
+            <div class="window-content ai-app">
+                <div class="ai-messages" id="ai-messages">
+                    <div class="msg bot">Hello! I am Ghost AI. Ask me anything.</div>
+                </div>
+                <div class="ai-input">
+                    <input type="text" id="ai-input" placeholder="Type a message..." onkeypress="if(event.key === 'Enter') sendAI()">
+                    <button onclick="sendAI()">Send</button>
+                </div>
             </div>
+        </div>
+
+        <div class="window" id="window-settings">
+            <div class="window-header"><span>Settings</span><div class="window-controls"><button class="win-btn btn-red" onclick="closeApp('settings')"></button></div></div>
             <div class="window-content settings-app">
-                <h2>Change Wallpaper</h2>
+                <h2>Wallpaper</h2>
                 <div class="bg-options">
                     <div class="bg-opt" style="background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=500');" onclick="setBG('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2000')"></div>
                     <div class="bg-opt" style="background-image: url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=500');" onclick="setBG('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2000')"></div>
@@ -154,21 +193,25 @@
 
     </div>
 
-    <!-- Dock -->
+    <!-- Floating Dock -->
     <div class="dock">
-        <div class="dock-icon search" onclick="openApp('search')"><i class="fas fa-search"></i></div>
-        <div class="dock-icon tiktok" onclick="openApp('tiktok')"><i class="fab fa-tiktok"></i></div>
-        <div class="dock-icon youtube" onclick="openApp('youtube')"><i class="fab fa-youtube"></i></div>
-        <div class="dock-icon movies" onclick="openApp('movies')"><i class="fas fa-film"></i></div>
-        <div class="dock-icon music" onclick="openApp('music')"><i class="fas fa-music"></i></div>
-        <div class="dock-icon settings" onclick="openApp('settings')"><i class="fas fa-cog"></i></div>
+        <div class="dock-icon bg-tiktok" onclick="openApp('tiktok')"><i class="fab fa-tiktok"></i></div>
+        <div class="dock-icon bg-youtube" onclick="openApp('youtube')"><i class="fab fa-youtube"></i></div>
+        <div class="dock-icon bg-music" onclick="openApp('music')"><i class="fas fa-music"></i></div>
+        <div class="dock-icon bg-search" onclick="openApp('search')"><i class="fas fa-search"></i></div>
+        <div class="dock-icon bg-ai" onclick="openApp('ai')"><i class="fas fa-robot"></i></div>
+        <div class="dock-icon bg-settings" onclick="openApp('settings')"><i class="fas fa-cog"></i></div>
     </div>
 
     <script>
+        // Clock
         setInterval(() => {
-            document.getElementById('clock').innerText = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            const now = new Date();
+            document.getElementById('clock').innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            document.getElementById('date').innerText = now.toLocaleDateString([], {weekday: 'short', month: 'short', day: 'numeric'});
         }, 1000);
 
+        // Window Management
         function openApp(appName) {
             document.querySelectorAll('.window').forEach(w => w.classList.remove('active'));
             document.getElementById(`window-${appName}`).classList.add('active');
@@ -179,17 +222,15 @@
             if(appName === 'music') document.getElementById('music-audio').pause();
         }
 
-        // Fullscreen Function for the Green Button
         function fullscreen(appName) {
             const iframe = document.getElementById(`iframe-${appName}`);
             if (iframe.requestFullscreen) { iframe.requestFullscreen(); } 
             else if (iframe.webkitRequestFullscreen) { iframe.webkitRequestFullscreen(); }
         }
 
-        // Change Background
         function setBG(url) { document.body.style.backgroundImage = `url('${url}')`; }
 
-        // Custom Music Logic
+        // Music
         async function searchMusic() {
             const q = document.getElementById('music-search').value;
             if(!q) return;
@@ -204,11 +245,7 @@
                 data.results.forEach(i => {
                     const div = document.createElement('div');
                     div.className = 'music-card';
-                    div.innerHTML = `
-                        <img src="${i.artworkUrl100.replace('100x100', '300x300')}">
-                        <h4>${i.trackName}</h4>
-                        <p>${i.artistName}</p>
-                    `;
+                    div.innerHTML = `<img src="${i.artworkUrl100.replace('100x100', '300x300')}"><h4>${i.trackName}</h4><p>${i.artistName}</p>`;
                     div.onclick = () => {
                         const audio = document.getElementById('music-audio');
                         audio.src = i.previewUrl;
@@ -218,6 +255,23 @@
                     grid.appendChild(div);
                 });
             } catch(e) { grid.innerHTML = '<div style="color:red;">API Blocked.</div>'; }
+        }
+
+        // AI Chat
+        async function sendAI() {
+            const input = document.getElementById('ai-input').value;
+            if(!input) return;
+            const chat = document.getElementById('ai-messages');
+            chat.innerHTML += `<div class="msg user">${input}</div>`;
+            document.getElementById('ai-input').value = '';
+            chat.scrollTop = chat.scrollHeight;
+            
+            try {
+                const res = await fetch(`https://text.pollinations.ai/${encodeURIComponent(input)}`);
+                const text = await res.text();
+                chat.innerHTML += `<div class="msg bot">${text}</div>`;
+                chat.scrollTop = chat.scrollHeight;
+            } catch (e) { chat.innerHTML += `<div class="msg bot">Connection error.</div>`; }
         }
     </script>
 </body>
