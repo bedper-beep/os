@@ -17,7 +17,6 @@
         .top-right { display: flex; gap: 15px; align-items: center; }
         .search-bar { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 15px; padding: 4px 12px; display: flex; align-items: center; gap: 8px; width: 200px; }
         .search-bar input { background: transparent; border: none; color: white; outline: none; font-size: 12px; width: 100%; }
-        .icon-btn { cursor: pointer; transition: 0.2s; } .icon-btn:hover { color: #a1a1aa; }
         
         /* Desktop Grid */
         .desktop { flex: 1; position: relative; padding: 30px; display: grid; grid-template-columns: repeat(auto-fill, 90px); grid-auto-rows: 100px; gap: 20px; align-content: flex-start; }
@@ -79,9 +78,10 @@
         /* Settings */
         .settings-app { padding: 30px; background: #121212; height: 100%; color: white; }
         .settings-app h2 { margin-bottom: 20px; }
-        .bg-options { display: flex; gap: 20px; flex-wrap: wrap; }
+        .bg-options { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 30px; }
         .bg-opt { width: 180px; height: 100px; border-radius: 8px; cursor: pointer; border: 2px solid transparent; background-size: cover; background-position: center; }
         .bg-opt:hover { border-color: white; }
+        .upload-btn { background: #0078D7; color: white; padding: 12px 20px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
 
         /* Floating Dock */
         .dock { height: 70px; background: rgba(30,30,35,0.7); backdrop-filter: blur(25px); margin: 0 auto 20px auto; border-radius: 24px; display: flex; align-items: center; padding: 0 25px; gap: 20px; border: 1px solid rgba(255,255,255,0.15); z-index: 1000; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
@@ -118,24 +118,25 @@
         <div class="app-icon" onclick="openApp('ai')"><div class="icon-box bg-ai"><i class="fas fa-robot"></i></div><span>AI Chat</span></div>
         <div class="app-icon" onclick="openApp('settings')"><div class="icon-box bg-settings"><i class="fas fa-cog"></i></div><span>Settings</span></div>
 
-        <!-- Windows -->
+        <!-- Windows with Green Fullscreen Button for ALL -->
         <div class="window" id="window-tiktok">
-            <div class="window-header"><span>TikTok</span><div class="window-controls"><button class="win-btn btn-red" onclick="closeApp('tiktok')"></button></div></div>
-            <div class="window-content"><iframe src="https://www.tiktok.com/embed" allow="autoplay; fullscreen"></iframe></div>
+            <div class="window-header"><span>TikTok</span><div class="window-controls"><button class="win-btn btn-green" onclick="fullscreen('tiktok')"></button><button class="win-btn btn-red" onclick="closeApp('tiktok')"></button></div></div>
+            <div class="window-content"><iframe id="iframe-tiktok" src="https://www.tiktok.com/embed" allow="autoplay; fullscreen"></iframe></div>
         </div>
 
         <div class="window" id="window-youtube">
-            <div class="window-header"><span>YouTube Pro</span><div class="window-controls"><button class="win-btn btn-green" onclick="fullscreen('youtube')"><i class="fas fa-expand" style="font-size:8px; color:black;"></i></button><button class="win-btn btn-red" onclick="closeApp('youtube')"></button></div></div>
-            <div class="window-content"><iframe id="iframe-youtube" src="https://piped.video/" allow="autoplay; fullscreen"></iframe></div>
+            <div class="window-header"><span>YouTube</span><div class="window-controls"><button class="win-btn btn-green" onclick="fullscreen('youtube')"></button><button class="win-btn btn-red" onclick="closeApp('youtube')"></button></div></div>
+            <!-- Swapped to an unblocked stealth site -->
+            <div class="window-content"><iframe id="iframe-youtube" src="https://invidious.privacyredirect.com/" allow="autoplay; fullscreen"></iframe></div>
         </div>
 
         <div class="window" id="window-movies">
-            <div class="window-header"><span>Movies</span><div class="window-controls"><button class="win-btn btn-red" onclick="closeApp('movies')"></button></div></div>
-            <div class="window-content"><iframe src="https://vidsrc.to/embed/movie/299534" allow="autoplay; fullscreen"></iframe></div>
+            <div class="window-header"><span>Movies</span><div class="window-controls"><button class="win-btn btn-green" onclick="fullscreen('movies')"></button><button class="win-btn btn-red" onclick="closeApp('movies')"></button></div></div>
+            <div class="window-content"><iframe id="iframe-movies" src="https://vidsrc.xyz/embed/movie/299534" allow="autoplay; fullscreen"></iframe></div>
         </div>
 
         <div class="window" id="window-music">
-            <div class="window-header"><span>Spotify Pro</span><div class="window-controls"><button class="win-btn btn-red" onclick="closeApp('music')"></button></div></div>
+            <div class="window-header"><span>Music</span><div class="window-controls"><button class="win-btn btn-green" onclick="fullscreen('music')"></button><button class="win-btn btn-red" onclick="closeApp('music')"></button></div></div>
             <div class="window-content music-app">
                 <div class="music-header"><input type="text" id="music-search" placeholder="Search songs..." onkeypress="if(event.key === 'Enter') searchMusic()"><button onclick="searchMusic()">Search</button></div>
                 <div class="music-grid" id="music-grid"></div>
@@ -143,9 +144,8 @@
             </div>
         </div>
 
-        <!-- Games App -->
         <div class="window" id="window-games">
-            <div class="window-header"><span>Games</span><div class="window-controls"><button class="win-btn btn-red" onclick="closeApp('games')"></button></div></div>
+            <div class="window-header"><span>Games</span><div class="window-controls"><button class="win-btn btn-green" onclick="fullscreen('games')"></button><button class="win-btn btn-red" onclick="closeApp('games')"></button></div></div>
             <div class="window-content games-app">
                 <div class="games-grid">
                     <div class="game-card" onclick="playGame('https://www.crazygames.com/embed/retro-bowl')"><img src="https://imgs.crazygames.com/retro-bowl_16x9/20220106142828/retro-bowl_16x9-cover"><p>Retro Bowl</p></div>
@@ -157,12 +157,12 @@
         </div>
 
         <div class="window" id="window-search">
-            <div class="window-header"><span>Ghost Search (No History)</span><div class="window-controls"><button class="win-btn btn-red" onclick="closeApp('search')"></button></div></div>
-            <div class="window-content"><iframe src="https://search.marginalia.nu/" allowfullscreen></iframe></div>
+            <div class="window-header"><span>Ghost Search</span><div class="window-controls"><button class="win-btn btn-green" onclick="fullscreen('search')"></button><button class="win-btn btn-red" onclick="closeApp('search')"></button></div></div>
+            <div class="window-content"><iframe id="iframe-search" src="https://search.marginalia.nu/" allowfullscreen></iframe></div>
         </div>
 
         <div class="window" id="window-ai">
-            <div class="window-header"><span>Ghost AI</span><div class="window-controls"><button class="win-btn btn-red" onclick="closeApp('ai')"></button></div></div>
+            <div class="window-header"><span>Ghost AI</span><div class="window-controls"><button class="win-btn btn-green" onclick="fullscreen('ai')"></button><button class="win-btn btn-red" onclick="closeApp('ai')"></button></div></div>
             <div class="window-content ai-app">
                 <div class="ai-messages" id="ai-messages"><div class="msg bot">Hello! I am Ghost AI.</div></div>
                 <div class="ai-input"><input type="text" id="ai-input" placeholder="Type a message..." onkeypress="if(event.key === 'Enter') sendAI()"><button onclick="sendAI()">Send</button></div>
@@ -170,7 +170,7 @@
         </div>
 
         <div class="window" id="window-settings">
-            <div class="window-header"><span>Settings</span><div class="window-controls"><button class="win-btn btn-red" onclick="closeApp('settings')"></button></div></div>
+            <div class="window-header"><span>Settings</span><div class="window-controls"><button class="win-btn btn-green" onclick="fullscreen('settings')"></button><button class="win-btn btn-red" onclick="closeApp('settings')"></button></div></div>
             <div class="window-content settings-app">
                 <h2>Wallpaper</h2>
                 <div class="bg-options">
@@ -178,12 +178,14 @@
                     <div class="bg-opt" style="background-image: url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=500');" onclick="setBG('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2000')"></div>
                     <div class="bg-opt" style="background-image: url('https://images.unsplash.com/photo-1533130061792-64b345e4a833?q=80&w=500');" onclick="setBG('https://images.unsplash.com/photo-1533130061792-64b345e4a833?q=80&w=2000')"></div>
                 </div>
+                <h2>Custom Wallpaper</h2>
+                <p style="margin-bottom: 10px; color: #aaa; font-size: 13px;">Upload an image from your Chromebook.</p>
+                <input type="file" id="bg-upload" class="upload-btn" accept="image/*" onchange="uploadBG(event)">
             </div>
         </div>
 
-        <!-- Game Player Modal (Overrides window) -->
         <div class="window" id="window-game-player" style="width: 80%; height: 80%; left: 10%; top: 10%;">
-            <div class="window-header"><span id="game-title">Game</span><div class="window-controls"><button class="win-btn btn-red" onclick="closeApp('game-player')"></button></div></div>
+            <div class="window-header"><span id="game-title">Game</span><div class="window-controls"><button class="win-btn btn-green" onclick="fullscreen('game-iframe')"></button><button class="win-btn btn-red" onclick="closeApp('game-player')"></button></div></div>
             <div class="window-content"><iframe id="game-iframe" src="" allowfullscreen></iframe></div>
         </div>
 
@@ -217,13 +219,23 @@
             if(appName === 'game-player') document.getElementById('game-iframe').src = '';
         }
 
-        function fullscreen(appName) {
-            const iframe = document.getElementById(`iframe-${appName}`);
-            if (iframe.requestFullscreen) { iframe.requestFullscreen(); } 
-            else if (iframe.webkitRequestFullscreen) { iframe.webkitRequestFullscreen(); }
+        // FULLSCREEN FOR ALL APPS
+        function fullscreen(id) {
+            const element = document.getElementById(`iframe-${id}`) || document.getElementById(`window-${id}`);
+            if (element.requestFullscreen) { element.requestFullscreen(); } 
+            else if (element.webkitRequestFullscreen) { element.webkitRequestFullscreen(); }
         }
 
         function setBG(url) { document.body.style.backgroundImage = `url('${url}')`; }
+
+        function uploadBG(event) {
+            const file = event.target.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = (e) => { setBG(e.target.result); };
+                reader.readAsDataURL(file);
+            }
+        }
 
         function playGame(url) {
             document.getElementById('game-iframe').src = url;
