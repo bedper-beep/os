@@ -15,8 +15,6 @@
         .top-bar { height: 35px; background: rgba(0,0,0,0.6); backdrop-filter: blur(15px); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; color: white; font-size: 13px; font-weight: 600; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.1); }
         .top-left { display: flex; gap: 15px; align-items: center; }
         .top-right { display: flex; gap: 15px; align-items: center; }
-        .search-bar { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 15px; padding: 4px 12px; display: flex; align-items: center; gap: 8px; width: 200px; }
-        .search-bar input { background: transparent; border: none; color: white; outline: none; font-size: 12px; width: 100%; }
         
         /* Desktop Grid */
         .desktop { flex: 1; position: relative; padding: 30px; display: grid; grid-template-columns: repeat(auto-fill, 90px); grid-auto-rows: 100px; gap: 20px; align-content: flex-start; }
@@ -42,16 +40,25 @@
         .window-controls { display: flex; gap: 10px; }
         .win-btn { width: 14px; height: 14px; border-radius: 50%; cursor: pointer; border: none; }
         .btn-red { background: #ff5f56; } .btn-green { background: #27c93f; }
-        .window-content { flex: 1; background: #000; position: relative; }
+        .window-content { flex: 1; background: #000; position: relative; display: flex; flex-direction: column; }
         .window-content iframe { width: 100%; height: 100%; border: none; }
 
-        /* Games App */
-        .games-app { padding: 20px; background: #121212; height: 100%; overflow-y: auto; }
-        .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; }
-        .game-card { background: #1f1f23; border: 1px solid #333; border-radius: 8px; overflow: hidden; cursor: pointer; text-align: center; }
-        .game-card:hover { border-color: #a970ff; }
-        .game-card img { width: 100%; height: 120px; object-fit: cover; }
-        .game-card p { padding: 10px; font-weight: bold; font-size: 14px; }
+        /* Custom YouTube / TikTok Search App */
+        .app-layout { display: flex; flex-direction: column; height: 100%; background: #0f0f0f; }
+        .app-search-bar { padding: 15px; background: #181818; display: flex; gap: 10px; border-bottom: 1px solid #333; }
+        .app-search-bar input { flex: 1; padding: 10px 20px; border-radius: 20px; border: 1px solid #333; background: #000; color: white; outline: none; }
+        .app-search-bar button { padding: 10px 20px; border-radius: 20px; border: none; background: #ff0000; color: white; font-weight: bold; cursor: pointer; }
+        
+        .video-grid { flex: 1; padding: 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; overflow-y: auto; }
+        .video-card { background: #1f1f1f; border-radius: 8px; overflow: hidden; cursor: pointer; transition: 0.2s; }
+        .video-card:hover { transform: scale(1.02); }
+        .video-card img { width: 100%; aspect-ratio: 16/9; object-fit: cover; }
+        .video-card h4 { padding: 10px; font-size: 14px; color: white; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        
+        .video-player-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: none; flex-direction: column; z-index: 10; }
+        .video-player-overlay.active { display: flex; }
+        .video-player-overlay iframe { flex: 1; width: 100%; border: none; }
+        .close-player { padding: 10px; background: #ff0000; color: white; text-align: center; font-weight: bold; cursor: pointer; }
 
         /* Music App */
         .music-app { display: flex; flex-direction: column; height: 100%; background: #121212; padding: 20px; overflow-y: auto; }
@@ -65,7 +72,7 @@
         .music-card h4 { font-size: 14px; color: white; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .music-card p { font-size: 12px; color: #b3b3b3; }
 
-        /* AI */
+        /* AI, Games, Settings (Same as before) */
         .ai-app { display: flex; flex-direction: column; height: 100%; background: #121212; padding: 20px; }
         .ai-messages { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; }
         .msg { padding: 12px 18px; border-radius: 12px; max-width: 80%; font-size: 14px; line-height: 1.5; }
@@ -74,14 +81,15 @@
         .ai-input { display: flex; gap: 10px; }
         .ai-input input { flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #333; background: #000; color: white; outline: none; }
         .ai-input button { padding: 12px 20px; border-radius: 8px; border: none; background: #8b5cf6; color: white; font-weight: bold; cursor: pointer; }
-
-        /* Settings */
         .settings-app { padding: 30px; background: #121212; height: 100%; color: white; }
-        .settings-app h2 { margin-bottom: 20px; }
         .bg-options { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 30px; }
         .bg-opt { width: 180px; height: 100px; border-radius: 8px; cursor: pointer; border: 2px solid transparent; background-size: cover; background-position: center; }
-        .bg-opt:hover { border-color: white; }
         .upload-btn { background: #0078D7; color: white; padding: 12px 20px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .games-app { padding: 20px; background: #121212; height: 100%; overflow-y: auto; }
+        .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; }
+        .game-card { background: #1f1f23; border: 1px solid #333; border-radius: 8px; overflow: hidden; cursor: pointer; text-align: center; }
+        .game-card img { width: 100%; height: 120px; object-fit: cover; }
+        .game-card p { padding: 10px; font-weight: bold; font-size: 14px; }
 
         /* Floating Dock */
         .dock { height: 70px; background: rgba(30,30,35,0.7); backdrop-filter: blur(25px); margin: 0 auto 20px auto; border-radius: 24px; display: flex; align-items: center; padding: 0 25px; gap: 20px; border: 1px solid rgba(255,255,255,0.15); z-index: 1000; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
@@ -95,16 +103,11 @@
         <div class="top-left">
             <i class="fas fa-bars icon-btn"></i>
             <span style="font-weight: 800;">GhostOS</span>
-            <div class="search-bar">
-                <i class="fas fa-search" style="font-size: 12px; color: #aaa;"></i>
-                <input type="text" placeholder="Search Ghost..." onclick="openApp('search')" readonly>
-            </div>
         </div>
         <div class="top-right">
             <i class="fas fa-battery-three-quarters icon-btn" style="color: #27c93f;"></i>
             <i class="fas fa-wifi icon-btn"></i>
             <span id="clock">12:00 PM</span>
-            <span id="date">Tue, Oct 27</span>
         </div>
     </div>
 
@@ -114,27 +117,48 @@
         <div class="app-icon" onclick="openApp('movies')"><div class="icon-box bg-movies"><i class="fas fa-film"></i></div><span>Movies</span></div>
         <div class="app-icon" onclick="openApp('music')"><div class="icon-box bg-music"><i class="fas fa-music"></i></div><span>Music</span></div>
         <div class="app-icon" onclick="openApp('games')"><div class="icon-box bg-games"><i class="fas fa-gamepad"></i></div><span>Games</span></div>
-        <div class="app-icon" onclick="openApp('search')"><div class="icon-box bg-search"><i class="fas fa-search"></i></div><span>Ghost Search</span></div>
         <div class="app-icon" onclick="openApp('ai')"><div class="icon-box bg-ai"><i class="fas fa-robot"></i></div><span>AI Chat</span></div>
         <div class="app-icon" onclick="openApp('settings')"><div class="icon-box bg-settings"><i class="fas fa-cog"></i></div><span>Settings</span></div>
 
-        <!-- Windows with Green Fullscreen Button for ALL -->
+        <!-- TikTok App (Custom) -->
         <div class="window" id="window-tiktok">
             <div class="window-header"><span>TikTok</span><div class="window-controls"><button class="win-btn btn-green" onclick="fullscreen('tiktok')"></button><button class="win-btn btn-red" onclick="closeApp('tiktok')"></button></div></div>
-            <div class="window-content"><iframe id="iframe-tiktok" src="https://www.tiktok.com/embed" allow="autoplay; fullscreen"></iframe></div>
+            <div class="window-content app-layout">
+                <div class="app-search-bar">
+                    <input type="text" id="tiktok-search" placeholder="Search user..." onkeypress="if(event.key === 'Enter') searchTikTok()">
+                    <button style="background:#25f4ee; color:black;" onclick="searchTikTok()">Search</button>
+                </div>
+                <div class="video-grid" id="tiktok-grid"></div>
+                <div class="video-player-overlay" id="tiktok-player">
+                    <div class="close-player" onclick="closeTikTokPlayer()">Close Video</div>
+                    <iframe id="tiktok-iframe" src="" allowfullscreen></iframe>
+                </div>
+            </div>
         </div>
 
+        <!-- YouTube App (Custom Search, Unblocked) -->
         <div class="window" id="window-youtube">
             <div class="window-header"><span>YouTube</span><div class="window-controls"><button class="win-btn btn-green" onclick="fullscreen('youtube')"></button><button class="win-btn btn-red" onclick="closeApp('youtube')"></button></div></div>
-            <!-- Swapped to an unblocked stealth site -->
-            <div class="window-content"><iframe id="iframe-youtube" src="https://invidious.privacyredirect.com/" allow="autoplay; fullscreen"></iframe></div>
+            <div class="window-content app-layout">
+                <div class="app-search-bar">
+                    <input type="text" id="youtube-search" placeholder="Search YouTube..." onkeypress="if(event.key === 'Enter') searchYouTube()">
+                    <button onclick="searchYouTube()">Search</button>
+                </div>
+                <div class="video-grid" id="youtube-grid"></div>
+                <div class="video-player-overlay" id="youtube-player">
+                    <div class="close-player" onclick="closeYouTubePlayer()">Close Video</div>
+                    <iframe id="youtube-iframe" src="" allowfullscreen></iframe>
+                </div>
+            </div>
         </div>
 
+        <!-- Movies App -->
         <div class="window" id="window-movies">
             <div class="window-header"><span>Movies</span><div class="window-controls"><button class="win-btn btn-green" onclick="fullscreen('movies')"></button><button class="win-btn btn-red" onclick="closeApp('movies')"></button></div></div>
-            <div class="window-content"><iframe id="iframe-movies" src="https://vidsrc.xyz/embed/movie/299534" allow="autoplay; fullscreen"></iframe></div>
+            <div class="window-content"><iframe id="iframe-movies" src="https://multiembed.mov/?video_id=155&tmdb=1" allow="autoplay; fullscreen"></iframe></div>
         </div>
 
+        <!-- Music App -->
         <div class="window" id="window-music">
             <div class="window-header"><span>Music</span><div class="window-controls"><button class="win-btn btn-green" onclick="fullscreen('music')"></button><button class="win-btn btn-red" onclick="closeApp('music')"></button></div></div>
             <div class="window-content music-app">
@@ -144,6 +168,7 @@
             </div>
         </div>
 
+        <!-- Games App -->
         <div class="window" id="window-games">
             <div class="window-header"><span>Games</span><div class="window-controls"><button class="win-btn btn-green" onclick="fullscreen('games')"></button><button class="win-btn btn-red" onclick="closeApp('games')"></button></div></div>
             <div class="window-content games-app">
@@ -151,16 +176,11 @@
                     <div class="game-card" onclick="playGame('https://www.crazygames.com/embed/retro-bowl')"><img src="https://imgs.crazygames.com/retro-bowl_16x9/20220106142828/retro-bowl_16x9-cover"><p>Retro Bowl</p></div>
                     <div class="game-card" onclick="playGame('https://www.crazygames.com/embed/slope')"><img src="https://imgs.crazygames.com/slope_16x9/20210804113951/slope_16x9-cover"><p>Slope</p></div>
                     <div class="game-card" onclick="playGame('https://www.crazygames.com/embed/tunnel-rush')"><img src="https://imgs.crazygames.com/tunnel-rush_16x9/20210212082734/tunnel-rush_16x9-cover"><p>Tunnel Rush</p></div>
-                    <div class="game-card" onclick="playGame('https://play2048.co/')"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/2048_logo.svg/1200px-2048_logo.svg.png" style="object-fit:contain; background:#faf8ef;"><p>2048</p></div>
                 </div>
             </div>
         </div>
 
-        <div class="window" id="window-search">
-            <div class="window-header"><span>Ghost Search</span><div class="window-controls"><button class="win-btn btn-green" onclick="fullscreen('search')"></button><button class="win-btn btn-red" onclick="closeApp('search')"></button></div></div>
-            <div class="window-content"><iframe id="iframe-search" src="https://search.marginalia.nu/" allowfullscreen></iframe></div>
-        </div>
-
+        <!-- AI Chat -->
         <div class="window" id="window-ai">
             <div class="window-header"><span>Ghost AI</span><div class="window-controls"><button class="win-btn btn-green" onclick="fullscreen('ai')"></button><button class="win-btn btn-red" onclick="closeApp('ai')"></button></div></div>
             <div class="window-content ai-app">
@@ -169,6 +189,7 @@
             </div>
         </div>
 
+        <!-- Settings -->
         <div class="window" id="window-settings">
             <div class="window-header"><span>Settings</span><div class="window-controls"><button class="win-btn btn-green" onclick="fullscreen('settings')"></button><button class="win-btn btn-red" onclick="closeApp('settings')"></button></div></div>
             <div class="window-content settings-app">
@@ -184,6 +205,7 @@
             </div>
         </div>
 
+        <!-- Game Player Modal -->
         <div class="window" id="window-game-player" style="width: 80%; height: 80%; left: 10%; top: 10%;">
             <div class="window-header"><span id="game-title">Game</span><div class="window-controls"><button class="win-btn btn-green" onclick="fullscreen('game-iframe')"></button><button class="win-btn btn-red" onclick="closeApp('game-player')"></button></div></div>
             <div class="window-content"><iframe id="game-iframe" src="" allowfullscreen></iframe></div>
@@ -196,17 +218,12 @@
         <div class="dock-icon bg-youtube" onclick="openApp('youtube')"><i class="fab fa-youtube"></i></div>
         <div class="dock-icon bg-music" onclick="openApp('music')"><i class="fas fa-music"></i></div>
         <div class="dock-icon bg-games" onclick="openApp('games')"><i class="fas fa-gamepad"></i></div>
-        <div class="dock-icon bg-search" onclick="openApp('search')"><i class="fas fa-search"></i></div>
         <div class="dock-icon bg-ai" onclick="openApp('ai')"><i class="fas fa-robot"></i></div>
         <div class="dock-icon bg-settings" onclick="openApp('settings')"><i class="fas fa-cog"></i></div>
     </div>
 
     <script>
-        setInterval(() => {
-            const now = new Date();
-            document.getElementById('clock').innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            document.getElementById('date').innerText = now.toLocaleDateString([], {weekday: 'short', month: 'short', day: 'numeric'});
-        }, 1000);
+        setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}); }, 1000);
 
         function openApp(appName) {
             document.querySelectorAll('.window').forEach(w => w.classList.remove('active'));
@@ -219,7 +236,6 @@
             if(appName === 'game-player') document.getElementById('game-iframe').src = '';
         }
 
-        // FULLSCREEN FOR ALL APPS
         function fullscreen(id) {
             const element = document.getElementById(`iframe-${id}`) || document.getElementById(`window-${id}`);
             if (element.requestFullscreen) { element.requestFullscreen(); } 
@@ -243,6 +259,66 @@
             openApp('game-player');
         }
 
+        // --- TIKTOK APP (API) ---
+        async function searchTikTok() {
+            const q = document.getElementById('tiktok-search').value;
+            if(!q) return;
+            const grid = document.getElementById('tiktok-grid');
+            grid.innerHTML = '<div style="color:white;">Searching...</div>';
+            try {
+                const res = await fetch(`https://www.tikwm.com/api/user/posts?unique_id=${q}&count=12`);
+                const data = await res.json();
+                grid.innerHTML = '';
+                if(data.code === 0 && data.data && data.data.videos) {
+                    data.data.videos.forEach(v => {
+                        const div = document.createElement('div');
+                        div.className = 'video-card';
+                        div.innerHTML = `<img src="${v.cover}"><h4>@${v.author.unique_id}</h4>`;
+                        div.onclick = () => {
+                            document.getElementById('tiktok-iframe').src = `https://www.tiktok.com/embed/v2/${v.id}`;
+                            document.getElementById('tiktok-player').classList.add('active');
+                        };
+                        grid.appendChild(div);
+                    });
+                } else {
+                    grid.innerHTML = '<div style="color:white;">User not found.</div>';
+                }
+            } catch(e) { grid.innerHTML = '<div style="color:red;">API Blocked.</div>'; }
+        }
+        function closeTikTokPlayer() {
+            document.getElementById('tiktok-player').classList.remove('active');
+            document.getElementById('tiktok-iframe').src = "";
+        }
+
+        // --- YOUTUBE APP (API) ---
+        async function searchYouTube() {
+            const q = document.getElementById('youtube-search').value;
+            if(!q) return;
+            const grid = document.getElementById('youtube-grid');
+            grid.innerHTML = '<div style="color:white;">Searching...</div>';
+            try {
+                const res = await fetch(`https://inv.nadeko.net/api/v1/search?q=${q}&type=video`);
+                const data = await res.json();
+                grid.innerHTML = '';
+                data.slice(0, 12).forEach(v => {
+                    if(!v.videoId) return;
+                    const div = document.createElement('div');
+                    div.className = 'video-card';
+                    div.innerHTML = `<img src="${v.videoThumbnails[0].url}"><h4>${v.title}</h4>`;
+                    div.onclick = () => {
+                        document.getElementById('youtube-iframe').src = `https://www.youtube.com/embed/${v.videoId}?autoplay=1`;
+                        document.getElementById('youtube-player').classList.add('active');
+                    };
+                    grid.appendChild(div);
+                });
+            } catch(e) { grid.innerHTML = '<div style="color:red;">API Blocked.</div>'; }
+        }
+        function closeYouTubePlayer() {
+            document.getElementById('youtube-player').classList.remove('active');
+            document.getElementById('youtube-iframe').src = "";
+        }
+
+        // --- MUSIC APP ---
         async function searchMusic() {
             const q = document.getElementById('music-search').value;
             if(!q) return;
@@ -267,6 +343,7 @@
             } catch(e) { grid.innerHTML = '<div style="color:red;">API Blocked.</div>'; }
         }
 
+        // --- AI CHAT ---
         async function sendAI() {
             const input = document.getElementById('ai-input').value;
             if(!input) return;
