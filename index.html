@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus OS - Custom Portal</title>
+    <title>N7x OS - Custom Portal</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
 
@@ -15,33 +15,43 @@
             user-select: none;
         }
 
+        :root {
+            --bg-color: #0a0a0f;
+            --sidebar-bg: rgba(15, 15, 20, 0.85);
+            --accent: #ffd700; /* Gold accent from your screenshot */
+            --text-main: #ffffff;
+            --text-sub: #8b8b9f;
+            --card-bg: rgba(25, 25, 35, 0.6);
+        }
+
         body {
             height: 100vh;
             width: 100vw;
             overflow: hidden;
-            background-color: #0a0a0f;
-            background-image: url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2070&auto=format&fit=crop'); /* Cinematic city background */
+            background-color: var(--bg-color);
+            /* Your cinematic bokeh background */
+            background-image: url('https://images.unsplash.com/photo-1579546929518-9e396f3cc809?q=80&w=2070&auto=format&fit=crop');
             background-size: cover;
             background-position: center;
-            color: white;
+            color: var(--text-main);
             display: flex;
         }
 
-        /* Blur overlay for the background */
+        /* Dark blur overlay so text is readable */
         .bg-overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(10, 10, 15, 0.4);
-            backdrop-filter: blur(8px);
+            background: rgba(10, 10, 15, 0.65);
+            backdrop-filter: blur(12px);
             z-index: 1;
         }
 
-        /* SIDEBAR */
+        /* LEFT SIDEBAR */
         .sidebar {
             width: 80px;
             height: 100%;
-            background: rgba(15, 15, 20, 0.6);
-            backdrop-filter: blur(15px);
+            background: var(--sidebar-bg);
+            backdrop-filter: blur(20px);
             border-right: 1px solid rgba(255,255,255,0.05);
             display: flex;
             flex-direction: column;
@@ -51,106 +61,203 @@
         }
 
         .sidebar-logo {
-            font-size: 24px;
-            margin-bottom: 40px;
-            color: #ffd700;
+            font-size: 28px;
+            margin-bottom: 30px;
+            color: var(--accent);
             cursor: pointer;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
         }
 
         .nav-item {
-            width: 50px;
-            height: 50px;
+            width: 55px;
+            height: 55px;
             border-radius: 12px;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 24px;
-            margin-bottom: 15px;
+            font-size: 22px;
+            margin-bottom: 10px;
             cursor: pointer;
-            transition: 0.2s;
-            color: #8b8b9f;
+            transition: all 0.3s ease;
+            color: var(--text-sub);
         }
 
         .nav-item:hover, .nav-item.active {
             background: rgba(255, 215, 0, 0.15);
-            color: #ffd700;
+            color: var(--accent);
+            transform: scale(1.05);
         }
 
         .sidebar-bottom {
             margin-top: auto;
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            color: #8b8b9f;
+            gap: 10px;
         }
 
-        /* MAIN CONTENT */
+        /* MAIN CONTENT AREA */
         .main-content {
             flex: 1;
             height: 100%;
+            position: relative;
+            z-index: 10;
+            overflow-y: auto;
+        }
+
+        /* Page Containers (For Slide-up animations) */
+        .page {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            padding: 40px;
+            display: none;
+            flex-direction: column;
+            animation: slideUpFade 0.4s ease forwards;
+        }
+
+        .page.active {
+            display: flex;
+        }
+
+        @keyframes slideUpFade {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Header Styles */
+        .page-header {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-subtitle {
+            color: var(--text-sub);
+            font-size: 14px;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+        }
+
+        /* APP CARDS (Matching your "Apps" screenshot) */
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 15px;
+        }
+
+        .app-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 20px 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.2s ease;
+        }
+
+        .app-card:hover {
+            background: rgba(40, 40, 50, 0.8);
+            border-color: var(--accent);
+            transform: translateY(-3px);
+        }
+
+        .app-icon {
+            font-size: 24px;
+        }
+
+        .app-name {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* AI SECTION (Matching your AI screenshot) */
+        .ai-container {
             display: flex;
             flex-direction: column;
+            align-items: center;
             justify-content: center;
-            align-items: center;
-            z-index: 10;
-            position: relative;
+            height: 100%;
+            text-align: center;
+            animation: slideUpFade 0.5s ease forwards;
         }
 
-        /* Top Right Info */
-        .top-info {
-            position: absolute;
-            top: 20px;
-            right: 30px;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            font-size: 14px;
-            color: #ccc;
-            font-weight: 500;
-        }
-
-        /* Center Logo */
-        .center-logo {
-            font-size: 60px;
+        .ai-greeting {
+            font-size: 42px;
             font-weight: 700;
-            color: #fff;
-            margin-bottom: 30px;
+            margin-bottom: 10px;
+        }
+
+        .ai-sub {
+            color: var(--text-sub);
+            margin-bottom: 40px;
+        }
+
+        .ai-input-box {
+            width: 600px;
+            max-width: 90%;
+            background: rgba(25, 25, 35, 0.8);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 15px 20px;
             display: flex;
             align-items: center;
             gap: 10px;
-            text-shadow: 0 4px 20px rgba(0,0,0,0.8);
-        }
-        
-        .center-logo span {
-            color: #ffd700; /* Gold accent */
+            backdrop-filter: blur(10px);
         }
 
-        /* Search Bar */
-        .search-container {
-            width: 600px;
-            max-width: 80vw;
+        .ai-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .ai-send {
+            background: var(--accent);
+            color: black;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Search Bar on Home */
+        .home-search-container {
+            width: 100%;
+            max-width: 700px;
             position: relative;
-            margin-bottom: 50px;
+            margin-bottom: 40px;
         }
 
-        .search-bar {
+        .home-search {
             width: 100%;
             padding: 18px 25px 18px 50px;
             border-radius: 30px;
-            border: 1px solid rgba(255, 215, 0, 0.3);
+            border: 1px solid rgba(255, 215, 0, 0.2);
             background: rgba(20, 20, 25, 0.7);
             backdrop-filter: blur(10px);
             color: white;
             font-size: 16px;
             outline: none;
             transition: 0.3s;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        .search-bar:focus {
-            border-color: #ffd700;
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+        .home-search:focus {
+            border-color: var(--accent);
             background: rgba(20, 20, 25, 0.9);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.15);
         }
 
         .search-icon {
@@ -158,42 +265,9 @@
             left: 20px;
             top: 50%;
             transform: translateY(-50%);
-            color: #ffd700;
+            color: var(--accent);
             font-size: 18px;
         }
-
-        /* App Grid (Inside Main) */
-        .app-grid {
-            display: flex;
-            gap: 20px;
-            max-width: 80vw;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .app-card {
-            width: 100px;
-            height: 100px;
-            background: rgba(20, 20, 25, 0.7);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.05);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .app-card:hover {
-            transform: translateY(-5px);
-            border-color: #ffd700;
-            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.1);
-        }
-
-        .app-card-icon { font-size: 30px; margin-bottom: 5px; }
-        .app-card-name { font-size: 12px; color: #ccc; }
 
         /* Iframe Overlay */
         #iframe-overlay {
@@ -209,7 +283,7 @@
 
         .overlay-header {
             padding: 15px 20px;
-            background: rgba(20, 20, 25, 0.9);
+            background: rgba(20, 20, 25, 0.95);
             display: flex;
             justify-content: space-between;
             border-bottom: 1px solid rgba(255,215,0,0.2);
@@ -223,165 +297,137 @@
 
         #app-frame { flex: 1; width: 100%; border: none; background: #fff; }
 
-        /* Settings Panel */
-        #settings-panel {
-            position: absolute;
-            top: 20px; right: -350px;
-            width: 300px; height: 80vh;
-            background: rgba(15, 15, 20, 0.95);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,215,0,0.2);
-            border-radius: 20px 0 0 20px;
-            z-index: 500;
-            transition: right 0.3s ease;
-            padding: 20px;
-            color: white;
-        }
-
-        #settings-panel.active { right: 0; }
-        #settings-panel h3 { color: #ffd700; margin-bottom: 20px; }
-        .setting-row { margin-bottom: 20px; }
-        .setting-row label { display: block; font-size: 12px; color: #888; margin-bottom: 5px;}
-        .setting-row input[type="text"] {
-            width: 100%; padding: 10px; border-radius: 8px;
-            background: #1c1c24; border: 1px solid #333; color: white;
-        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
     </style>
 </head>
 <body>
 
     <div class="bg-overlay"></div>
 
-    <!-- LEFT SIDEBAR -->
+    <!-- SIDEBAR -->
     <div class="sidebar">
-        <div class="sidebar-logo">☾</div>
+        <div class="sidebar-logo" onclick="switchPage('home')">☾</div>
         
-        <div class="nav-item active" title="Home">🏠</div>
-        <div class="nav-item" title="Games" onclick="showApps('games')">🎮</div>
-        <div class="nav-item" title="Music" onclick="showApps('music')">🎵</div>
-        <div class="nav-item" title="Movies" onclick="showApps('movies')">🍿</div>
-        <div class="nav-item" title="AI" onclick="showApps('ai')">✨</div>
-        <div class="nav-item" title="Apps" onclick="showApps('apps')">🧩</div>
+        <div class="nav-item active" onclick="switchPage('home', this)" title="Home">🏠</div>
+        <div class="nav-item" onclick="switchPage('studies', this)" title="Studies">📚</div>
+        <div class="nav-item" onclick="switchPage('apps', this)" title="Apps">🧩</div>
+        <div class="nav-item" onclick="switchPage('music', this)" title="Music">🎵</div>
+        <div class="nav-item" onclick="switchPage('movies', this)" title="Movies">🍿</div>
+        <div class="nav-item" onclick="switchPage('ai', this)" title="AI">✨</div>
         
         <div class="sidebar-bottom">
-            <div class="nav-item" onclick="toggleSettings()" title="Settings">⚙️</div>
-            <div class="nav-item" style="font-size: 16px; font-weight: bold;" title="User">👤</div>
+            <div class="nav-item" title="Discord">👾</div>
+            <div class="nav-item" title="Settings">⚙️</div>
+            <div class="nav-item" style="font-size: 16px; font-weight: bold; color: #fff;" title="Profile">K</div>
         </div>
     </div>
 
     <!-- MAIN CONTENT -->
     <div class="main-content">
-        <div class="top-info">
-            <span id="clock">00:00</span>
-            <span>⚙ Customize</span>
+        
+        <!-- HOME PAGE -->
+        <div id="home-page" class="page active" style="justify-content: center; align-items: center;">
+            <div style="font-size: 60px; font-weight: 700; margin-bottom: 20px; text-shadow: 0 5px 20px rgba(0,0,0,0.5);">N7x</div>
+            <div class="home-search-container">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" class="home-search" placeholder="Search or enter URL...">
+            </div>
+            <div style="color: var(--text-sub); font-size: 14px;">All systems operational. Welcome back, kingbluerx.</div>
         </div>
 
-        <div class="center-logo">
-            Nexus<span>OS</span>
+        <!-- APPS PAGE (Like your screenshot) -->
+        <div id="apps-page" class="page">
+            <div class="page-header">Apps <span style="font-size: 14px; color: var(--text-sub); cursor: pointer;">All Studies</span></div>
+            <div class="page-subtitle">Everything in N7x.</div>
+            
+            <div class="app-grid">
+                <div class="app-card" onclick="openApp('YouTube', 'https://youtube.com')"><span class="app-icon">▶️</span><span class="app-name">N7xTube</span></div>
+                <div class="app-card" onclick="openApp('TikTok', 'https://tiktok.com')"><span class="app-icon">🎵</span><span class="app-name">TikTok</span></div>
+                <div class="app-card" onclick="openApp('Movies', 'https://netflix.com')"><span class="app-icon">🎬</span><span class="app-name">Movi3s</span></div>
+                <div class="app-card" onclick="openApp('Chat', 'https://chatgpt.com')"><span class="app-icon">🤖</span><span class="app-name">Duck.AI</span></div>
+                <div class="app-card" onclick="openApp('Code', 'https://codesandbox.io')"><span class="app-icon">💻</span><span class="app-name">Cod3 Sandbox</span></div>
+            </div>
         </div>
 
-        <div class="search-container">
-            <span class="search-icon">🔍</span>
-            <input type="text" id="searchInput" class="search-bar" placeholder="Search or enter URL...">
+        <!-- AI PAGE (Like your AI screenshot) -->
+        <div id="ai-page" class="page" style="padding: 0;">
+            <div class="ai-container">
+                <div class="ai-greeting">Welcome back, kingbluerx</div>
+                <div class="ai-sub">What would you like to explore today?</div>
+                
+                <div class="ai-input-box">
+                    <input type="text" class="ai-input" placeholder="Message N7x AI...">
+                    <button class="ai-send">↑</button>
+                </div>
+            </div>
         </div>
 
-        <div class="app-grid" id="appGrid">
-            <!-- Apps load here -->
+        <!-- MOVIES PAGE -->
+        <div id="movies-page" class="page">
+            <div class="page-header">Movies</div>
+            <div class="page-subtitle">Streaming platforms.</div>
+            <div class="app-grid">
+                <div class="app-card" onclick="openApp('Netflix', 'https://netflix.com')"><span class="app-icon">🍿</span><span class="app-name">Netflix</span></div>
+                <div class="app-card" onclick="openApp('Hulu', 'https://hulu.com')"><span class="app-icon">📺</span><span class="app-name">Hulu</span></div>
+                <div class="app-card" onclick="openApp('Prime', 'https://primevideo.com')"><span class="app-icon">🎬</span><span class="app-name">Prime Video</span></div>
+            </div>
         </div>
-    </div>
 
-    <!-- SETTINGS PANEL -->
-    <div id="settings-panel">
-        <h3>Settings</h3>
-        <div class="setting-row">
-            <label>Custom Background URL (Wallpaper)</label>
-            <input type="text" id="bgInput" placeholder="Paste image URL here..." onkeypress="changeBg(event)">
+        <!-- MUSIC PAGE -->
+        <div id="music-page" class="page">
+            <div class="page-header">Music</div>
+            <div class="page-subtitle">Listen to your favorite tracks.</div>
+            <div class="app-grid">
+                <div class="app-card" onclick="openApp('Spotify', 'https://open.spotify.com')"><span class="app-icon">🎧</span><span class="app-name">Spotify</span></div>
+                <div class="app-card" onclick="openApp('SoundCloud', 'https://soundcloud.com')"><span class="app-icon">☁️</span><span class="app-name">SoundCloud</span></div>
+            </div>
         </div>
-        <div class="setting-row">
-            <label>Accent Color</label>
-            <input type="text" id="colorInput" placeholder="#ffd700" onkeypress="changeColor(event)">
+
+        <!-- STUDIES PAGE -->
+        <div id="studies-page" class="page">
+            <div class="page-header">Studies</div>
+            <div class="page-subtitle">Educational resources.</div>
+            <div class="app-grid">
+                <div class="app-card" onclick="openApp('Desmos', 'https://desmos.com')"><span class="app-icon">📐</span><span class="app-name">Desmos</span></div>
+                <div class="app-card" onclick="openApp('Quizlet', 'https://quizlet.com')"><span class="app-icon">🃏</span><span class="app-name">Quizlet</span></div>
+                <div class="app-card" onclick="openApp('Wikipedia', 'https://wikipedia.org')"><span class="app-icon">🌐</span><span class="app-name">Wikipedia</span></div>
+            </div>
         </div>
+
     </div>
 
     <!-- IFRAME OVERLAY -->
     <div id="iframe-overlay">
         <div class="overlay-header">
-            <div id="overlay-title" style="font-weight: bold; color: #ffd700;">App</div>
+            <div id="overlay-title" style="font-weight: bold; color: var(--accent);">App</div>
             <button class="close-btn" onclick="closeApp()">Close App</button>
         </div>
         <iframe id="app-frame" sandbox="allow-same-origin allow-scripts allow-forms allow-popups"></iframe>
     </div>
 
     <script>
-        // 1. Clock Logic
-        function updateClock() {
-            const now = new Date();
-            let h = now.getHours().toString().padStart(2, '0');
-            let m = now.getMinutes().toString().padStart(2, '0');
-            document.getElementById('clock').innerText = `${h}:${m}`;
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
-
-        // 2. The Databases
-        const appData = {
-            home: [
-                { name: 'TikTok', icon: '🎵', url: 'https://www.tiktok.com' },
-                { name: 'YouTube', icon: '▶️', url: 'https://www.youtube.com' },
-                { name: 'ChatGPT', icon: '🤖', url: 'https://chatgpt.com' }
-            ],
-            games: [
-                { name: 'Poki', icon: '🕹️', url: 'https://poki.com' },
-                { name: 'CrazyGames', icon: '👾', url: 'https://www.crazygames.com' },
-                { name: 'Roblox', icon: '🟥', url: 'https://www.roblox.com' }
-            ],
-            music: [
-                { name: 'Spotify', icon: '🎧', url: 'https://open.spotify.com' },
-                { name: 'SoundCloud', icon: '☁️', url: 'https://soundcloud.com' }
-            ],
-            movies: [
-                { name: 'Netflix', icon: '🎬', url: 'https://www.netflix.com' },
-                { name: 'Hulu', icon: '📺', url: 'https://www.hulu.com' },
-                { name: 'Prime', icon: '🍿', url: 'https://www.amazon.com/primevideo' }
-            ],
-            ai: [
-                { name: 'Claude', icon: '🧠', url: 'https://claude.ai' },
-                { name: 'Bing AI', icon: '🔍', url: 'https://www.bing.com/chat' }
-            ],
-            apps: [
-                { name: 'Discord', icon: '👾', url: 'https://discord.com/app' },
-                { name: 'Reddit', icon: '🛸', url: 'https://www.reddit.com' },
-                { name: 'Twitch', icon: '🟣', url: 'https://www.twitch.tv' }
-            ]
-        };
-
-        // 3. Render App Grid
-        function showApps(category) {
-            const grid = document.getElementById('appGrid');
-            grid.innerHTML = ''; // Clear current
-            
-            // Highlight sidebar
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            event.target.classList.add('active');
-
-            const apps = appData[category] || appData.home;
-            apps.forEach(app => {
-                const card = document.createElement('div');
-                card.className = 'app-card';
-                card.innerHTML = `
-                    <div class="app-card-icon">${app.icon}</div>
-                    <div class="app-card-name">${app.name}</div>
-                `;
-                card.onclick = () => openApp(app.name, app.url);
-                grid.appendChild(card);
+        // 1. Page Navigation Logic (With Slide-up Animation)
+        function switchPage(pageId, element) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
             });
-        }
-        // Load home apps on start
-        window.onload = () => {
-            showApps('home');
-        };
+            
+            // Show the target page
+            document.getElementById(`${pageId}-page`).classList.add('active');
 
-        // 4. App Launch Logic
+            // Update sidebar active state
+            if (element) {
+                document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                element.classList.add('active');
+            }
+        }
+
+        // 2. App Launch Logic (Using CORS proxy)
         const overlay = document.getElementById('iframe-overlay');
         const iframe = document.getElementById('app-frame');
         const overlayTitle = document.getElementById('overlay-title');
@@ -389,7 +435,7 @@
         function openApp(name, url) {
             overlay.classList.add('active');
             overlayTitle.innerText = name;
-            // Using CORS proxy to bypass school block for iframes
+            // Proxy to bypass iframe blocks
             iframe.src = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
         }
 
@@ -398,7 +444,7 @@
             iframe.src = 'about:blank';
         }
 
-        // 5. Search Bar Logic
+        // 3. Search Bar Logic
         document.getElementById('searchInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 let query = this.value.trim();
@@ -411,30 +457,6 @@
                 }
             }
         });
-
-        // 6. Settings & Customization
-        function toggleSettings() {
-            document.getElementById('settings-panel').classList.toggle('active');
-        }
-
-        function changeBg(e) {
-            if (e.key === 'Enter') {
-                let url = document.getElementById('bgInput').value.trim();
-                if (url) {
-                    document.body.style.backgroundImage = `url('${url}')`;
-                }
-            }
-        }
-
-        function changeColor(e) {
-            if (e.key === 'Enter') {
-                let color = document.getElementById('colorInput').value.trim();
-                if (color) {
-                    document.documentElement.style.setProperty('--accent', color);
-                    // This would require more CSS wiring to update all elements, but it shows the logic
-                }
-            }
-        }
     </script>
 </body>
 </html>
