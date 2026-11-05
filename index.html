@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BlueOS</title>
+    <title>BlueOS Premium</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
 
@@ -11,101 +11,80 @@
 
         :root {
             --bg-color: #050508;
-            --sidebar-bg: rgba(10, 10, 15, 0.7);
-            --accent: #00ffcc; /* Cyan Premium Accent */
+            --sidebar-bg: rgba(10, 10, 15, 0.85);
+            --accent: #00ffcc;
             --text-main: #ffffff;
             --text-sub: #8b8b9f;
-            --card-bg: rgba(20, 20, 30, 0.6);
-            --glass-border: rgba(255, 255, 255, 0.08);
+            --card-bg: rgba(25, 25, 35, 0.8);
+            --glass-border: rgba(255, 255, 255, 0.1);
         }
 
         body {
             height: 100vh; width: 100vw; overflow: hidden; background-color: var(--bg-color);
-            /* Premium Cinematic Background */
-            background-image: radial-gradient(circle at 50% 0%, #151b2e 0%, #050508 70%);
+            /* High-end cinematic background */
+            background-image: radial-gradient(circle at 50% 0%, #1a1a2e 0%, #050508 80%);
             color: var(--text-main); display: flex; flex-direction: column;
         }
 
-        .bg-glow {
-            position: absolute; top: -20%; left: 50%; transform: translateX(-50%);
-            width: 80vw; height: 80vw; background: radial-gradient(circle, rgba(0,255,204,0.1) 0%, transparent 60%);
-            z-index: 0; pointer-events: none;
-        }
-
-        /* --- TOP BROWSER BAR --- */
+        /* TOP BROWSER BAR */
         .browser-bar {
-            height: 60px; background: rgba(10, 10, 15, 0.85); backdrop-filter: blur(20px);
+            height: 60px; background: rgba(10, 10, 15, 0.9); backdrop-filter: blur(20px);
             display: flex; align-items: center; padding: 0 20px; gap: 15px;
             border-bottom: 1px solid var(--glass-border); z-index: 100;
         }
 
-        .nav-controls { display: flex; gap: 10px; color: var(--text-sub); }
+        .nav-controls { display: flex; gap: 15px; color: var(--text-sub); }
         .nav-controls svg { width: 20px; height: 20px; cursor: pointer; transition: 0.2s; }
         .nav-controls svg:hover { color: white; }
 
         .url-bar {
-            flex: 1; background: #1c1c24; border: 1px solid #333; border-radius: 8px;
-            display: flex; align-items: center; padding: 0 15px; height: 38px;
+            flex: 1; background: #12121a; border: 1px solid #2a2a35; border-radius: 8px;
+            display: flex; align-items: center; padding: 0 15px; height: 40px;
         }
-        
-        .padlock { font-size: 12px; margin-right: 10px; color: #4ade80; }
-        
-        .url-input {
-            flex: 1; background: transparent; border: none; color: white;
-            font-size: 14px; outline: none;
-        }
+        .padlock { font-size: 14px; margin-right: 10px; color: #4ade80; }
+        .url-input { flex: 1; background: transparent; border: none; color: white; font-size: 14px; outline: none; }
 
-        .top-right { display: flex; gap: 15px; align-items: center; font-size: 18px; }
-        .top-right span { cursor: pointer; transition: 0.2s; color: var(--text-sub); }
-        .top-right span:hover { color: white; }
+        /* MAIN LAYOUT */
+        .layout { display: flex; flex: 1; overflow: hidden; position: relative; }
 
-        /* --- MAIN LAYOUT --- */
-        .layout { display: flex; flex: 1; overflow: hidden; position: relative; z-index: 10; }
-
-        /* --- SIDEBAR --- */
+        /* SIDEBAR */
         .sidebar {
-            width: 80px; background: var(--sidebar-bg); backdrop-filter: blur(20px);
+            width: 85px; background: var(--sidebar-bg); backdrop-filter: blur(20px);
             border-right: 1px solid var(--glass-border); display: flex; flex-direction: column;
-            align-items: center; padding: 20px 0; transition: 0.3s;
+            align-items: center; padding: 20px 0;
         }
 
-        .logo { font-size: 28px; font-weight: 800; color: var(--accent); margin-bottom: 30px; cursor: pointer; text-shadow: 0 0 15px rgba(0,255,204,0.4); }
+        .logo { font-size: 32px; font-weight: 800; color: var(--accent); margin-bottom: 40px; cursor: pointer; text-shadow: 0 0 15px rgba(0,255,204,0.4); }
         
         .nav-item {
-            width: 50px; height: 50px; border-radius: 14px; display: flex; justify-content: center; align-items: center;
-            margin-bottom: 10px; cursor: pointer; transition: 0.3s; color: var(--text-sub);
+            width: 55px; height: 55px; border-radius: 16px; display: flex; justify-content: center; align-items: center;
+            margin-bottom: 15px; cursor: pointer; transition: 0.3s; color: var(--text-sub);
         }
-        
-        .nav-item svg { width: 24px; height: 24px; }
-        .nav-item:hover, .nav-item.active { background: rgba(0, 255, 204, 0.15); color: var(--accent); }
+        .nav-item svg { width: 26px; height: 26px; }
+        .nav-item:hover, .nav-item.active { background: rgba(0, 255, 204, 0.15); color: var(--accent); transform: scale(1.05); }
 
-        .sidebar-bottom { margin-top: auto; display: flex; flex-direction: column; gap: 10px; align-items: center;}
-        .profile-icon { width: 40px; height: 40px; border-radius: 50%; background: #333; display: flex; justify-content: center; align-items: center; font-weight: bold; cursor: pointer; overflow: hidden; border: 2px solid transparent; transition: 0.2s; }
+        .sidebar-bottom { margin-top: auto; display: flex; flex-direction: column; gap: 15px; align-items: center;}
+        .profile-icon { width: 45px; height: 45px; border-radius: 50%; background: #2a2a35; display: flex; justify-content: center; align-items: center; font-weight: bold; cursor: pointer; overflow: hidden; border: 2px solid transparent; transition: 0.2s; }
         .profile-icon:hover { border-color: var(--accent); }
-        .profile-icon img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* --- CONTENT AREA --- */
+        /* CONTENT AREA */
         .content { flex: 1; position: relative; overflow-y: auto; overflow-x: hidden; }
 
         .page {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; padding: 40px;
-            display: none; flex-direction: column; animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            position: absolute; top: 0; left: 0; width: 100%; min-height: 100%; padding: 40px;
+            display: none; flex-direction: column; animation: slideUp 0.4s ease forwards;
         }
-
         .page.active { display: flex; }
+        @keyframes slideUp { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
 
-        @keyframes slideUp { 0% { opacity: 0; transform: translateY(40px); } 100% { opacity: 1; transform: translateY(0); } }
-
-        .header { font-size: 42px; font-weight: 700; margin-bottom: 8px; letter-spacing: -1px; }
+        .header { font-size: 42px; font-weight: 700; margin-bottom: 8px; }
         .subheader { color: var(--text-sub); font-size: 15px; margin-bottom: 40px; }
 
-        /* --- HOME SCREEN --- */
-        .home-container { height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
-        .home-title { font-size: 72px; font-weight: 800; margin-bottom: 10px; letter-spacing: 4px; }
+        /* HOME */
+        .home-container { height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .home-title { font-size: 80px; font-weight: 800; margin-bottom: 10px; letter-spacing: 5px; }
         .home-title span { color: var(--accent); text-shadow: 0 0 30px rgba(0,255,204,0.5); }
-        .home-greeting { font-size: 18px; color: var(--text-sub); margin-bottom: 30px; }
-        
-        .main-search-box { width: 100%; max-width: 650px; position: relative; }
+        .main-search-box { width: 100%; max-width: 700px; position: relative; margin-top: 30px; }
         .main-search-box input {
             width: 100%; padding: 20px 30px; border-radius: 40px; border: 1px solid var(--glass-border);
             background: rgba(25, 25, 35, 0.8); color: white; font-size: 18px; outline: none; transition: 0.3s;
@@ -113,81 +92,87 @@
         }
         .main-search-box input:focus { border-color: var(--accent); background: rgba(25, 25, 35, 1); box-shadow: 0 0 30px rgba(0,255,204,0.15); }
 
-        /* --- APP GRID --- */
-        .app-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 20px; }
+        /* APP GRID (WITH PLUS BUTTON) */
+        .app-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 20px; }
         .app-card {
             background: var(--card-bg); backdrop-filter: blur(10px); border-radius: 20px; padding: 20px 15px;
             display: flex; flex-direction: column; align-items: center; gap: 12px; cursor: pointer;
-            border: 1px solid var(--glass-border); transition: 0.2s;
+            border: 1px solid var(--glass-border); transition: 0.2s; text-decoration: none; color: white;
         }
-        .app-card:hover { background: rgba(40, 40, 50, 0.8); border-color: var(--accent); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
-        .app-icon { width: 55px; height: 55px; object-fit: contain; }
+        .app-card:hover { background: rgba(40, 40, 50, 0.9); border-color: var(--accent); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        .app-icon { width: 60px; height: 60px; object-fit: contain; }
         .app-name { font-size: 14px; font-weight: 600; text-align: center; }
 
-        /* --- CUSTOM FORMS / PLAYERS --- */
-        .form-box { background: rgba(255,255,255,0.03); border: 1px dashed var(--glass-border); padding: 25px; border-radius: 16px; margin-top: 40px; max-width: 600px; display: flex; flex-direction: column; gap: 12px; }
-        .form-box h3 { color: var(--accent); font-size: 18px; margin-bottom: 5px; }
-        .form-box input { padding: 14px; border-radius: 10px; background: #1c1c24; border: 1px solid #333; color: white; outline: none; }
-        .form-box button { padding: 14px; border-radius: 10px; background: var(--accent); color: black; font-weight: bold; cursor: pointer; border: none; transition: 0.2s; }
-        .form-box button:hover { background: #00d1a7; }
+        .add-app-btn {
+            background: transparent; border: 2px dashed var(--text-sub); justify-content: center;
+        }
+        .add-app-btn:hover { border-color: var(--accent); color: var(--accent); }
+        .add-app-btn .plus-sign { font-size: 50px; font-weight: 300; line-height: 1; }
 
-        .media-player { width: 100%; max-width: 800px; border-radius: 12px; background: #000; border: 1px solid #333; margin-top: 20px; }
-        .media-inputs { display: flex; gap: 10px; max-width: 800px; }
-        .media-inputs input { flex: 1; padding: 14px; border-radius: 10px; background: #1c1c24; border: 1px solid #333; color: white; outline: none; }
-        .media-inputs button { padding: 0 25px; border-radius: 10px; background: var(--accent); color: black; font-weight: bold; border: none; cursor: pointer; }
+        /* MEDIA GALLERIES (MOVIES & MUSIC) */
+        .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 25px; }
+        .media-card {
+            background: #111; border-radius: 12px; overflow: hidden; cursor: pointer;
+            transition: 0.3s; position: relative; border: 1px solid #222;
+        }
+        .media-card:hover { transform: scale(1.05); border-color: var(--accent); z-index: 10; }
+        .media-cover { width: 100%; height: 250px; object-fit: cover; }
+        .media-info { padding: 15px; background: linear-gradient(to top, #000, transparent); position: absolute; bottom: 0; width: 100%; }
+        .media-title { font-size: 16px; font-weight: 700; text-shadow: 0 2px 4px #000; }
+        .media-type { font-size: 12px; color: var(--accent); }
 
-        /* --- AI PAGE --- */
+        /* AI PAGE */
         .ai-container { height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .ai-welcome { font-size: 36px; font-weight: 700; margin-bottom: 10px; }
+        .ai-welcome { font-size: 40px; font-weight: 700; margin-bottom: 10px; }
         .ai-sub { color: var(--text-sub); margin-bottom: 40px; }
-        .ai-chat-box { width: 100%; max-width: 700px; background: rgba(20, 20, 30, 0.8); border: 1px solid var(--glass-border); border-radius: 16px; display: flex; padding: 10px 20px; align-items: center; }
-        .ai-chat-box input { flex: 1; background: transparent; border: none; color: white; font-size: 16px; outline: none; padding: 10px 0;}
-        .ai-chat-box button { background: var(--accent); color: black; border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; font-weight: bold; font-size: 18px;}
+        .ai-chat-box { width: 100%; max-width: 800px; background: rgba(20, 20, 30, 0.9); border: 1px solid var(--glass-border); border-radius: 20px; display: flex; padding: 15px 25px; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .ai-chat-box input { flex: 1; background: transparent; border: none; color: white; font-size: 18px; outline: none; }
+        .ai-chat-box button { background: var(--accent); color: black; border: none; width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; font-weight: bold; font-size: 20px; }
 
-        /* --- SETTINGS PANEL --- */
+        /* SETTINGS */
         .settings-panel {
             position: absolute; top: 0; right: -350px; width: 320px; height: 100%;
             background: rgba(10, 10, 15, 0.95); backdrop-filter: blur(30px);
             border-left: 1px solid var(--glass-border); z-index: 500;
             transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1); padding: 30px;
         }
-        .settings-panel.active { right: 0; box-shadow: -20px 0 50px rgba(0,0,0,0.5); }
+        .settings-panel.active { right: 0; box-shadow: -20px 0 50px rgba(0,0,0,0.8); }
         .settings-panel h2 { font-size: 24px; color: var(--accent); margin-bottom: 20px; }
         .setting-group { margin-bottom: 25px; }
-        .setting-group label { display: block; font-size: 12px; color: var(--text-sub); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;}
+        .setting-group label { display: block; font-size: 12px; color: var(--text-sub); margin-bottom: 8px; text-transform: uppercase; }
         .setting-group input { width: 100%; padding: 12px; border-radius: 8px; background: #1c1c24; border: 1px solid #333; color: white; outline: none; }
 
-        /* --- IFRAME --- */
-        #iframe-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; background: #fff; z-index: 200; }
-        #iframe-container.active { display: block; }
-        #site-frame { width: 100%; height: 100%; border: none; }
+        /* IFRAME VIEWER */
+        #iframe-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; background: #fff; z-index: 200; flex-direction: column; }
+        #iframe-container.active { display: flex; }
+        #site-frame { width: 100%; height: 100%; border: none; flex: 1; }
+
+        /* MODAL FOR INPUT */
+        #add-modal { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
+        #add-modal.active { display: flex; }
+        .modal-content { background: #1c1c24; padding: 30px; border-radius: 16px; width: 400px; border: 1px solid var(--glass-border); display: flex; flex-direction: column; gap: 15px; }
+        .modal-content input { padding: 12px; border-radius: 8px; background: #111; border: 1px solid #333; color: white; outline: none; }
+        .modal-content button { padding: 12px; border-radius: 8px; background: var(--accent); color: black; font-weight: bold; border: none; cursor: pointer; }
         
         /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
     </style>
 </head>
 <body>
 
-    <div class="bg-glow"></div>
-
     <!-- TOP BROWSER BAR -->
     <div class="browser-bar">
         <div class="nav-controls">
-            <svg onclick="history.back()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-            <svg onclick="history.forward()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            <svg onclick="location.reload()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            <svg onclick="reloadIframe()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
         </div>
         
         <div class="url-bar">
             <span class="padlock">🔒</span>
             <input type="text" id="urlInput" class="url-input" placeholder="Search Google or enter URL..." onkeypress="handleUrlEnter(event)">
-        </div>
-
-        <div class="top-right">
-            <span>⚙</span>
-            <span onclick="toggleSettings()" style="font-size: 20px;">☰</span>
         </div>
     </div>
 
@@ -197,9 +182,8 @@
         <!-- SIDEBAR -->
         <div class="sidebar">
             <div class="logo" onclick="switchPage('home', document.querySelector('.nav-item'))">B</div>
-            
             <div class="nav-item active" onclick="switchPage('home', this)" title="Home">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
             </div>
             <div class="nav-item" onclick="switchPage('apps', this)" title="Apps">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
@@ -208,12 +192,11 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
             </div>
             <div class="nav-item" onclick="switchPage('movies', this)" title="Movies">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line><line x1="2" y1="12" x2="22" y2="12"></line><line x1="2" y1="7" x2="7" y2="7"></line><line x1="2" y1="17" x2="7" y2="17"></line><line x1="17" y1="17" x2="22" y2="17"></line><line x1="17" y1="7" x2="22" y2="7"></line></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line><line x1="2" y1="12" x2="22" y2="12"></line></svg>
             </div>
             <div class="nav-item" onclick="switchPage('ai', this)" title="AI">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
             </div>
-            
             <div class="sidebar-bottom">
                 <div class="nav-item" onclick="toggleSettings()" title="Settings">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
@@ -229,19 +212,26 @@
             <div id="home-page" class="page active">
                 <div class="home-container">
                     <div class="home-title">BLUE<span>OS</span></div>
-                    <div class="home-greeting">Welcome back, <span id="homeUserName" style="color:white; font-weight:bold;">kingbluerx</span></div>
+                    <div style="color: var(--text-sub); font-size: 18px; margin-top: 10px;">Welcome back, <span id="homeUserName" style="color:white; font-weight:bold;">kingbluerx</span></div>
                     <div class="main-search-box">
                         <input type="text" placeholder="Search the web..." onkeypress="handleUrlEnter(event)">
                     </div>
                 </div>
             </div>
 
-            <!-- APPS -->
+            <!-- APPS (With Plus Button) -->
             <div id="apps-page" class="page">
                 <div class="header">Apps</div>
                 <div class="subheader">Your installed applications.</div>
                 <div class="app-grid" id="appGrid">
-                    <!-- Default Apps -->
+                    
+                    <!-- The + Button to add apps -->
+                    <div class="app-card add-app-btn" onclick="openAddModal()">
+                        <div class="plus-sign">+</div>
+                        <span class="app-name">Add App</span>
+                    </div>
+
+                    <!-- Default Apps (Using a better proxy to load) -->
                     <div class="app-card" onclick="openApp('YouTube', 'https://youtube.com')">
                         <img src="https://upload.wikimedia.org/wikipedia/commons/0/09/YouTube_full-color_icon_%282017%29.svg" class="app-icon">
                         <span class="app-name">YouTube</span>
@@ -259,37 +249,66 @@
                         <span class="app-name">Discord</span>
                     </div>
                 </div>
-
-                <!-- Add App Form -->
-                <div class="form-box">
-                    <h3>Add Custom App</h3>
-                    <input type="text" id="newAppName" placeholder="App Name">
-                    <input type="text" id="newAppUrl" placeholder="App Link (URL)">
-                    <input type="text" id="newAppIcon" placeholder="Icon Image URL (Optional)">
-                    <button onclick="addNewApp()">Add to Grid</button>
-                </div>
             </div>
 
-            <!-- MUSIC -->
+            <!-- MUSIC (Visual Grid) -->
             <div id="music-page" class="page">
                 <div class="header">Music</div>
-                <div class="subheader">Paste a direct MP3 link to play audio.</div>
-                <div class="media-inputs">
-                    <input type="text" id="musicUrl" placeholder="https://example.com/song.mp3">
-                    <button onclick="playMusic()">Play</button>
+                <div class="subheader">Click an album to play.</div>
+                <div class="media-grid">
+                    <!-- Sample Music -->
+                    <div class="media-card" onclick="playMedia('audio', 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3')">
+                        <img src="https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=400&auto=format&fit=crop" class="media-cover">
+                        <div class="media-info">
+                            <div class="media-title">Synthwave Beat</div>
+                            <div class="media-type">Audio Track</div>
+                        </div>
+                    </div>
+                    <div class="media-card" onclick="playMedia('audio', 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3')">
+                        <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=400&auto=format&fit=crop" class="media-cover">
+                        <div class="media-info">
+                            <div class="media-title">Chill Vibes</div>
+                            <div class="media-type">Audio Track</div>
+                        </div>
+                    </div>
+                    <div class="media-card" onclick="playMedia('audio', 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3')">
+                        <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=400&auto=format&fit=crop" class="media-cover">
+                        <div class="media-info">
+                            <div class="media-title">EDM Banger</div>
+                            <div class="media-type">Audio Track</div>
+                        </div>
+                    </div>
                 </div>
-                <audio id="audioPlayer" class="media-player" controls></audio>
             </div>
 
-            <!-- MOVIES -->
+            <!-- MOVIES (Visual Grid) -->
             <div id="movies-page" class="page">
                 <div class="header">Movies</div>
-                <div class="subheader">Paste a direct MP4 link to watch a video.</div>
-                <div class="media-inputs">
-                    <input type="text" id="movieUrl" placeholder="https://example.com/video.mp4">
-                    <button onclick="playMovie()">Watch</button>
+                <div class="subheader">Click a movie to watch.</div>
+                <div class="media-grid">
+                    <!-- Sample Movies (Using free open-source videos) -->
+                    <div class="media-card" onclick="playMedia('video', 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4')">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Big_buck_bunny_poster_big.jpg/800px-Big_buck_bunny_poster_big.jpg" class="media-cover">
+                        <div class="media-info">
+                            <div class="media-title">Big Buck Bunny</div>
+                            <div class="media-type">Animation</div>
+                        </div>
+                    </div>
+                    <div class="media-card" onclick="playMedia('video', 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4')">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Elephants_Dream_s5_both.jpg/800px-Elephants_Dream_s5_both.jpg" class="media-cover">
+                        <div class="media-info">
+                            <div class="media-title">Elephants Dream</div>
+                            <div class="media-type">Sci-Fi</div>
+                        </div>
+                    </div>
+                    <div class="media-card" onclick="playMedia('video', 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4')">
+                        <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=400&auto=format&fit=crop" class="media-cover">
+                        <div class="media-info">
+                            <div class="media-title">Action Trailer</div>
+                            <div class="media-type">Action</div>
+                        </div>
+                    </div>
                 </div>
-                <video id="videoPlayer" class="media-player" controls></video>
             </div>
 
             <!-- AI -->
@@ -298,13 +317,25 @@
                     <div class="ai-welcome">Welcome back, <span id="aiUserName" style="color:var(--accent);">kingbluerx</span></div>
                     <div class="ai-sub">What would you like to explore today?</div>
                     <div class="ai-chat-box">
-                        <input type="text" id="aiInput" placeholder="Message Blue AI..." onkeypress="handleAiEnter(event)">
-                        <button onclick="sendAiMessage()">↑</button>
+                        <input type="text" placeholder="Message Blue AI...">
+                        <button>↑</button>
                     </div>
                 </div>
             </div>
 
-            <!-- IFRAME APP VIEWER -->
+            <!-- MEDIA PLAYER OVERLAY -->
+            <div id="media-player-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 300; display: none; flex-direction: column;">
+                <div style="padding: 15px 20px; background: #111; display: flex; justify-content: space-between;">
+                    <span style="font-weight: bold; color: var(--accent);">Now Playing</span>
+                    <button onclick="closeMedia()" style="background: #e50914; color: white; border: none; padding: 5px 15px; border-radius: 5px; cursor: pointer;">Close</button>
+                </div>
+                <div style="flex: 1; display: flex; justify-content: center; align-items: center;">
+                    <audio id="audioPlayer" controls style="width: 80%; display: none;"></audio>
+                    <video id="videoPlayer" controls style="width: 90%; max-height: 80%; display: none;"></video>
+                </div>
+            </div>
+
+            <!-- IFRAME VIEWER -->
             <div id="iframe-container">
                 <iframe id="site-frame" sandbox="allow-same-origin allow-scripts allow-forms allow-popups"></iframe>
             </div>
@@ -325,6 +356,20 @@
             <button onclick="toggleSettings()" style="margin-top:20px; padding:10px 20px; background:#e50914; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer; width:100%;">Close Settings</button>
         </div>
 
+        <!-- ADD APP MODAL -->
+        <div id="add-modal">
+            <div class="modal-content">
+                <h3 style="color:var(--accent);">Add Custom App</h3>
+                <input type="text" id="modalAppName" placeholder="App Name (e.g. ChatGPT)">
+                <input type="text" id="modalAppUrl" placeholder="App Link (URL)">
+                <input type="text" id="modalAppIcon" placeholder="Icon Image URL (Optional)">
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <button onclick="closeAddModal()" style="background: #333; color: white;">Cancel</button>
+                    <button onclick="saveApp()">Add App</button>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script>
@@ -337,13 +382,8 @@
                 document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
                 element.classList.add('active');
             }
-
-            // Close iframe when switching tabs
             closeApp();
-
-            // Pause media
-            document.getElementById('audioPlayer').pause();
-            document.getElementById('videoPlayer').pause();
+            closeMedia();
         }
 
         // --- BROWSER BAR SEARCH ---
@@ -359,7 +399,7 @@
             }
         }
 
-        // --- IFRAME SYSTEM ---
+        // --- IFRAME SYSTEM (Using a different proxy to ensure apps load) ---
         const iframeContainer = document.getElementById('iframe-container');
         const siteFrame = document.getElementById('site-frame');
         const urlInput = document.getElementById('urlInput');
@@ -367,8 +407,8 @@
         function openApp(name, url) {
             iframeContainer.classList.add('active');
             urlInput.value = url;
-            // Using CORS proxy to bypass iframe blocks
-            siteFrame.src = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
+            // Using corsproxy.io which bypasses many blocks
+            siteFrame.src = 'https://corsproxy.io/?' + encodeURIComponent(url);
         }
 
         function closeApp() {
@@ -376,11 +416,20 @@
             siteFrame.src = 'about:blank';
         }
 
-        // --- ADD CUSTOM APPS ---
-        function addNewApp() {
-            const name = document.getElementById('newAppName').value;
-            const url = document.getElementById('newAppUrl').value;
-            let iconUrl = document.getElementById('newAppIcon').value;
+        function reloadIframe() {
+            if (siteFrame.src !== 'about:blank') {
+                siteFrame.src = siteFrame.src;
+            }
+        }
+
+        // --- ADD CUSTOM APPS (Using Modal) ---
+        function openAddModal() { document.getElementById('add-modal').classList.add('active'); }
+        function closeAddModal() { document.getElementById('add-modal').classList.remove('active'); }
+
+        function saveApp() {
+            const name = document.getElementById('modalAppName').value;
+            const url = document.getElementById('modalAppUrl').value;
+            let iconUrl = document.getElementById('modalAppIcon').value;
             
             if (!name || !url) return alert("Please enter a name and URL.");
             if (!iconUrl) iconUrl = "https://cdn-icons-png.flaticon.com/512/716/716784.png";
@@ -395,62 +444,21 @@
             `;
             appGrid.appendChild(newCard);
 
-            document.getElementById('newAppName').value = '';
-            document.getElementById('newAppUrl').value = '';
-            document.getElementById('newAppIcon').value = '';
+            // Reset and close
+            document.getElementById('modalAppName').value = '';
+            document.getElementById('modalAppUrl').value = '';
+            document.getElementById('modalAppIcon').value = '';
+            closeAddModal();
         }
 
-        // --- MEDIA PLAYERS ---
-        function playMusic() {
-            const url = document.getElementById('musicUrl').value;
-            const player = document.getElementById('audioPlayer');
-            if (url) { player.src = url; player.play(); }
-        }
+        // --- MEDIA PLAYERS (Movies & Music Grids) ---
+        const mediaOverlay = document.getElementById('media-player-overlay');
+        const audioPlayer = document.getElementById('audioPlayer');
+        const videoPlayer = document.getElementById('videoPlayer');
 
-        function playMovie() {
-            const url = document.getElementById('movieUrl').value;
-            const player = document.getElementById('videoPlayer');
-            if (url) { player.src = url; player.play(); }
-        }
-
-        // --- AI CHAT MOCK ---
-        function handleAiEnter(e) { if(e.key === 'Enter') sendAiMessage(); }
-        
-        function sendAiMessage() {
-            const input = document.getElementById('aiInput');
-            const msg = input.value.trim();
-            if (msg) {
-                // Simple mock response for now
-                input.value = '';
-                input.placeholder = "Thinking...";
-                setTimeout(() => {
-                    input.placeholder = `AI: You said "${msg}". (Connect an API key to make this real!)`;
-                }, 1000);
-            }
-        }
-
-        // --- SETTINGS & PROFILE ---
-        function toggleSettings() {
-            document.getElementById('settingsPanel').classList.toggle('active');
-        }
-
-        function updateName() {
-            const newName = document.getElementById('nameInput').value;
-            document.getElementById('homeUserName').innerText = newName;
-            document.getElementById('aiUserName').innerText = newName;
-        }
-
-        function updateAvatar() {
-            const url = document.getElementById('avatarInput').value;
-            const avatar = document.getElementById('profileAvatar');
-            if (url) {
-                avatar.innerHTML = `<img src="${url}" onerror="this.style.display='none'">`;
-                avatar.style.background = "transparent";
-            } else {
-                avatar.innerHTML = "K";
-                avatar.style.background = "#333";
-            }
-        }
-    </script>
-</body>
-</html>
+        function playMedia(type, url) {
+            mediaOverlay.style.display = 'flex';
+            if (type === 'audio') {
+                audioPlayer.style.display = 'block';
+                videoPlayer.style.display = 'none';
+                audioPlayer.src =
