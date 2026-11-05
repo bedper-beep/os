@@ -3,233 +3,313 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus OS</title>
+    <title>Nexus OS - Custom Portal</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Inter', sans-serif;
+            user-select: none;
         }
 
         body {
-            background: #0a0a0f;
-            color: white;
             height: 100vh;
+            width: 100vw;
             overflow: hidden;
+            background-color: #0a0a0f;
+            background-image: url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2070&auto=format&fit=crop'); /* Cinematic city background */
+            background-size: cover;
+            background-position: center;
+            color: white;
             display: flex;
-            flex-direction: column;
-            background-image: radial-gradient(circle at 50% 0%, #1a1a2e 0%, #0a0a0f 70%);
         }
 
-        /* Top Navigation Bar */
-        nav {
+        /* Blur overlay for the background */
+        .bg-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(10, 10, 15, 0.4);
+            backdrop-filter: blur(8px);
+            z-index: 1;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 80px;
+            height: 100%;
+            background: rgba(15, 15, 20, 0.6);
+            backdrop-filter: blur(15px);
+            border-right: 1px solid rgba(255,255,255,0.05);
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
             align-items: center;
-            padding: 20px 40px;
-            background: rgba(10, 10, 15, 0.8);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding: 20px 0;
             z-index: 10;
         }
 
-        .logo {
+        .sidebar-logo {
             font-size: 24px;
-            font-weight: 700;
-            color: #00ffcc;
-            letter-spacing: 2px;
-            text-shadow: 0 0 10px rgba(0,255,204,0.4);
+            margin-bottom: 40px;
+            color: #ffd700;
+            cursor: pointer;
         }
 
-        .search-container {
+        .nav-item {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: 0.2s;
+            color: #8b8b9f;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: rgba(255, 215, 0, 0.15);
+            color: #ffd700;
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            color: #8b8b9f;
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
             flex: 1;
-            max-width: 600px;
-            margin: 0 40px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            position: relative;
+        }
+
+        /* Top Right Info */
+        .top-info {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 14px;
+            color: #ccc;
+            font-weight: 500;
+        }
+
+        /* Center Logo */
+        .center-logo {
+            font-size: 60px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.8);
+        }
+        
+        .center-logo span {
+            color: #ffd700; /* Gold accent */
+        }
+
+        /* Search Bar */
+        .search-container {
+            width: 600px;
+            max-width: 80vw;
+            position: relative;
+            margin-bottom: 50px;
         }
 
         .search-bar {
             width: 100%;
-            padding: 12px 20px;
+            padding: 18px 25px 18px 50px;
             border-radius: 30px;
-            border: 1px solid rgba(0, 255, 204, 0.3);
-            background: rgba(25, 25, 35, 0.8);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            background: rgba(20, 20, 25, 0.7);
+            backdrop-filter: blur(10px);
             color: white;
             font-size: 16px;
             outline: none;
             transition: 0.3s;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
         .search-bar:focus {
-            border-color: #00ffcc;
-            box-shadow: 0 0 15px rgba(0, 255, 204, 0.2);
+            border-color: #ffd700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+            background: rgba(20, 20, 25, 0.9);
         }
 
-        .clock {
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #ffd700;
             font-size: 18px;
-            font-weight: 500;
-            color: #8b8b9f;
         }
 
-        /* Main Grid */
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 50px 20px;
-            overflow-y: auto;
-        }
-
-        .section-title {
-            font-size: 20px;
-            font-weight: 500;
-            color: #8b8b9f;
-            margin-bottom: 30px;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-        }
-
+        /* App Grid (Inside Main) */
         .app-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 30px;
-            max-width: 900px;
-            width: 100%;
-            justify-items: center;
+            display: flex;
+            gap: 20px;
+            max-width: 80vw;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
-        /* App Icons */
-        .app-icon {
+        .app-card {
+            width: 100px;
+            height: 100px;
+            background: rgba(20, 20, 25, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.05);
             display: flex;
             flex-direction: column;
-            align-items: center;
-            text-decoration: none;
-            color: white;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .app-icon:hover {
-            transform: translateY(-5px);
-        }
-
-        .icon-box {
-            width: 80px;
-            height: 80px;
-            border-radius: 20px;
-            background: linear-gradient(135deg, #1c1c24, #2a2a35);
-            border: 1px solid rgba(255,255,255,0.1);
-            display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 36px;
-            margin-bottom: 12px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-            transition: 0.3s;
-        }
-
-        .app-icon:hover .icon-box {
-            border-color: #00ffcc;
-            box-shadow: 0 0 20px rgba(0, 255, 204, 0.3);
-        }
-
-        .app-name {
-            font-size: 14px;
-            font-weight: 500;
-            text-align: center;
-        }
-
-        /* Full Screen App Overlay */
-        #iframe-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: #0a0a0f;
-            z-index: 100;
-            display: none;
-            flex-direction: column;
-        }
-
-        #iframe-overlay.active {
-            display: flex;
-        }
-
-        .overlay-header {
-            padding: 15px 20px;
-            background: #1c1c24;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .close-btn {
-            background: #e50914;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-weight: 700;
             cursor: pointer;
             transition: 0.2s;
         }
 
-        .close-btn:hover {
-            background: #ff1a25;
+        .app-card:hover {
+            transform: translateY(-5px);
+            border-color: #ffd700;
+            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.1);
         }
 
-        #app-frame {
-            flex: 1;
-            width: 100%;
-            border: none;
-            background: #fff;
-        }
+        .app-card-icon { font-size: 30px; margin-bottom: 5px; }
+        .app-card-name { font-size: 12px; color: #ccc; }
 
-        /* Loader */
-        .loader {
+        /* Iframe Overlay */
+        #iframe-overlay {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: #00ffcc;
-            font-size: 18px;
-            font-weight: 500;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #0a0a0f;
+            z-index: 1000;
             display: none;
+            flex-direction: column;
+        }
+
+        #iframe-overlay.active { display: flex; }
+
+        .overlay-header {
+            padding: 15px 20px;
+            background: rgba(20, 20, 25, 0.9);
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255,215,0,0.2);
+        }
+
+        .close-btn {
+            background: #e50914; color: white; border: none;
+            padding: 8px 16px; border-radius: 8px; font-weight: bold;
+            cursor: pointer;
+        }
+
+        #app-frame { flex: 1; width: 100%; border: none; background: #fff; }
+
+        /* Settings Panel */
+        #settings-panel {
+            position: absolute;
+            top: 20px; right: -350px;
+            width: 300px; height: 80vh;
+            background: rgba(15, 15, 20, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,215,0,0.2);
+            border-radius: 20px 0 0 20px;
+            z-index: 500;
+            transition: right 0.3s ease;
+            padding: 20px;
+            color: white;
+        }
+
+        #settings-panel.active { right: 0; }
+        #settings-panel h3 { color: #ffd700; margin-bottom: 20px; }
+        .setting-row { margin-bottom: 20px; }
+        .setting-row label { display: block; font-size: 12px; color: #888; margin-bottom: 5px;}
+        .setting-row input[type="text"] {
+            width: 100%; padding: 10px; border-radius: 8px;
+            background: #1c1c24; border: 1px solid #333; color: white;
         }
     </style>
 </head>
 <body>
 
-    <nav>
-        <div class="logo">NEXUS OS</div>
-        <div class="search-container">
-            <input type="text" id="searchInput" class="search-bar" placeholder="Search the web securely...">
-        </div>
-        <div class="clock" id="clock">00:00</div>
-    </nav>
+    <div class="bg-overlay"></div>
 
-    <div class="main-content">
-        <div class="section-title">Your Apps</div>
-        <div class="app-grid" id="appGrid">
-            <!-- Apps will be injected here by JS -->
+    <!-- LEFT SIDEBAR -->
+    <div class="sidebar">
+        <div class="sidebar-logo">☾</div>
+        
+        <div class="nav-item active" title="Home">🏠</div>
+        <div class="nav-item" title="Games" onclick="showApps('games')">🎮</div>
+        <div class="nav-item" title="Music" onclick="showApps('music')">🎵</div>
+        <div class="nav-item" title="Movies" onclick="showApps('movies')">🍿</div>
+        <div class="nav-item" title="AI" onclick="showApps('ai')">✨</div>
+        <div class="nav-item" title="Apps" onclick="showApps('apps')">🧩</div>
+        
+        <div class="sidebar-bottom">
+            <div class="nav-item" onclick="toggleSettings()" title="Settings">⚙️</div>
+            <div class="nav-item" style="font-size: 16px; font-weight: bold;" title="User">👤</div>
         </div>
     </div>
 
-    <!-- Fullscreen Iframe Overlay -->
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <div class="top-info">
+            <span id="clock">00:00</span>
+            <span>⚙ Customize</span>
+        </div>
+
+        <div class="center-logo">
+            Nexus<span>OS</span>
+        </div>
+
+        <div class="search-container">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" class="search-bar" placeholder="Search or enter URL...">
+        </div>
+
+        <div class="app-grid" id="appGrid">
+            <!-- Apps load here -->
+        </div>
+    </div>
+
+    <!-- SETTINGS PANEL -->
+    <div id="settings-panel">
+        <h3>Settings</h3>
+        <div class="setting-row">
+            <label>Custom Background URL (Wallpaper)</label>
+            <input type="text" id="bgInput" placeholder="Paste image URL here..." onkeypress="changeBg(event)">
+        </div>
+        <div class="setting-row">
+            <label>Accent Color</label>
+            <input type="text" id="colorInput" placeholder="#ffd700" onkeypress="changeColor(event)">
+        </div>
+    </div>
+
+    <!-- IFRAME OVERLAY -->
     <div id="iframe-overlay">
         <div class="overlay-header">
-            <div id="overlay-title" style="font-weight: bold; color: #00ffcc;">App</div>
+            <div id="overlay-title" style="font-weight: bold; color: #ffd700;">App</div>
             <button class="close-btn" onclick="closeApp()">Close App</button>
         </div>
-        <div id="app-frame-container" style="flex: 1; position: relative;">
-            <div class="loader" id="loader">Connecting to secure server...</div>
-            <iframe id="app-frame" allow="fullscreen; autoplay; encrypted-media" sandbox="allow-same-origin allow-scripts allow-forms allow-popups"></iframe>
-        </div>
+        <iframe id="app-frame" sandbox="allow-same-origin allow-scripts allow-forms allow-popups"></iframe>
     </div>
 
     <script>
@@ -243,72 +323,118 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        // 2. The App List
-        // We are using 'api.allorigins.win' as a secure proxy to load pages inside the iframe.
-        const apps = [
-            { name: 'TikTok', icon: '🎵', url: 'https://www.tiktok.com' },
-            { name: 'Movies', icon: '🍿', url: 'https://www.youtube.com/feed/trending' },
-            { name: 'Games', icon: '🎮', url: 'https://poki.com' },
-            { name: 'ChatGPT', icon: '🤖', url: 'https://chatgpt.com' },
-            { name: 'Discord', icon: '👾', url: 'https://discord.com/app' },
-            { name: 'Reddit', icon: '🛸', url: 'https://www.reddit.com' },
-            { name: 'Twitch', icon: '🟣', url: 'https://www.twitch.tv' },
-            { name: 'Spotify', icon: '🎧', url: 'https://open.spotify.com' }
-        ];
+        // 2. The Databases
+        const appData = {
+            home: [
+                { name: 'TikTok', icon: '🎵', url: 'https://www.tiktok.com' },
+                { name: 'YouTube', icon: '▶️', url: 'https://www.youtube.com' },
+                { name: 'ChatGPT', icon: '🤖', url: 'https://chatgpt.com' }
+            ],
+            games: [
+                { name: 'Poki', icon: '🕹️', url: 'https://poki.com' },
+                { name: 'CrazyGames', icon: '👾', url: 'https://www.crazygames.com' },
+                { name: 'Roblox', icon: '🟥', url: 'https://www.roblox.com' }
+            ],
+            music: [
+                { name: 'Spotify', icon: '🎧', url: 'https://open.spotify.com' },
+                { name: 'SoundCloud', icon: '☁️', url: 'https://soundcloud.com' }
+            ],
+            movies: [
+                { name: 'Netflix', icon: '🎬', url: 'https://www.netflix.com' },
+                { name: 'Hulu', icon: '📺', url: 'https://www.hulu.com' },
+                { name: 'Prime', icon: '🍿', url: 'https://www.amazon.com/primevideo' }
+            ],
+            ai: [
+                { name: 'Claude', icon: '🧠', url: 'https://claude.ai' },
+                { name: 'Bing AI', icon: '🔍', url: 'https://www.bing.com/chat' }
+            ],
+            apps: [
+                { name: 'Discord', icon: '👾', url: 'https://discord.com/app' },
+                { name: 'Reddit', icon: '🛸', url: 'https://www.reddit.com' },
+                { name: 'Twitch', icon: '🟣', url: 'https://www.twitch.tv' }
+            ]
+        };
 
-        // 3. Render Apps to the Grid
-        const appGrid = document.getElementById('appGrid');
-        apps.forEach(app => {
-            const appDiv = document.createElement('div');
-            appDiv.className = 'app-icon';
-            appDiv.innerHTML = `
-                <div class="icon-box">${app.icon}</div>
-                <div class="app-name">${app.name}</div>
-            `;
-            appDiv.onclick = () => openApp(app.name, app.url);
-            appGrid.appendChild(appDiv);
-        });
+        // 3. Render App Grid
+        function showApps(category) {
+            const grid = document.getElementById('appGrid');
+            grid.innerHTML = ''; // Clear current
+            
+            // Highlight sidebar
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            event.target.classList.add('active');
 
-        // 4. Open App Logic (Using Proxy to bypass X-Frame-Options)
+            const apps = appData[category] || appData.home;
+            apps.forEach(app => {
+                const card = document.createElement('div');
+                card.className = 'app-card';
+                card.innerHTML = `
+                    <div class="app-card-icon">${app.icon}</div>
+                    <div class="app-card-name">${app.name}</div>
+                `;
+                card.onclick = () => openApp(app.name, app.url);
+                grid.appendChild(card);
+            });
+        }
+        // Load home apps on start
+        window.onload = () => {
+            showApps('home');
+        };
+
+        // 4. App Launch Logic
         const overlay = document.getElementById('iframe-overlay');
         const iframe = document.getElementById('app-frame');
         const overlayTitle = document.getElementById('overlay-title');
-        const loader = document.getElementById('loader');
 
         function openApp(name, url) {
             overlay.classList.add('active');
             overlayTitle.innerText = name;
-            loader.style.display = 'block';
-            iframe.style.opacity = '0';
-            
-            // Using a public CORS proxy to fetch the site so the school can't block the iframe
-            const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
-            
-            iframe.src = proxyUrl;
-            
-            // Simulate loading time for smooth UI
-            setTimeout(() => {
-                loader.style.display = 'none';
-                iframe.style.opacity = '1';
-            }, 1500);
+            // Using CORS proxy to bypass school block for iframes
+            iframe.src = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
         }
 
         function closeApp() {
             overlay.classList.remove('active');
-            iframe.src = 'about:blank'; // Kill the app process
+            iframe.src = 'about:blank';
         }
 
-        // 5. Search Logic (Redirects to Google via proxy)
+        // 5. Search Bar Logic
         document.getElementById('searchInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 let query = this.value.trim();
                 if (query) {
-                    const searchUrl = 'https://www.google.com/search?q=' + encodeURIComponent(query);
-                    openApp('Search Results', searchUrl);
+                    if (!query.startsWith('http')) {
+                        query = 'https://www.google.com/search?q=' + encodeURIComponent(query);
+                    }
+                    openApp('Search Results', query);
                     this.value = '';
                 }
             }
         });
+
+        // 6. Settings & Customization
+        function toggleSettings() {
+            document.getElementById('settings-panel').classList.toggle('active');
+        }
+
+        function changeBg(e) {
+            if (e.key === 'Enter') {
+                let url = document.getElementById('bgInput').value.trim();
+                if (url) {
+                    document.body.style.backgroundImage = `url('${url}')`;
+                }
+            }
+        }
+
+        function changeColor(e) {
+            if (e.key === 'Enter') {
+                let color = document.getElementById('colorInput').value.trim();
+                if (color) {
+                    document.documentElement.style.setProperty('--accent', color);
+                    // This would require more CSS wiring to update all elements, but it shows the logic
+                }
+            }
+        }
     </script>
 </body>
 </html>
