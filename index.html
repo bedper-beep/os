@@ -3,244 +3,312 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GhostFlix</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <title>Nexus OS</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-        body { background-color: #0f0f0f; color: white; overflow-x: hidden; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap');
 
-        /* Navbar */
-        .navbar { position: fixed; top: 0; width: 100%; padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, transparent 100%); z-index: 100; transition: 0.3s; }
-        .nav-left { display: flex; align-items: center; gap: 30px; }
-        .logo { font-size: 24px; font-weight: 800; color: #ff3333; letter-spacing: 1px; cursor: pointer; }
-        .nav-links { display: flex; gap: 20px; }
-        .nav-links a { color: #ddd; text-decoration: none; font-size: 14px; font-weight: 600; transition: 0.2s; cursor: pointer; }
-        .nav-links a:hover, .nav-links a.active { color: white; }
-        .nav-right { display: flex; gap: 20px; font-size: 18px; color: white; cursor: pointer; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
 
-        /* Hero Banner */
-        .hero { height: 75vh; background-size: cover; background-position: center top; position: relative; display: flex; align-items: flex-end; padding: 50px; }
-        .hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, #0f0f0f 0%, transparent 60%), linear-gradient(to right, #0f0f0f 0%, transparent 50%); }
-        .hero-content { position: relative; z-index: 10; max-width: 600px; }
-        .hero-title { font-size: 56px; font-weight: 800; letter-spacing: 2px; margin-bottom: 15px; text-transform: uppercase; text-shadow: 0 4px 10px rgba(0,0,0,0.8); }
-        .hero-meta { display: flex; align-items: center; gap: 15px; font-size: 13px; color: #ccc; margin-bottom: 15px; }
-        .badge { background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 4px; font-weight: bold; backdrop-filter: blur(5px); }
-        .hero-desc { font-size: 15px; line-height: 1.5; color: #ddd; margin-bottom: 25px; text-shadow: 0 2px 4px rgba(0,0,0,0.8); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-        .hero-btns { display: flex; gap: 15px; }
-        .btn { padding: 12px 25px; border-radius: 8px; font-size: 16px; font-weight: bold; border: none; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: 0.2s; }
-        .btn-play { background: white; color: black; }
-        .btn-play:hover { background: #ddd; transform: scale(1.05); }
-        .btn-info { background: rgba(255,255,255,0.2); color: white; backdrop-filter: blur(5px); }
-        .btn-info:hover { background: rgba(255,255,255,0.3); }
+        body {
+            background: #0a0a0f;
+            color: white;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            background-image: radial-gradient(circle at 50% 0%, #1a1a2e 0%, #0a0a0f 70%);
+        }
 
-        /* Rows */
-        .row { padding: 20px 50px; margin-bottom: 30px; position: relative; z-index: 10; }
-        .row-title { font-size: 20px; font-weight: 600; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
-        .row-title::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.1); }
-        .slider { display: flex; gap: 15px; overflow-x: scroll; scroll-behavior: smooth; padding-bottom: 20px; }
-        .slider::-webkit-scrollbar { display: none; }
-        .movie-card { min-width: 200px; width: 200px; border-radius: 10px; overflow: hidden; cursor: pointer; transition: transform 0.3s, z-index 0.3s; position: relative; background: #222; }
-        .movie-card:hover { transform: scale(1.08); z-index: 20; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
-        .movie-card img { width: 100%; height: 300px; object-fit: cover; display: block; }
-        .movie-info { padding: 10px; position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, #000, transparent); }
-        .movie-title { font-size: 14px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .movie-year { font-size: 12px; color: #aaa; }
+        /* Top Navigation Bar */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background: rgba(10, 10, 15, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            z-index: 10;
+        }
 
-        /* Player Modal */
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 1000; flex-direction: column; align-items: center; justify-content: center; }
-        .modal.active { display: flex; }
-        .player-container { width: 90%; max-width: 1200px; height: 75vh; background: #000; border-radius: 12px; overflow: hidden; position: relative; box-shadow: 0 0 50px rgba(255,0,0,0.2); }
-        .player-container iframe { width: 100%; height: 100%; border: none; }
-        .close-modal { position: absolute; top: -40px; right: 0; color: white; font-size: 30px; cursor: pointer; background: none; border: none; }
-        
-        /* Server Selector UI */
-        .server-menu { display: flex; gap: 15px; margin-top: 20px; background: #1a1a1a; padding: 10px 20px; border-radius: 30px; border: 1px solid #333; }
-        .server-btn { background: none; border: none; color: #aaa; font-size: 14px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px; padding: 8px 15px; border-radius: 20px; transition: 0.2s; }
-        .server-btn:hover { color: white; background: #333; }
-        .server-btn.active { color: #ff3333; background: rgba(255,51,51,0.1); }
-        
-        .spinner { display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 50px; height: 50px; border: 4px solid #333; border-top-color: #ff3333; border-radius: 50%; animation: spin 1s linear infinite; z-index: 10; }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #00ffcc;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(0,255,204,0.4);
+        }
+
+        .search-container {
+            flex: 1;
+            max-width: 600px;
+            margin: 0 40px;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 12px 20px;
+            border-radius: 30px;
+            border: 1px solid rgba(0, 255, 204, 0.3);
+            background: rgba(25, 25, 35, 0.8);
+            color: white;
+            font-size: 16px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .search-bar:focus {
+            border-color: #00ffcc;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.2);
+        }
+
+        .clock {
+            font-size: 18px;
+            font-weight: 500;
+            color: #8b8b9f;
+        }
+
+        /* Main Grid */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 50px 20px;
+            overflow-y: auto;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 500;
+            color: #8b8b9f;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 30px;
+            max-width: 900px;
+            width: 100%;
+            justify-items: center;
+        }
+
+        /* App Icons */
+        .app-icon {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .app-icon:hover {
+            transform: translateY(-5px);
+        }
+
+        .icon-box {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #1c1c24, #2a2a35);
+            border: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 36px;
+            margin-bottom: 12px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            transition: 0.3s;
+        }
+
+        .app-icon:hover .icon-box {
+            border-color: #00ffcc;
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.3);
+        }
+
+        .app-name {
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        /* Full Screen App Overlay */
+        #iframe-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #0a0a0f;
+            z-index: 100;
+            display: none;
+            flex-direction: column;
+        }
+
+        #iframe-overlay.active {
+            display: flex;
+        }
+
+        .overlay-header {
+            padding: 15px 20px;
+            background: #1c1c24;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .close-btn {
+            background: #e50914;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .close-btn:hover {
+            background: #ff1a25;
+        }
+
+        #app-frame {
+            flex: 1;
+            width: 100%;
+            border: none;
+            background: #fff;
+        }
+
+        /* Loader */
+        .loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #00ffcc;
+            font-size: 18px;
+            font-weight: 500;
+            display: none;
+        }
     </style>
 </head>
 <body>
 
-    <div class="navbar" id="navbar">
-        <div class="nav-left">
-            <div class="logo" onclick="window.scrollTo(0,0)">GHOSTFLIX</div>
-            <div class="nav-links">
-                <a class="active">Home</a>
-                <a>Movies</a>
-                <a>TV Shows</a>
-                <a>Anime</a>
-            </div>
+    <nav>
+        <div class="logo">NEXUS OS</div>
+        <div class="search-container">
+            <input type="text" id="searchInput" class="search-bar" placeholder="Search the web securely...">
         </div>
-        <div class="nav-right">
-            <i class="fas fa-search"></i>
-            <i class="fas fa-user-circle"></i>
-        </div>
-    </div>
+        <div class="clock" id="clock">00:00</div>
+    </nav>
 
-    <!-- Hero Banner -->
-    <div class="hero" id="hero-banner">
-        <div class="hero-content">
-            <div class="hero-title" id="hero-title">Loading...</div>
-            <div class="hero-meta">
-                <span class="badge" style="color:#f5c518;">IMDb 8.5</span>
-                <span id="hero-year">2024</span>
-                <span class="badge">4K Ultra HD</span>
-            </div>
-            <div class="hero-desc" id="hero-desc">Loading description...</div>
-            <div class="hero-btns">
-                <button class="btn btn-play" id="hero-play-btn"><i class="fas fa-play"></i> Play</button>
-                <button class="btn btn-info"><i class="fas fa-info-circle"></i> More Info</button>
-            </div>
+    <div class="main-content">
+        <div class="section-title">Your Apps</div>
+        <div class="app-grid" id="appGrid">
+            <!-- Apps will be injected here by JS -->
         </div>
     </div>
 
-    <!-- Rows -->
-    <div class="row">
-        <div class="row-title">Trending Now</div>
-        <div class="slider" id="trending-row"></div>
-    </div>
-
-    <div class="row">
-        <div class="row-title">Popular Movies</div>
-        <div class="slider" id="movies-row"></div>
-    </div>
-
-    <!-- Player Modal -->
-    <div class="modal" id="player-modal">
-        <div style="position: relative;">
-            <button class="close-modal" onclick="closePlayer()"><i class="fas fa-times-circle"></i></button>
-            <div class="player-container">
-                <div class="spinner" id="player-spin"></div>
-                <iframe id="player-iframe" allowfullscreen></iframe>
-            </div>
-            
-            <!-- Server Selector -->
-            <div class="server-menu">
-                <button class="server-btn active" onclick="changeServer(1)"><i class="fas fa-server"></i> Server 1 (Fast)</button>
-                <button class="server-btn" onclick="changeServer(2)"><i class="fas fa-server"></i> Server 2 (Backup)</button>
-                <button class="server-btn" onclick="changeServer(3)"><i class="fas fa-server"></i> Server 3 (Anime)</button>
-            </div>
+    <!-- Fullscreen Iframe Overlay -->
+    <div id="iframe-overlay">
+        <div class="overlay-header">
+            <div id="overlay-title" style="font-weight: bold; color: #00ffcc;">App</div>
+            <button class="close-btn" onclick="closeApp()">Close App</button>
+        </div>
+        <div id="app-frame-container" style="flex: 1; position: relative;">
+            <div class="loader" id="loader">Connecting to secure server...</div>
+            <iframe id="app-frame" allow="fullscreen; autoplay; encrypted-media" sandbox="allow-same-origin allow-scripts allow-forms allow-popups"></iframe>
         </div>
     </div>
 
     <script>
-        // API Key for TMDB (Real movie data)
-        const TMDB_KEY = '04c35731a5ee918f014970082a0088b1';
-        let currentMovieId = null;
-
-        window.onscroll = function() {
-            const nav = document.getElementById('navbar');
-            if (window.scrollY > 50) nav.style.background = '#0f0f0f';
-            else nav.style.background = 'linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, transparent 100%)';
-        };
-
-        async function fetchMovies() {
-            try {
-                // Fetch Trending
-                const trendRes = await fetch(`https://api.themoviedb.org/3/trending/movie/day?api_key=${TMDB_KEY}`);
-                const trendData = await trendRes.json();
-                
-                // Fetch Popular
-                const popRes = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${TMDB_KEY}`);
-                const popData = await popRes.json();
-
-                // Set Hero Banner to first trending movie
-                if (trendData.results.length > 0) {
-                    const heroMovie = trendData.results[0];
-                    document.getElementById('hero-title').innerText = heroMovie.title;
-                    document.getElementById('hero-desc').innerText = heroMovie.overview;
-                    document.getElementById('hero-year').innerText = heroMovie.release_date.split('-')[0];
-                    document.getElementById('hero-banner').style.backgroundImage = `url(https://image.tmdb.org/t/p/original${heroMovie.backdrop_path})`;
-                    
-                    document.getElementById('hero-play-btn').onclick = () => openPlayer(heroMovie.id);
-                }
-
-                // Render Rows
-                renderRow(trendData.results, 'trending-row');
-                renderRow(popData.results, 'movies-row');
-
-            } catch (e) {
-                console.error("API Failed", e);
-            }
+        // 1. Clock Logic
+        function updateClock() {
+            const now = new Date();
+            let h = now.getHours().toString().padStart(2, '0');
+            let m = now.getMinutes().toString().padStart(2, '0');
+            document.getElementById('clock').innerText = `${h}:${m}`;
         }
+        setInterval(updateClock, 1000);
+        updateClock();
 
-        function renderRow(movies, containerId) {
-            const container = document.getElementById(containerId);
-            container.innerHTML = '';
+        // 2. The App List
+        // We are using 'api.allorigins.win' as a secure proxy to load pages inside the iframe.
+        const apps = [
+            { name: 'TikTok', icon: '🎵', url: 'https://www.tiktok.com' },
+            { name: 'Movies', icon: '🍿', url: 'https://www.youtube.com/feed/trending' },
+            { name: 'Games', icon: '🎮', url: 'https://poki.com' },
+            { name: 'ChatGPT', icon: '🤖', url: 'https://chatgpt.com' },
+            { name: 'Discord', icon: '👾', url: 'https://discord.com/app' },
+            { name: 'Reddit', icon: '🛸', url: 'https://www.reddit.com' },
+            { name: 'Twitch', icon: '🟣', url: 'https://www.twitch.tv' },
+            { name: 'Spotify', icon: '🎧', url: 'https://open.spotify.com' }
+        ];
+
+        // 3. Render Apps to the Grid
+        const appGrid = document.getElementById('appGrid');
+        apps.forEach(app => {
+            const appDiv = document.createElement('div');
+            appDiv.className = 'app-icon';
+            appDiv.innerHTML = `
+                <div class="icon-box">${app.icon}</div>
+                <div class="app-name">${app.name}</div>
+            `;
+            appDiv.onclick = () => openApp(app.name, app.url);
+            appGrid.appendChild(appDiv);
+        });
+
+        // 4. Open App Logic (Using Proxy to bypass X-Frame-Options)
+        const overlay = document.getElementById('iframe-overlay');
+        const iframe = document.getElementById('app-frame');
+        const overlayTitle = document.getElementById('overlay-title');
+        const loader = document.getElementById('loader');
+
+        function openApp(name, url) {
+            overlay.classList.add('active');
+            overlayTitle.innerText = name;
+            loader.style.display = 'block';
+            iframe.style.opacity = '0';
             
-            movies.forEach(movie => {
-                if(!movie.poster_path) return;
-                
-                const card = document.createElement('div');
-                card.className = 'movie-card';
-                card.innerHTML = `
-                    <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">
-                    <div class="movie-info">
-                        <div class="movie-title">${movie.title}</div>
-                        <div class="movie-year">${movie.release_date ? movie.release_date.split('-')[0] : 'N/A'}</div>
-                    </div>
-                `;
-                card.onclick = () => openPlayer(movie.id);
-                container.appendChild(card);
-            });
-        }
-
-        // Player Logic
-        function openPlayer(movieId) {
-            currentMovieId = movieId;
-            document.getElementById('player-modal').classList.add('active');
-            loadServer(1);
-        }
-
-        function closePlayer() {
-            document.getElementById('player-modal').classList.remove('active');
-            document.getElementById('player-iframe').src = '';
-        }
-
-        function changeServer(serverNum) {
-            // Update UI buttons
-            document.querySelectorAll('.server-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.server-btn')[serverNum - 1].classList.add('active');
+            // Using a public CORS proxy to fetch the site so the school can't block the iframe
+            const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
             
-            loadServer(serverNum);
-        }
-
-        function loadServer(server) {
-            if(!currentMovieId) return;
-            
-            const spinner = document.getElementById('player-spin');
-            const iframe = document.getElementById('player-iframe');
-            
-            spinner.style.display = 'block';
-            iframe.style.display = 'none';
-            
-            let url = '';
-            if(server === 1) {
-                url = `https://vidsrc.xyz/embed/movie/${currentMovieId}`;
-            } else if(server === 2) {
-                url = `https://multiembed.mov/?video_id=${currentMovieId}&tmdb=1`;
-            } else if(server === 3) {
-                url = `https://2embed.cc/embed/${currentMovieId}`;
-            }
-
-            // Use a proxy to hide the URL from the school
-            const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
             iframe.src = proxyUrl;
-
-            // Hide spinner once loaded
-            iframe.onload = () => {
-                spinner.style.display = 'none';
-                iframe.style.display = 'block';
-            };
+            
+            // Simulate loading time for smooth UI
+            setTimeout(() => {
+                loader.style.display = 'none';
+                iframe.style.opacity = '1';
+            }, 1500);
         }
 
-        // Init
-        fetchMovies();
+        function closeApp() {
+            overlay.classList.remove('active');
+            iframe.src = 'about:blank'; // Kill the app process
+        }
+
+        // 5. Search Logic (Redirects to Google via proxy)
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                let query = this.value.trim();
+                if (query) {
+                    const searchUrl = 'https://www.google.com/search?q=' + encodeURIComponent(query);
+                    openApp('Search Results', searchUrl);
+                    this.value = '';
+                }
+            }
+        });
     </script>
 </body>
 </html>
