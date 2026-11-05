@@ -3,460 +3,454 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>N7x OS - Custom Portal</title>
+    <title>BlueOS</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-            user-select: none;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; user-select: none; }
 
         :root {
-            --bg-color: #0a0a0f;
-            --sidebar-bg: rgba(15, 15, 20, 0.85);
-            --accent: #ffd700; /* Gold accent from your screenshot */
+            --bg-color: #050508;
+            --sidebar-bg: rgba(10, 10, 15, 0.7);
+            --accent: #00ffcc; /* Cyan Premium Accent */
             --text-main: #ffffff;
             --text-sub: #8b8b9f;
-            --card-bg: rgba(25, 25, 35, 0.6);
+            --card-bg: rgba(20, 20, 30, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.08);
         }
 
         body {
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden;
-            background-color: var(--bg-color);
-            /* Your cinematic bokeh background */
-            background-image: url('https://images.unsplash.com/photo-1579546929518-9e396f3cc809?q=80&w=2070&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-            color: var(--text-main);
-            display: flex;
+            height: 100vh; width: 100vw; overflow: hidden; background-color: var(--bg-color);
+            /* Premium Cinematic Background */
+            background-image: radial-gradient(circle at 50% 0%, #151b2e 0%, #050508 70%);
+            color: var(--text-main); display: flex; flex-direction: column;
         }
 
-        /* Dark blur overlay so text is readable */
-        .bg-overlay {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(10, 10, 15, 0.65);
-            backdrop-filter: blur(12px);
-            z-index: 1;
+        .bg-glow {
+            position: absolute; top: -20%; left: 50%; transform: translateX(-50%);
+            width: 80vw; height: 80vw; background: radial-gradient(circle, rgba(0,255,204,0.1) 0%, transparent 60%);
+            z-index: 0; pointer-events: none;
         }
 
-        /* LEFT SIDEBAR */
+        /* --- TOP BROWSER BAR --- */
+        .browser-bar {
+            height: 60px; background: rgba(10, 10, 15, 0.85); backdrop-filter: blur(20px);
+            display: flex; align-items: center; padding: 0 20px; gap: 15px;
+            border-bottom: 1px solid var(--glass-border); z-index: 100;
+        }
+
+        .nav-controls { display: flex; gap: 10px; color: var(--text-sub); }
+        .nav-controls svg { width: 20px; height: 20px; cursor: pointer; transition: 0.2s; }
+        .nav-controls svg:hover { color: white; }
+
+        .url-bar {
+            flex: 1; background: #1c1c24; border: 1px solid #333; border-radius: 8px;
+            display: flex; align-items: center; padding: 0 15px; height: 38px;
+        }
+        
+        .padlock { font-size: 12px; margin-right: 10px; color: #4ade80; }
+        
+        .url-input {
+            flex: 1; background: transparent; border: none; color: white;
+            font-size: 14px; outline: none;
+        }
+
+        .top-right { display: flex; gap: 15px; align-items: center; font-size: 18px; }
+        .top-right span { cursor: pointer; transition: 0.2s; color: var(--text-sub); }
+        .top-right span:hover { color: white; }
+
+        /* --- MAIN LAYOUT --- */
+        .layout { display: flex; flex: 1; overflow: hidden; position: relative; z-index: 10; }
+
+        /* --- SIDEBAR --- */
         .sidebar {
-            width: 80px;
-            height: 100%;
-            background: var(--sidebar-bg);
-            backdrop-filter: blur(20px);
-            border-right: 1px solid rgba(255,255,255,0.05);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px 0;
-            z-index: 10;
+            width: 80px; background: var(--sidebar-bg); backdrop-filter: blur(20px);
+            border-right: 1px solid var(--glass-border); display: flex; flex-direction: column;
+            align-items: center; padding: 20px 0; transition: 0.3s;
         }
 
-        .sidebar-logo {
-            font-size: 28px;
-            margin-bottom: 30px;
-            color: var(--accent);
-            cursor: pointer;
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-        }
-
+        .logo { font-size: 28px; font-weight: 800; color: var(--accent); margin-bottom: 30px; cursor: pointer; text-shadow: 0 0 15px rgba(0,255,204,0.4); }
+        
         .nav-item {
-            width: 55px;
-            height: 55px;
-            border-radius: 12px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 22px;
-            margin-bottom: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: var(--text-sub);
+            width: 50px; height: 50px; border-radius: 14px; display: flex; justify-content: center; align-items: center;
+            margin-bottom: 10px; cursor: pointer; transition: 0.3s; color: var(--text-sub);
         }
+        
+        .nav-item svg { width: 24px; height: 24px; }
+        .nav-item:hover, .nav-item.active { background: rgba(0, 255, 204, 0.15); color: var(--accent); }
 
-        .nav-item:hover, .nav-item.active {
-            background: rgba(255, 215, 0, 0.15);
-            color: var(--accent);
-            transform: scale(1.05);
-        }
+        .sidebar-bottom { margin-top: auto; display: flex; flex-direction: column; gap: 10px; align-items: center;}
+        .profile-icon { width: 40px; height: 40px; border-radius: 50%; background: #333; display: flex; justify-content: center; align-items: center; font-weight: bold; cursor: pointer; overflow: hidden; border: 2px solid transparent; transition: 0.2s; }
+        .profile-icon:hover { border-color: var(--accent); }
+        .profile-icon img { width: 100%; height: 100%; object-fit: cover; }
 
-        .sidebar-bottom {
-            margin-top: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
+        /* --- CONTENT AREA --- */
+        .content { flex: 1; position: relative; overflow-y: auto; overflow-x: hidden; }
 
-        /* MAIN CONTENT AREA */
-        .main-content {
-            flex: 1;
-            height: 100%;
-            position: relative;
-            z-index: 10;
-            overflow-y: auto;
-        }
-
-        /* Page Containers (For Slide-up animations) */
         .page {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            padding: 40px;
-            display: none;
-            flex-direction: column;
-            animation: slideUpFade 0.4s ease forwards;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; padding: 40px;
+            display: none; flex-direction: column; animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
-        .page.active {
-            display: flex;
-        }
+        .page.active { display: flex; }
 
-        @keyframes slideUpFade {
-            0% { opacity: 0; transform: translateY(30px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes slideUp { 0% { opacity: 0; transform: translateY(40px); } 100% { opacity: 1; transform: translateY(0); } }
 
-        /* Header Styles */
-        .page-header {
-            font-size: 36px;
-            font-weight: 700;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        .header { font-size: 42px; font-weight: 700; margin-bottom: 8px; letter-spacing: -1px; }
+        .subheader { color: var(--text-sub); font-size: 15px; margin-bottom: 40px; }
 
-        .page-subtitle {
-            color: var(--text-sub);
-            font-size: 14px;
-            margin-bottom: 30px;
-            letter-spacing: 1px;
+        /* --- HOME SCREEN --- */
+        .home-container { height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+        .home-title { font-size: 72px; font-weight: 800; margin-bottom: 10px; letter-spacing: 4px; }
+        .home-title span { color: var(--accent); text-shadow: 0 0 30px rgba(0,255,204,0.5); }
+        .home-greeting { font-size: 18px; color: var(--text-sub); margin-bottom: 30px; }
+        
+        .main-search-box { width: 100%; max-width: 650px; position: relative; }
+        .main-search-box input {
+            width: 100%; padding: 20px 30px; border-radius: 40px; border: 1px solid var(--glass-border);
+            background: rgba(25, 25, 35, 0.8); color: white; font-size: 18px; outline: none; transition: 0.3s;
+            backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
+        .main-search-box input:focus { border-color: var(--accent); background: rgba(25, 25, 35, 1); box-shadow: 0 0 30px rgba(0,255,204,0.15); }
 
-        /* APP CARDS (Matching your "Apps" screenshot) */
-        .app-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 15px;
-        }
-
+        /* --- APP GRID --- */
+        .app-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 20px; }
         .app-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            border-radius: 12px;
-            padding: 20px 15px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            cursor: pointer;
-            border: 1px solid rgba(255,255,255,0.05);
-            transition: all 0.2s ease;
+            background: var(--card-bg); backdrop-filter: blur(10px); border-radius: 20px; padding: 20px 15px;
+            display: flex; flex-direction: column; align-items: center; gap: 12px; cursor: pointer;
+            border: 1px solid var(--glass-border); transition: 0.2s;
         }
+        .app-card:hover { background: rgba(40, 40, 50, 0.8); border-color: var(--accent); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        .app-icon { width: 55px; height: 55px; object-fit: contain; }
+        .app-name { font-size: 14px; font-weight: 600; text-align: center; }
 
-        .app-card:hover {
-            background: rgba(40, 40, 50, 0.8);
-            border-color: var(--accent);
-            transform: translateY(-3px);
+        /* --- CUSTOM FORMS / PLAYERS --- */
+        .form-box { background: rgba(255,255,255,0.03); border: 1px dashed var(--glass-border); padding: 25px; border-radius: 16px; margin-top: 40px; max-width: 600px; display: flex; flex-direction: column; gap: 12px; }
+        .form-box h3 { color: var(--accent); font-size: 18px; margin-bottom: 5px; }
+        .form-box input { padding: 14px; border-radius: 10px; background: #1c1c24; border: 1px solid #333; color: white; outline: none; }
+        .form-box button { padding: 14px; border-radius: 10px; background: var(--accent); color: black; font-weight: bold; cursor: pointer; border: none; transition: 0.2s; }
+        .form-box button:hover { background: #00d1a7; }
+
+        .media-player { width: 100%; max-width: 800px; border-radius: 12px; background: #000; border: 1px solid #333; margin-top: 20px; }
+        .media-inputs { display: flex; gap: 10px; max-width: 800px; }
+        .media-inputs input { flex: 1; padding: 14px; border-radius: 10px; background: #1c1c24; border: 1px solid #333; color: white; outline: none; }
+        .media-inputs button { padding: 0 25px; border-radius: 10px; background: var(--accent); color: black; font-weight: bold; border: none; cursor: pointer; }
+
+        /* --- AI PAGE --- */
+        .ai-container { height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .ai-welcome { font-size: 36px; font-weight: 700; margin-bottom: 10px; }
+        .ai-sub { color: var(--text-sub); margin-bottom: 40px; }
+        .ai-chat-box { width: 100%; max-width: 700px; background: rgba(20, 20, 30, 0.8); border: 1px solid var(--glass-border); border-radius: 16px; display: flex; padding: 10px 20px; align-items: center; }
+        .ai-chat-box input { flex: 1; background: transparent; border: none; color: white; font-size: 16px; outline: none; padding: 10px 0;}
+        .ai-chat-box button { background: var(--accent); color: black; border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; font-weight: bold; font-size: 18px;}
+
+        /* --- SETTINGS PANEL --- */
+        .settings-panel {
+            position: absolute; top: 0; right: -350px; width: 320px; height: 100%;
+            background: rgba(10, 10, 15, 0.95); backdrop-filter: blur(30px);
+            border-left: 1px solid var(--glass-border); z-index: 500;
+            transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1); padding: 30px;
         }
+        .settings-panel.active { right: 0; box-shadow: -20px 0 50px rgba(0,0,0,0.5); }
+        .settings-panel h2 { font-size: 24px; color: var(--accent); margin-bottom: 20px; }
+        .setting-group { margin-bottom: 25px; }
+        .setting-group label { display: block; font-size: 12px; color: var(--text-sub); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;}
+        .setting-group input { width: 100%; padding: 12px; border-radius: 8px; background: #1c1c24; border: 1px solid #333; color: white; outline: none; }
 
-        .app-icon {
-            font-size: 24px;
-        }
-
-        .app-name {
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        /* AI SECTION (Matching your AI screenshot) */
-        .ai-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-            text-align: center;
-            animation: slideUpFade 0.5s ease forwards;
-        }
-
-        .ai-greeting {
-            font-size: 42px;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-
-        .ai-sub {
-            color: var(--text-sub);
-            margin-bottom: 40px;
-        }
-
-        .ai-input-box {
-            width: 600px;
-            max-width: 90%;
-            background: rgba(25, 25, 35, 0.8);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 20px;
-            padding: 15px 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            backdrop-filter: blur(10px);
-        }
-
-        .ai-input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: white;
-            font-size: 16px;
-            outline: none;
-        }
-
-        .ai-send {
-            background: var(--accent);
-            color: black;
-            border: none;
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        /* Search Bar on Home */
-        .home-search-container {
-            width: 100%;
-            max-width: 700px;
-            position: relative;
-            margin-bottom: 40px;
-        }
-
-        .home-search {
-            width: 100%;
-            padding: 18px 25px 18px 50px;
-            border-radius: 30px;
-            border: 1px solid rgba(255, 215, 0, 0.2);
-            background: rgba(20, 20, 25, 0.7);
-            backdrop-filter: blur(10px);
-            color: white;
-            font-size: 16px;
-            outline: none;
-            transition: 0.3s;
-        }
-
-        .home-search:focus {
-            border-color: var(--accent);
-            background: rgba(20, 20, 25, 0.9);
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.15);
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--accent);
-            font-size: 18px;
-        }
-
-        /* Iframe Overlay */
-        #iframe-overlay {
-            position: absolute;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: #0a0a0f;
-            z-index: 1000;
-            display: none;
-            flex-direction: column;
-        }
-
-        #iframe-overlay.active { display: flex; }
-
-        .overlay-header {
-            padding: 15px 20px;
-            background: rgba(20, 20, 25, 0.95);
-            display: flex;
-            justify-content: space-between;
-            border-bottom: 1px solid rgba(255,215,0,0.2);
-        }
-
-        .close-btn {
-            background: #e50914; color: white; border: none;
-            padding: 8px 16px; border-radius: 8px; font-weight: bold;
-            cursor: pointer;
-        }
-
-        #app-frame { flex: 1; width: 100%; border: none; background: #fff; }
-
+        /* --- IFRAME --- */
+        #iframe-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; background: #fff; z-index: 200; }
+        #iframe-container.active { display: block; }
+        #site-frame { width: 100%; height: 100%; border: none; }
+        
         /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
     </style>
 </head>
 <body>
 
-    <div class="bg-overlay"></div>
+    <div class="bg-glow"></div>
 
-    <!-- SIDEBAR -->
-    <div class="sidebar">
-        <div class="sidebar-logo" onclick="switchPage('home')">☾</div>
+    <!-- TOP BROWSER BAR -->
+    <div class="browser-bar">
+        <div class="nav-controls">
+            <svg onclick="history.back()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            <svg onclick="history.forward()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            <svg onclick="location.reload()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+        </div>
         
-        <div class="nav-item active" onclick="switchPage('home', this)" title="Home">🏠</div>
-        <div class="nav-item" onclick="switchPage('studies', this)" title="Studies">📚</div>
-        <div class="nav-item" onclick="switchPage('apps', this)" title="Apps">🧩</div>
-        <div class="nav-item" onclick="switchPage('music', this)" title="Music">🎵</div>
-        <div class="nav-item" onclick="switchPage('movies', this)" title="Movies">🍿</div>
-        <div class="nav-item" onclick="switchPage('ai', this)" title="AI">✨</div>
-        
-        <div class="sidebar-bottom">
-            <div class="nav-item" title="Discord">👾</div>
-            <div class="nav-item" title="Settings">⚙️</div>
-            <div class="nav-item" style="font-size: 16px; font-weight: bold; color: #fff;" title="Profile">K</div>
+        <div class="url-bar">
+            <span class="padlock">🔒</span>
+            <input type="text" id="urlInput" class="url-input" placeholder="Search Google or enter URL..." onkeypress="handleUrlEnter(event)">
+        </div>
+
+        <div class="top-right">
+            <span>⚙</span>
+            <span onclick="toggleSettings()" style="font-size: 20px;">☰</span>
         </div>
     </div>
 
-    <!-- MAIN CONTENT -->
-    <div class="main-content">
+    <!-- MAIN LAYOUT -->
+    <div class="layout">
         
-        <!-- HOME PAGE -->
-        <div id="home-page" class="page active" style="justify-content: center; align-items: center;">
-            <div style="font-size: 60px; font-weight: 700; margin-bottom: 20px; text-shadow: 0 5px 20px rgba(0,0,0,0.5);">N7x</div>
-            <div class="home-search-container">
-                <span class="search-icon">🔍</span>
-                <input type="text" id="searchInput" class="home-search" placeholder="Search or enter URL...">
-            </div>
-            <div style="color: var(--text-sub); font-size: 14px;">All systems operational. Welcome back, kingbluerx.</div>
-        </div>
-
-        <!-- APPS PAGE (Like your screenshot) -->
-        <div id="apps-page" class="page">
-            <div class="page-header">Apps <span style="font-size: 14px; color: var(--text-sub); cursor: pointer;">All Studies</span></div>
-            <div class="page-subtitle">Everything in N7x.</div>
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <div class="logo" onclick="switchPage('home', document.querySelector('.nav-item'))">B</div>
             
-            <div class="app-grid">
-                <div class="app-card" onclick="openApp('YouTube', 'https://youtube.com')"><span class="app-icon">▶️</span><span class="app-name">N7xTube</span></div>
-                <div class="app-card" onclick="openApp('TikTok', 'https://tiktok.com')"><span class="app-icon">🎵</span><span class="app-name">TikTok</span></div>
-                <div class="app-card" onclick="openApp('Movies', 'https://netflix.com')"><span class="app-icon">🎬</span><span class="app-name">Movi3s</span></div>
-                <div class="app-card" onclick="openApp('Chat', 'https://chatgpt.com')"><span class="app-icon">🤖</span><span class="app-name">Duck.AI</span></div>
-                <div class="app-card" onclick="openApp('Code', 'https://codesandbox.io')"><span class="app-icon">💻</span><span class="app-name">Cod3 Sandbox</span></div>
+            <div class="nav-item active" onclick="switchPage('home', this)" title="Home">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+            </div>
+            <div class="nav-item" onclick="switchPage('apps', this)" title="Apps">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            </div>
+            <div class="nav-item" onclick="switchPage('music', this)" title="Music">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+            </div>
+            <div class="nav-item" onclick="switchPage('movies', this)" title="Movies">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line><line x1="2" y1="12" x2="22" y2="12"></line><line x1="2" y1="7" x2="7" y2="7"></line><line x1="2" y1="17" x2="7" y2="17"></line><line x1="17" y1="17" x2="22" y2="17"></line><line x1="17" y1="7" x2="22" y2="7"></line></svg>
+            </div>
+            <div class="nav-item" onclick="switchPage('ai', this)" title="AI">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            </div>
+            
+            <div class="sidebar-bottom">
+                <div class="nav-item" onclick="toggleSettings()" title="Settings">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                </div>
+                <div class="profile-icon" id="profileAvatar" onclick="toggleSettings()">K</div>
             </div>
         </div>
 
-        <!-- AI PAGE (Like your AI screenshot) -->
-        <div id="ai-page" class="page" style="padding: 0;">
-            <div class="ai-container">
-                <div class="ai-greeting">Welcome back, kingbluerx</div>
-                <div class="ai-sub">What would you like to explore today?</div>
-                
-                <div class="ai-input-box">
-                    <input type="text" class="ai-input" placeholder="Message N7x AI...">
-                    <button class="ai-send">↑</button>
+        <!-- CONTENT -->
+        <div class="content" id="mainContent">
+            
+            <!-- HOME -->
+            <div id="home-page" class="page active">
+                <div class="home-container">
+                    <div class="home-title">BLUE<span>OS</span></div>
+                    <div class="home-greeting">Welcome back, <span id="homeUserName" style="color:white; font-weight:bold;">kingbluerx</span></div>
+                    <div class="main-search-box">
+                        <input type="text" placeholder="Search the web..." onkeypress="handleUrlEnter(event)">
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- MOVIES PAGE -->
-        <div id="movies-page" class="page">
-            <div class="page-header">Movies</div>
-            <div class="page-subtitle">Streaming platforms.</div>
-            <div class="app-grid">
-                <div class="app-card" onclick="openApp('Netflix', 'https://netflix.com')"><span class="app-icon">🍿</span><span class="app-name">Netflix</span></div>
-                <div class="app-card" onclick="openApp('Hulu', 'https://hulu.com')"><span class="app-icon">📺</span><span class="app-name">Hulu</span></div>
-                <div class="app-card" onclick="openApp('Prime', 'https://primevideo.com')"><span class="app-icon">🎬</span><span class="app-name">Prime Video</span></div>
+            <!-- APPS -->
+            <div id="apps-page" class="page">
+                <div class="header">Apps</div>
+                <div class="subheader">Your installed applications.</div>
+                <div class="app-grid" id="appGrid">
+                    <!-- Default Apps -->
+                    <div class="app-card" onclick="openApp('YouTube', 'https://youtube.com')">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/0/09/YouTube_full-color_icon_%282017%29.svg" class="app-icon">
+                        <span class="app-name">YouTube</span>
+                    </div>
+                    <div class="app-card" onclick="openApp('TikTok', 'https://tiktok.com')">
+                        <img src="https://upload.wikimedia.org/wikipedia/en/a/a9/TikTok_logo.svg" class="app-icon">
+                        <span class="app-name">TikTok</span>
+                    </div>
+                    <div class="app-card" onclick="openApp('Instagram', 'https://instagram.com')">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" class="app-icon">
+                        <span class="app-name">Instagram</span>
+                    </div>
+                    <div class="app-card" onclick="openApp('Discord', 'https://discord.com/app')">
+                        <img src="https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0a6a49cf127bf92de1e2_icon_clyde_blurple_RGB.png" class="app-icon">
+                        <span class="app-name">Discord</span>
+                    </div>
+                </div>
+
+                <!-- Add App Form -->
+                <div class="form-box">
+                    <h3>Add Custom App</h3>
+                    <input type="text" id="newAppName" placeholder="App Name">
+                    <input type="text" id="newAppUrl" placeholder="App Link (URL)">
+                    <input type="text" id="newAppIcon" placeholder="Icon Image URL (Optional)">
+                    <button onclick="addNewApp()">Add to Grid</button>
+                </div>
             </div>
-        </div>
 
-        <!-- MUSIC PAGE -->
-        <div id="music-page" class="page">
-            <div class="page-header">Music</div>
-            <div class="page-subtitle">Listen to your favorite tracks.</div>
-            <div class="app-grid">
-                <div class="app-card" onclick="openApp('Spotify', 'https://open.spotify.com')"><span class="app-icon">🎧</span><span class="app-name">Spotify</span></div>
-                <div class="app-card" onclick="openApp('SoundCloud', 'https://soundcloud.com')"><span class="app-icon">☁️</span><span class="app-name">SoundCloud</span></div>
+            <!-- MUSIC -->
+            <div id="music-page" class="page">
+                <div class="header">Music</div>
+                <div class="subheader">Paste a direct MP3 link to play audio.</div>
+                <div class="media-inputs">
+                    <input type="text" id="musicUrl" placeholder="https://example.com/song.mp3">
+                    <button onclick="playMusic()">Play</button>
+                </div>
+                <audio id="audioPlayer" class="media-player" controls></audio>
             </div>
-        </div>
 
-        <!-- STUDIES PAGE -->
-        <div id="studies-page" class="page">
-            <div class="page-header">Studies</div>
-            <div class="page-subtitle">Educational resources.</div>
-            <div class="app-grid">
-                <div class="app-card" onclick="openApp('Desmos', 'https://desmos.com')"><span class="app-icon">📐</span><span class="app-name">Desmos</span></div>
-                <div class="app-card" onclick="openApp('Quizlet', 'https://quizlet.com')"><span class="app-icon">🃏</span><span class="app-name">Quizlet</span></div>
-                <div class="app-card" onclick="openApp('Wikipedia', 'https://wikipedia.org')"><span class="app-icon">🌐</span><span class="app-name">Wikipedia</span></div>
+            <!-- MOVIES -->
+            <div id="movies-page" class="page">
+                <div class="header">Movies</div>
+                <div class="subheader">Paste a direct MP4 link to watch a video.</div>
+                <div class="media-inputs">
+                    <input type="text" id="movieUrl" placeholder="https://example.com/video.mp4">
+                    <button onclick="playMovie()">Watch</button>
+                </div>
+                <video id="videoPlayer" class="media-player" controls></video>
             </div>
+
+            <!-- AI -->
+            <div id="ai-page" class="page">
+                <div class="ai-container">
+                    <div class="ai-welcome">Welcome back, <span id="aiUserName" style="color:var(--accent);">kingbluerx</span></div>
+                    <div class="ai-sub">What would you like to explore today?</div>
+                    <div class="ai-chat-box">
+                        <input type="text" id="aiInput" placeholder="Message Blue AI..." onkeypress="handleAiEnter(event)">
+                        <button onclick="sendAiMessage()">↑</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- IFRAME APP VIEWER -->
+            <div id="iframe-container">
+                <iframe id="site-frame" sandbox="allow-same-origin allow-scripts allow-forms allow-popups"></iframe>
+            </div>
+
         </div>
 
-    </div>
-
-    <!-- IFRAME OVERLAY -->
-    <div id="iframe-overlay">
-        <div class="overlay-header">
-            <div id="overlay-title" style="font-weight: bold; color: var(--accent);">App</div>
-            <button class="close-btn" onclick="closeApp()">Close App</button>
+        <!-- SETTINGS PANEL -->
+        <div class="settings-panel" id="settingsPanel">
+            <h2>Settings</h2>
+            <div class="setting-group">
+                <label>Profile Name</label>
+                <input type="text" id="nameInput" value="kingbluerx" onkeyup="updateName()">
+            </div>
+            <div class="setting-group">
+                <label>Profile Picture URL</label>
+                <input type="text" id="avatarInput" placeholder="https://example.com/pic.jpg" onkeyup="updateAvatar()">
+            </div>
+            <button onclick="toggleSettings()" style="margin-top:20px; padding:10px 20px; background:#e50914; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer; width:100%;">Close Settings</button>
         </div>
-        <iframe id="app-frame" sandbox="allow-same-origin allow-scripts allow-forms allow-popups"></iframe>
+
     </div>
 
     <script>
-        // 1. Page Navigation Logic (With Slide-up Animation)
+        // --- PAGE NAVIGATION ---
         function switchPage(pageId, element) {
-            // Hide all pages
-            document.querySelectorAll('.page').forEach(page => {
-                page.classList.remove('active');
-            });
-            
-            // Show the target page
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
             document.getElementById(`${pageId}-page`).classList.add('active');
-
-            // Update sidebar active state
+            
             if (element) {
                 document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
                 element.classList.add('active');
             }
+
+            // Close iframe when switching tabs
+            closeApp();
+
+            // Pause media
+            document.getElementById('audioPlayer').pause();
+            document.getElementById('videoPlayer').pause();
         }
 
-        // 2. App Launch Logic (Using CORS proxy)
-        const overlay = document.getElementById('iframe-overlay');
-        const iframe = document.getElementById('app-frame');
-        const overlayTitle = document.getElementById('overlay-title');
+        // --- BROWSER BAR SEARCH ---
+        function handleUrlEnter(e) {
+            if (e.key === 'Enter') {
+                let query = e.target.value.trim();
+                if (!query) return;
+                if (!query.startsWith('http')) {
+                    query = 'https://www.google.com/search?q=' + encodeURIComponent(query);
+                }
+                openApp('Browser', query);
+                e.target.value = '';
+            }
+        }
+
+        // --- IFRAME SYSTEM ---
+        const iframeContainer = document.getElementById('iframe-container');
+        const siteFrame = document.getElementById('site-frame');
+        const urlInput = document.getElementById('urlInput');
 
         function openApp(name, url) {
-            overlay.classList.add('active');
-            overlayTitle.innerText = name;
-            // Proxy to bypass iframe blocks
-            iframe.src = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
+            iframeContainer.classList.add('active');
+            urlInput.value = url;
+            // Using CORS proxy to bypass iframe blocks
+            siteFrame.src = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
         }
 
         function closeApp() {
-            overlay.classList.remove('active');
-            iframe.src = 'about:blank';
+            iframeContainer.classList.remove('active');
+            siteFrame.src = 'about:blank';
         }
 
-        // 3. Search Bar Logic
-        document.getElementById('searchInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                let query = this.value.trim();
-                if (query) {
-                    if (!query.startsWith('http')) {
-                        query = 'https://www.google.com/search?q=' + encodeURIComponent(query);
-                    }
-                    openApp('Search Results', query);
-                    this.value = '';
-                }
+        // --- ADD CUSTOM APPS ---
+        function addNewApp() {
+            const name = document.getElementById('newAppName').value;
+            const url = document.getElementById('newAppUrl').value;
+            let iconUrl = document.getElementById('newAppIcon').value;
+            
+            if (!name || !url) return alert("Please enter a name and URL.");
+            if (!iconUrl) iconUrl = "https://cdn-icons-png.flaticon.com/512/716/716784.png";
+
+            const appGrid = document.getElementById('appGrid');
+            const newCard = document.createElement('div');
+            newCard.className = 'app-card';
+            newCard.onclick = () => openApp(name, url);
+            newCard.innerHTML = `
+                <img src="${iconUrl}" class="app-icon" onerror="this.src='https://cdn-icons-png.flaticon.com/512/716/716784.png'">
+                <span class="app-name">${name}</span>
+            `;
+            appGrid.appendChild(newCard);
+
+            document.getElementById('newAppName').value = '';
+            document.getElementById('newAppUrl').value = '';
+            document.getElementById('newAppIcon').value = '';
+        }
+
+        // --- MEDIA PLAYERS ---
+        function playMusic() {
+            const url = document.getElementById('musicUrl').value;
+            const player = document.getElementById('audioPlayer');
+            if (url) { player.src = url; player.play(); }
+        }
+
+        function playMovie() {
+            const url = document.getElementById('movieUrl').value;
+            const player = document.getElementById('videoPlayer');
+            if (url) { player.src = url; player.play(); }
+        }
+
+        // --- AI CHAT MOCK ---
+        function handleAiEnter(e) { if(e.key === 'Enter') sendAiMessage(); }
+        
+        function sendAiMessage() {
+            const input = document.getElementById('aiInput');
+            const msg = input.value.trim();
+            if (msg) {
+                // Simple mock response for now
+                input.value = '';
+                input.placeholder = "Thinking...";
+                setTimeout(() => {
+                    input.placeholder = `AI: You said "${msg}". (Connect an API key to make this real!)`;
+                }, 1000);
             }
-        });
+        }
+
+        // --- SETTINGS & PROFILE ---
+        function toggleSettings() {
+            document.getElementById('settingsPanel').classList.toggle('active');
+        }
+
+        function updateName() {
+            const newName = document.getElementById('nameInput').value;
+            document.getElementById('homeUserName').innerText = newName;
+            document.getElementById('aiUserName').innerText = newName;
+        }
+
+        function updateAvatar() {
+            const url = document.getElementById('avatarInput').value;
+            const avatar = document.getElementById('profileAvatar');
+            if (url) {
+                avatar.innerHTML = `<img src="${url}" onerror="this.style.display='none'">`;
+                avatar.style.background = "transparent";
+            } else {
+                avatar.innerHTML = "K";
+                avatar.style.background = "#333";
+            }
+        }
     </script>
 </body>
 </html>
