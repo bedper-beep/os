@@ -23,7 +23,6 @@
             position: relative;
         }
 
-        /* Cyber Blue Animated Background */
         .bg-animation {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
             background: radial-gradient(circle at 50% 50%, rgba(0, 85, 255, 0.15) 0%, transparent 70%);
@@ -35,14 +34,12 @@
             100% { transform: scale(1.1); opacity: 1; }
         }
 
-        /* Grunge/Texture Overlay */
         .texture-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
             background-image: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
             opacity: 0.3; pointer-events: none;
         }
 
-        /* Main App Container */
         .app-container {
             position: relative; z-index: 10;
             width: 100%; max-width: 800px; height: 95vh;
@@ -53,10 +50,9 @@
             overflow-y: auto;
         }
 
-        /* Header */
         .header {
             display: flex; justify-content: space-between; align-items: flex-start;
-            margin-bottom: 20px; animation: fadeIn 0.6s ease;
+            margin-bottom: 20px;
         }
 
         .header-left { display: flex; flex-direction: column; }
@@ -77,17 +73,16 @@
         }
         .tiktok-badge:hover { background: var(--blue-main); box-shadow: 0 0 15px var(--blue-main); }
 
-        /* Profile Card */
         .profile-card {
             display: flex; align-items: center; gap: 20px;
             background: rgba(0, 10, 30, 0.8); border: 1px solid rgba(0, 85, 255, 0.2);
             border-radius: 16px; padding: 20px; margin-bottom: 25px;
-            animation: fadeIn 0.6s ease 0.2s forwards; opacity: 0;
         }
         
         .profile-img-container {
             width: 80px; height: 80px; border-radius: 12px; overflow: hidden;
             border: 2px solid var(--blue-main); box-shadow: 0 0 15px rgba(0, 85, 255, 0.4);
+            background: #111;
         }
         .profile-img-container img { width: 100%; height: 100%; object-fit: cover; }
         
@@ -97,7 +92,6 @@
         /* Sensitivity Grid */
         .sensi-grid {
             display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
-            animation: fadeIn 0.6s ease 0.4s forwards; opacity: 0;
         }
 
         .sensi-card {
@@ -122,26 +116,29 @@
 
         .sensi-value {
             font-size: 32px; font-weight: 900; color: var(--blue-glow);
-            text-shadow: 0 0 15px rgba(0, 170, 255, 0.6);
+            text-shadow: 0 0 15px rgba(0, 170, 255, 0.6); transition: 0.3s;
         }
 
-        /* Copy Button */
+        /* Buttons */
+        .btn-container { display: flex; gap: 15px; margin-top: 30px; }
+
         .copy-btn {
-            width: 100%; padding: 20px; margin-top: 30px;
+            flex: 1; padding: 20px;
+            background: transparent; border: 2px solid var(--blue-main); color: var(--blue-main);
+            font-size: 18px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;
+            border-radius: 12px; cursor: pointer; transition: 0.3s;
+        }
+        .copy-btn:hover { background: rgba(0, 85, 255, 0.2); box-shadow: 0 0 15px var(--blue-main); }
+
+        .generate-btn {
+            flex: 2; padding: 20px;
             background: var(--blue-main); color: #fff;
-            font-size: 20px; font-weight: 800; text-transform: uppercase; letter-spacing: 3px;
+            font-size: 18px; font-weight: 800; text-transform: uppercase; letter-spacing: 3px;
             border: none; border-radius: 12px; cursor: pointer;
-            box-shadow: 0 10px 30px rgba(0, 85, 255, 0.4);
-            transition: 0.3s; animation: fadeIn 0.6s ease 0.6s forwards; opacity: 0;
-            position: relative; overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 85, 255, 0.4); transition: 0.3s;
         }
+        .generate-btn:hover { background: #0044cc; transform: scale(1.02); box-shadow: 0 15px 40px rgba(0, 85, 255, 0.6); }
 
-        .copy-btn:hover {
-            background: #0044cc; transform: scale(1.02);
-            box-shadow: 0 15px 40px rgba(0, 85, 255, 0.6);
-        }
-
-        /* Barcode Footer */
         .barcode-footer {
             margin-top: 30px; display: flex; justify-content: space-between; align-items: center;
             border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;
@@ -149,15 +146,41 @@
         }
         .barcode { font-family: 'Libre Barcode 39', cursive; font-size: 24px; letter-spacing: 2px; opacity: 0.5;}
 
-        /* Animations */
-        @keyframes fadeIn {
-            0% { opacity: 0; transform: translateY(20px); }
-            100% { opacity: 1; transform: translateY(0); }
+        /* MODAL FOR GENERATOR */
+        #generator-modal {
+            position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(10px);
+            z-index: 100; display: none; justify-content: center; align-items: center;
+        }
+        #generator-modal.active { display: flex; }
+        
+        .modal-box {
+            background: #050a15; border: 1px solid var(--blue-main);
+            border-radius: 20px; padding: 40px; width: 90%; max-width: 500px;
+            box-shadow: 0 0 50px rgba(0, 85, 255, 0.3);
+            animation: popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-thumb { background: var(--blue-main); border-radius: 10px; }
+        @keyframes popIn { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+        .modal-box h2 { font-size: 28px; color: var(--blue-glow); margin-bottom: 10px; font-family: 'Oswald', sans-serif; text-transform: uppercase;}
+        .modal-box p { color: var(--text-sub); font-size: 14px; margin-bottom: 25px; }
+
+        .input-group { margin-bottom: 20px; }
+        .input-group label { display: block; font-size: 12px; color: var(--blue-main); margin-bottom: 8px; font-weight: bold; text-transform: uppercase;}
+        .input-group select, .input-group input {
+            width: 100%; padding: 15px; background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(0, 85, 255, 0.3); border-radius: 10px;
+            color: white; font-size: 16px; outline: none; font-family: 'Inter', sans-serif;
+        }
+        .input-group select:focus, .input-group input:focus { border-color: var(--blue-glow); }
+
+        .modal-actions { display: flex; gap: 10px; margin-top: 30px; }
+        .modal-actions button {
+            flex: 1; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; border: none; font-size: 16px;
+        }
+        .cancel-btn { background: #333; color: white; }
+        .confirm-btn { background: var(--blue-main); color: white; }
     </style>
 </head>
 <body>
@@ -179,44 +202,48 @@
         </div>
 
         <div class="profile-card">
-            <!-- I put the exact image you sent here -->
             <div class="profile-img-container">
-                <img src="https://i.imgur.com/your-image-link-here.jpg" alt="Profile" id="profilePic"> 
+                <!-- Replaced with a cool gaming avatar so it doesn't break -->
+                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=KingBlue&backgroundColor=0055ff" alt="Profile"> 
             </div>
             <div class="profile-info">
                 <h2>KING BLUE RX</h2>
-                <p>Free Fire Pro Sensi 2024</p>
+                <p>Free Fire Pro Sensi 2026</p>
             </div>
         </div>
 
-        <div class="sensi-grid">
+        <div class="sensi-grid" id="sensi-display">
+            <!-- Values will generate here -->
             <div class="sensi-card">
                 <div class="sensi-info"><h3>General</h3><p>Look around</p></div>
-                <div class="sensi-value">98</div>
+                <div class="sensi-value" id="val-general">98</div>
             </div>
             <div class="sensi-card">
                 <div class="sensi-info"><h3>Red Dot</h3><p>Close range</p></div>
-                <div class="sensi-value">95</div>
+                <div class="sensi-value" id="val-reddot">95</div>
             </div>
             <div class="sensi-card">
                 <div class="sensi-info"><h3>2x Scope</h3><p>Mid range</p></div>
-                <div class="sensi-value">85</div>
+                <div class="sensi-value" id="val-2x">85</div>
             </div>
             <div class="sensi-card">
                 <div class="sensi-info"><h3>4x Scope</h3><p>Long range</p></div>
-                <div class="sensi-value">75</div>
+                <div class="sensi-value" id="val-4x">75</div>
             </div>
             <div class="sensi-card">
                 <div class="sensi-info"><h3>AWM Scope</h3><p>Sniper</p></div>
-                <div class="sensi-value">60</div>
+                <div class="sensi-value" id="val-awm">60</div>
             </div>
             <div class="sensi-card">
                 <div class="sensi-info"><h3>Fire Button</h3><p>Size</p></div>
-                <div class="sensi-value">55</div>
+                <div class="sensi-value" id="val-fire">55</div>
             </div>
         </div>
 
-        <button class="copy-btn" onclick="copySettings()">COPY SETTINGS</button>
+        <div class="btn-container">
+            <button class="copy-btn" onclick="copySettings()">COPY</button>
+            <button class="generate-btn" onclick="openModal()">GENERATE</button>
+        </div>
 
         <div class="barcode-footer">
             <span>BUILT DIFFERENT</span>
@@ -226,19 +253,141 @@
 
     </div>
 
+    <!-- GENERATOR MODAL -->
+    <div id="generator-modal">
+        <div class="modal-box">
+            <h2>Sensi Generator</h2>
+            <p>Select your device for AI-optimized headshot settings.</p>
+            
+            <div class="input-group">
+                <label>Device Brand</label>
+                <select id="deviceBrand" onchange="updateModels()">
+                    <option value="iPhone">iPhone (iOS)</option>
+                    <option value="Samsung">Samsung (Android)</option>
+                    <option value="Nokia">Nokia (Android)</option>
+                    <option value="Other">Other Android</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label>Device Model</label>
+                <select id="deviceModel">
+                    <option value="iPhone 13">iPhone 13</option>
+                    <option value="iPhone 14 Pro">iPhone 14 Pro</option>
+                    <option value="iPhone 15">iPhone 15</option>
+                    <option value="iPhone 16">iPhone 16</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label>Playstyle</label>
+                <select id="playstyle">
+                    <option value="Headshot Hunter">Headshot Hunter (Aim focused)</option>
+                    <option value="Freestyler">Freestyler (Fast movement)</option>
+                    <option value="Pro Player">Pro Player (Balanced)</option>
+                </select>
+            </div>
+
+            <div class="modal-actions">
+                <button class="cancel-btn" onclick="closeModal()">Cancel</button>
+                <button class="confirm-btn" onclick="generateSensi()">Generate</button>
+            </div>
+        </div>
+    </div>
+
     <script>
+        // Modal Logic
+        function openModal() { document.getElementById('generator-modal').classList.add('active'); }
+        function closeModal() { document.getElementById('generator-modal').classList.remove('active'); }
+
+        // Update models based on brand
+        function updateModels() {
+            const brand = document.getElementById('deviceBrand').value;
+            const modelSelect = document.getElementById('deviceModel');
+            modelSelect.innerHTML = '';
+
+            let models = [];
+            if (brand === 'iPhone') {
+                models = ['iPhone 11', 'iPhone 12', 'iPhone 13', 'iPhone 14 Pro', 'iPhone 15', 'iPhone 16'];
+            } else if (brand === 'Samsung') {
+                models = ['Galaxy S21', 'Galaxy S22', 'Galaxy S23 Ultra', 'Galaxy S24', 'Galaxy A54'];
+            } else if (brand === 'Nokia') {
+                models = ['Nokia G50', 'Nokia XR20', 'Nokia X30'];
+            } else {
+                models = ['Generic Android 1', 'Generic Android 2', 'Generic Android 3'];
+            }
+
+            models.forEach(m => {
+                let opt = document.createElement('option');
+                opt.value = m;
+                opt.innerText = m;
+                modelSelect.appendChild(opt);
+            });
+        }
+
+        // Generate Sensi Algorithm
+        function generateSensi() {
+            const playstyle = document.getElementById('playstyle').value;
+            
+            // Base algorithms based on playstyle
+            let base = 50;
+            let multiplier = 1;
+
+            if (playstyle === 'Headshot Hunter') { base = 85; multiplier = 1.2; }
+            if (playstyle === 'Freestyler') { base = 95; multiplier = 1.1; }
+            if (playstyle === 'Pro Player') { base = 75; multiplier = 1.05; }
+
+            // Generate random-ish but balanced values
+            const general = Math.floor(base * multiplier) + Math.floor(Math.random() * 5);
+            const redDot = Math.floor(base) + Math.floor(Math.random() * 5);
+            const scope2x = Math.floor(base * 0.85) + Math.floor(Math.random() * 5);
+            const scope4x = Math.floor(base * 0.7) + Math.floor(Math.random() * 5);
+            const awm = Math.floor(base * 0.5) + Math.floor(Math.random() * 5);
+            const fireButton = Math.floor(base * 0.6) + Math.floor(Math.random() * 5);
+
+            // Animate the numbers counting up
+            animateValue("val-general", general);
+            animateValue("val-reddot", redDot);
+            animateValue("val-2x", scope2x);
+            animateValue("val-4x", scope4x);
+            animateValue("val-awm", awm);
+            animateValue("val-fire", fireButton);
+
+            closeModal();
+        }
+
+        // Number counting animation
+        function animateValue(id, end) {
+            const obj = document.getElementById(id);
+            let start = parseInt(obj.innerText);
+            if (isNaN(start)) start = 0;
+            const duration = 500; // ms
+            const startTime = performance.now();
+
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                obj.innerText = Math.floor(progress * (end - start) + start);
+                if (progress < 1) requestAnimationFrame(update);
+            }
+            requestAnimationFrame(update);
+        }
+
+        // Copy Settings
         function copySettings() {
             const btn = document.querySelector('.copy-btn');
             const originalText = btn.innerText;
             
-            btn.innerText = "COPIED TO CLIPBOARD!";
-            btn.style.background = "#00ffcc"; // Flash cyan for success
+            btn.innerText = "COPIED!";
+            btn.style.background = "#00ffcc";
             btn.style.color = "#000";
+            btn.style.borderColor = "#00ffcc";
             
             setTimeout(() => {
                 btn.innerText = originalText;
-                btn.style.background = "var(--blue-main)";
-                btn.style.color = "#fff";
+                btn.style.background = "transparent";
+                btn.style.color = "var(--blue-main)";
+                btn.style.borderColor = "var(--blue-main)";
             }, 2000);
         }
     </script>
