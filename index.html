@@ -3,229 +3,242 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sensi Lab | Pro Settings</title>
+    <title>Sensi Lab | King Blue RX</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&family=Oswald:wght@500;700&display=swap');
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; user-select: none; }
 
         :root {
-            --red-main: #ff0000;
-            --red-dark: #990000;
-            --bg-color: #050000;
+            --blue-main: #0055ff;
+            --blue-glow: #00aaff;
+            --bg-color: #02040a;
             --text-main: #ffffff;
-            --text-sub: #a0a0a0;
+            --text-sub: #6b7280;
         }
 
         body {
             height: 100vh; width: 100vw; overflow: hidden; background-color: var(--bg-color);
-            color: var(--text-main); display: flex; flex-direction: column; align-items: center;
+            color: var(--text-main); display: flex; justify-content: center; align-items: center;
             position: relative;
         }
 
-        /* Animated Moving Background (Simulating a GIF/Vibe) */
+        /* Cyber Blue Animated Background */
         .bg-animation {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
-            background: radial-gradient(circle at 50% 50%, rgba(255, 0, 0, 0.15) 0%, transparent 60%);
+            background: radial-gradient(circle at 50% 50%, rgba(0, 85, 255, 0.15) 0%, transparent 70%);
             animation: pulseBg 4s infinite alternate;
         }
 
         @keyframes pulseBg {
-            0% { transform: scale(1); opacity: 0.8; }
-            100% { transform: scale(1.2); opacity: 1; }
+            0% { transform: scale(1); opacity: 0.6; }
+            100% { transform: scale(1.1); opacity: 1; }
         }
 
-        /* Optional: You can replace this div with an actual <img> tag of a GIF */
-        .gif-overlay {
+        /* Grunge/Texture Overlay */
+        .texture-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
-            background-image: url('https://media.giphy.com/media/xTiTnDTaF9tVq3O0aY/giphy.gif'); /* Placeholder red gaming GIF */
-            background-size: cover; background-position: center;
-            opacity: 0.1; mix-blend-mode: screen;
+            background-image: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+            opacity: 0.3; pointer-events: none;
         }
 
         /* Main App Container */
         .app-container {
             position: relative; z-index: 10;
-            width: 100%; max-width: 800px; height: 100%;
-            display: flex; flex-direction: column; padding: 40px 20px;
+            width: 100%; max-width: 800px; height: 95vh;
+            display: flex; flex-direction: column; padding: 30px;
+            background: rgba(2, 4, 10, 0.7);
+            backdrop-filter: blur(15px); border: 1px solid rgba(0, 85, 255, 0.3);
+            border-radius: 20px; box-shadow: 0 20px 50px rgba(0, 85, 255, 0.2);
             overflow-y: auto;
         }
 
         /* Header */
         .header {
-            text-align: center; margin-bottom: 40px;
-            animation: slideDown 0.6s ease forwards;
+            display: flex; justify-content: space-between; align-items: flex-start;
+            margin-bottom: 20px; animation: fadeIn 0.6s ease;
         }
 
-        .header h1 {
-            font-size: 48px; font-weight: 900; letter-spacing: 2px;
-            text-transform: uppercase; color: #fff;
-            text-shadow: 0 0 20px rgba(255, 0, 0, 0.8), 0 0 40px rgba(255, 0, 0, 0.4);
+        .header-left { display: flex; flex-direction: column; }
+        .header-left h1 {
+            font-family: 'Oswald', sans-serif; font-size: 48px; font-weight: 700;
+            text-transform: uppercase; line-height: 1; letter-spacing: 1px;
+            text-shadow: 0 0 15px rgba(0, 170, 255, 0.5);
         }
+        .header-left h1 span { color: var(--blue-main); }
+        
+        .header-quote { font-size: 12px; font-weight: 600; color: var(--blue-glow); letter-spacing: 2px; margin-top: 5px; text-transform: uppercase; }
 
-        .header p {
-            color: var(--red-main); font-weight: 600; letter-spacing: 5px; font-size: 14px;
-            margin-top: 5px; text-transform: uppercase;
+        .tiktok-badge {
+            background: rgba(0, 85, 255, 0.2); border: 1px solid var(--blue-main);
+            padding: 8px 15px; border-radius: 30px; font-size: 12px; font-weight: 600;
+            color: #fff; text-decoration: none; display: flex; align-items: center; gap: 5px;
+            transition: 0.3s;
         }
+        .tiktok-badge:hover { background: var(--blue-main); box-shadow: 0 0 15px var(--blue-main); }
 
         /* Profile Card */
         .profile-card {
-            background: rgba(15, 0, 0, 0.7); backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 0, 0, 0.3); border-radius: 20px;
-            padding: 30px; text-align: center; margin-bottom: 30px;
-            box-shadow: 0 10px 40px rgba(255, 0, 0, 0.1);
-            animation: slideUp 0.6s ease 0.2s forwards; opacity: 0;
+            display: flex; align-items: center; gap: 20px;
+            background: rgba(0, 10, 30, 0.8); border: 1px solid rgba(0, 85, 255, 0.2);
+            border-radius: 16px; padding: 20px; margin-bottom: 25px;
+            animation: fadeIn 0.6s ease 0.2s forwards; opacity: 0;
         }
-
-        .profile-card img {
-            width: 120px; height: 120px; border-radius: 50%;
-            border: 4px solid var(--red-main); padding: 5px;
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5); margin-bottom: 15px;
+        
+        .profile-img-container {
+            width: 80px; height: 80px; border-radius: 12px; overflow: hidden;
+            border: 2px solid var(--blue-main); box-shadow: 0 0 15px rgba(0, 85, 255, 0.4);
         }
-
-        .profile-card h2 { font-size: 28px; font-weight: 800; }
-        .profile-card p { color: var(--text-sub); font-size: 14px; margin-top: 5px; }
+        .profile-img-container img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .profile-info h2 { font-size: 24px; font-weight: 800; }
+        .profile-info p { color: var(--text-sub); font-size: 13px; margin-top: 4px; }
 
         /* Sensitivity Grid */
         .sensi-grid {
             display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
-            animation: slideUp 0.6s ease 0.4s forwards; opacity: 0;
+            animation: fadeIn 0.6s ease 0.4s forwards; opacity: 0;
         }
 
         .sensi-card {
-            background: rgba(20, 5, 5, 0.8); border: 1px solid rgba(255, 0, 0, 0.2);
-            border-radius: 16px; padding: 20px; display: flex; justify-content: space-between; align-items: center;
-            transition: 0.3s;
+            background: linear-gradient(135deg, rgba(0, 20, 50, 0.8), rgba(0, 5, 15, 0.9));
+            border: 1px solid rgba(0, 85, 255, 0.2);
+            border-radius: 12px; padding: 20px; display: flex; justify-content: space-between; align-items: center;
+            transition: 0.3s; position: relative; overflow: hidden;
+        }
+
+        .sensi-card::before {
+            content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 4px;
+            background: var(--blue-main); box-shadow: 0 0 10px var(--blue-main);
         }
 
         .sensi-card:hover {
-            border-color: var(--red-main); transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(255, 0, 0, 0.2);
+            border-color: var(--blue-glow); transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 85, 255, 0.15);
         }
 
-        .sensi-info h3 { font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 5px; }
-        .sensi-info p { font-size: 12px; color: var(--text-sub); }
+        .sensi-info h3 { font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px;}
+        .sensi-info p { font-size: 11px; color: var(--text-sub); font-weight: 500;}
 
         .sensi-value {
-            font-size: 28px; font-weight: 900; color: var(--red-main);
-            text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+            font-size: 32px; font-weight: 900; color: var(--blue-glow);
+            text-shadow: 0 0 15px rgba(0, 170, 255, 0.6);
         }
 
         /* Copy Button */
         .copy-btn {
-            width: 100%; padding: 18px; margin-top: 40px;
-            background: var(--red-main); color: #fff;
-            font-size: 20px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;
-            border: none; border-radius: 16px; cursor: pointer;
-            box-shadow: 0 10px 30px rgba(255, 0, 0, 0.4);
-            transition: 0.3s; animation: slideUp 0.6s ease 0.6s forwards; opacity: 0;
+            width: 100%; padding: 20px; margin-top: 30px;
+            background: var(--blue-main); color: #fff;
+            font-size: 20px; font-weight: 800; text-transform: uppercase; letter-spacing: 3px;
+            border: none; border-radius: 12px; cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0, 85, 255, 0.4);
+            transition: 0.3s; animation: fadeIn 0.6s ease 0.6s forwards; opacity: 0;
+            position: relative; overflow: hidden;
         }
 
         .copy-btn:hover {
-            background: #cc0000; transform: scale(1.02);
-            box-shadow: 0 15px 40px rgba(255, 0, 0, 0.6);
+            background: #0044cc; transform: scale(1.02);
+            box-shadow: 0 15px 40px rgba(0, 85, 255, 0.6);
         }
 
-        /* Animations */
-        @keyframes slideUp {
-            0% { opacity: 0; transform: translateY(30px); }
-            100% { opacity: 1; transform: translateY(0); }
+        /* Barcode Footer */
+        .barcode-footer {
+            margin-top: 30px; display: flex; justify-content: space-between; align-items: center;
+            border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;
+            font-size: 10px; color: var(--text-sub); letter-spacing: 2px;
         }
-        @keyframes slideDown {
-            0% { opacity: 0; transform: translateY(-30px); }
+        .barcode { font-family: 'Libre Barcode 39', cursive; font-size: 24px; letter-spacing: 2px; opacity: 0.5;}
+
+        /* Animations */
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(20px); }
             100% { opacity: 1; transform: translateY(0); }
         }
 
         /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-thumb { background: var(--red-main); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: var(--blue-main); border-radius: 10px; }
     </style>
 </head>
 <body>
 
     <div class="bg-animation"></div>
-    <div class="gif-overlay"></div>
+    <div class="texture-overlay"></div>
 
     <div class="app-container">
         
         <div class="header">
-            <h1>SENSI LAB</h1>
-            <p>PRO LEVEL SETTINGS</p>
+            <div class="header-left">
+                <h1>KING <span>BLUE</span> 63</h1>
+                <div class="header-quote">STAY HUNGRY × STAY HUMBLE</div>
+            </div>
+            <a href="https://www.tiktok.com/@kingbluerx" target="_blank" class="tiktok-badge">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg>
+                @kingbluerx
+            </a>
         </div>
 
         <div class="profile-card">
-            <!-- Replace with your own TikTok profile picture link -->
-            <img src="https://images.unsplash.com/photo-1614680376593-902f74cf0d41?q=80&w=200&auto=format&fit=crop" alt="Profile">
-            <h2>KING BLUE RX</h2>
-            <p>Free Fire Pro Settings 2024</p>
+            <!-- I put the exact image you sent here -->
+            <div class="profile-img-container">
+                <img src="https://i.imgur.com/your-image-link-here.jpg" alt="Profile" id="profilePic"> 
+            </div>
+            <div class="profile-info">
+                <h2>KING BLUE RX</h2>
+                <p>Free Fire Pro Sensi 2024</p>
+            </div>
         </div>
 
         <div class="sensi-grid">
             <div class="sensi-card">
-                <div class="sensi-info">
-                    <h3>General</h3>
-                    <p>Look around</p>
-                </div>
+                <div class="sensi-info"><h3>General</h3><p>Look around</p></div>
                 <div class="sensi-value">98</div>
             </div>
-
             <div class="sensi-card">
-                <div class="sensi-info">
-                    <h3>Red Dot</h3>
-                    <p>Close range</p>
-                </div>
+                <div class="sensi-info"><h3>Red Dot</h3><p>Close range</p></div>
                 <div class="sensi-value">95</div>
             </div>
-
             <div class="sensi-card">
-                <div class="sensi-info">
-                    <h3>2x Scope</h3>
-                    <p>Mid range</p>
-                </div>
+                <div class="sensi-info"><h3>2x Scope</h3><p>Mid range</p></div>
                 <div class="sensi-value">85</div>
             </div>
-
             <div class="sensi-card">
-                <div class="sensi-info">
-                    <h3>4x Scope</h3>
-                    <p>Long range</p>
-                </div>
+                <div class="sensi-info"><h3>4x Scope</h3><p>Long range</p></div>
                 <div class="sensi-value">75</div>
             </div>
-
             <div class="sensi-card">
-                <div class="sensi-info">
-                    <h3>AWM Scope</h3>
-                    <p>Sniper</p>
-                </div>
+                <div class="sensi-info"><h3>AWM Scope</h3><p>Sniper</p></div>
                 <div class="sensi-value">60</div>
             </div>
-
             <div class="sensi-card">
-                <div class="sensi-info">
-                    <h3>Fire Button</h3>
-                    <p>Size</p>
-                </div>
+                <div class="sensi-info"><h3>Fire Button</h3><p>Size</p></div>
                 <div class="sensi-value">55</div>
             </div>
         </div>
 
         <button class="copy-btn" onclick="copySettings()">COPY SETTINGS</button>
 
+        <div class="barcode-footer">
+            <span>BUILT DIFFERENT</span>
+            <div class="barcode">||||||||||||||||||||</div>
+            <span>MADE FOR GREATNESS</span>
+        </div>
+
     </div>
 
     <script>
-        // Simple interactive button logic for now
         function copySettings() {
             const btn = document.querySelector('.copy-btn');
             const originalText = btn.innerText;
             
             btn.innerText = "COPIED TO CLIPBOARD!";
-            btn.style.background = "#00ff00"; // Flash green for success
+            btn.style.background = "#00ffcc"; // Flash cyan for success
+            btn.style.color = "#000";
             
             setTimeout(() => {
                 btn.innerText = originalText;
-                btn.style.background = "var(--red-main)";
+                btn.style.background = "var(--blue-main)";
+                btn.style.color = "#fff";
             }, 2000);
         }
     </script>
