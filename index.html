@@ -3,378 +3,442 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BlueOS Premium</title>
+    <title>Read OS</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; user-select: none; }
-
-        :root {
-            --bg-color: #050508;
-            --sidebar-bg: rgba(10, 10, 15, 0.85);
-            --accent: #00ffcc;
-            --text-main: #ffffff;
-            --text-sub: #8b8b9f;
-            --card-bg: rgba(25, 25, 35, 0.8);
-            --glass-border: rgba(255, 255, 255, 0.1);
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
 
         body {
-            height: 100vh; width: 100vw; overflow: hidden; background-color: var(--bg-color);
-            background-image: radial-gradient(circle at 50% 0%, #1a1a2e 0%, #050508 80%);
-            background-size: cover; background-position: center; color: var(--text-main); display: flex; flex-direction: column;
-            transition: background-image 0.5s ease;
+            background: #0f172a;
+            color: #f8fafc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
         }
 
-        /* TOP BROWSER BAR */
-        .browser-bar {
-            height: 60px; background: rgba(10, 10, 15, 0.9); backdrop-filter: blur(20px);
-            display: flex; align-items: center; padding: 0 20px; gap: 15px;
-            border-bottom: 1px solid var(--glass-border); z-index: 100;
+        .app-container {
+            width: 100%;
+            max-width: 850px;
+            background: #1e293b;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            border: 1px solid #334155;
         }
 
-        .nav-controls { display: flex; gap: 15px; color: var(--text-sub); }
-        .nav-controls svg { width: 20px; height: 20px; cursor: pointer; transition: 0.2s; }
-        .nav-controls svg:hover { color: white; }
-
-        .url-bar {
-            flex: 1; background: #12121a; border: 1px solid #2a2a35; border-radius: 8px;
-            display: flex; align-items: center; padding: 0 15px; height: 40px;
-        }
-        .padlock { font-size: 14px; margin-right: 10px; color: #4ade80; }
-        .url-input { flex: 1; background: transparent; border: none; color: white; font-size: 14px; outline: none; }
-
-        /* MAIN LAYOUT */
-        .layout { display: flex; flex: 1; overflow: hidden; position: relative; }
-
-        /* SIDEBAR */
-        .sidebar {
-            width: 85px; background: var(--sidebar-bg); backdrop-filter: blur(20px);
-            border-right: 1px solid var(--glass-border); display: flex; flex-direction: column;
-            align-items: center; padding: 20px 0; z-index: 50;
+        /* Navigation Tabs */
+        .tabs {
+            display: flex;
+            background: #0f172a;
+            border-bottom: 1px solid #334155;
         }
 
-        .logo { font-size: 32px; font-weight: 800; color: var(--accent); margin-bottom: 40px; cursor: pointer; text-shadow: 0 0 15px rgba(0,255,204,0.4); }
+        .tab {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+            color: #94a3b8;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab:hover { color: #e2e8f0; }
+        .tab.active {
+            color: #38bdf8;
+            border-bottom: 3px solid #38bdf8;
+            background: rgba(56, 189, 248, 0.05);
+        }
+
+        /* Main Content */
+        .content-area { padding: 40px; }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        .section.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 { font-size: 24px; margin-bottom: 10px; color: #f8fafc; }
+        p.desc { color: #94a3b8; margin-bottom: 25px; font-size: 15px; }
+
+        /* Typing Test Styles */
+        .typing-box {
+            background: #0f172a;
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid #334155;
+            margin-bottom: 20px;
+            font-size: 20px;
+            line-height: 1.8;
+            letter-spacing: 0.5px;
+            user-select: none;
+        }
+
+        .typing-box span.correct { color: #4ade80; }
+        .typing-box span.incorrect { color: #f87171; background: rgba(248, 113, 113, 0.2); border-radius: 3px; }
+        .typing-box span.current { border-bottom: 2px solid #38bdf8; }
+
+        .input-field {
+            width: 100%;
+            padding: 16px;
+            font-size: 18px;
+            background: #0f172a;
+            border: 2px solid #334155;
+            border-radius: 12px;
+            color: #f8fafc;
+            outline: none;
+            transition: 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .input-field:focus { border-color: #38bdf8; box-shadow: 0 0 15px rgba(56, 189, 248, 0.2); }
+
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: #0f172a;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #334155;
+        }
+
+        .stat-value { font-size: 28px; font-weight: 700; color: #38bdf8; }
+        .stat-label { font-size: 12px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* Reading Test Styles */
+        .reading-text {
+            font-size: 22px;
+            line-height: 1.6;
+            background: #0f172a;
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid #334155;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .mic-btn {
+            width: 100%;
+            padding: 16px;
+            font-size: 18px;
+            font-weight: 700;
+            background: #38bdf8;
+            color: #0f172a;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .mic-btn.recording { background: #ef4444; color: white; animation: pulse 1.5s infinite; }
+        .mic-btn:hover { opacity: 0.9; }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        .transcript-box {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid #38bdf8;
+            border-radius: 12px;
+            font-size: 16px;
+            display: none;
+        }
+        .transcript-box.active { display: block; }
+        .highlight-match { color: #4ade80; font-weight: bold; }
+        .highlight-miss { color: #f87171; text-decoration: line-through; }
         
-        .nav-item {
-            width: 55px; height: 55px; border-radius: 16px; display: flex; justify-content: center; align-items: center;
-            margin-bottom: 15px; cursor: pointer; transition: 0.3s; color: var(--text-sub);
+        .btn-primary {
+            padding: 12px 24px;
+            background: #38bdf8;
+            color: #0f172a;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
         }
-        .nav-item svg { width: 26px; height: 26px; }
-        .nav-item:hover, .nav-item.active { background: rgba(0, 255, 204, 0.15); color: var(--accent); transform: scale(1.05); }
-
-        .sidebar-bottom { margin-top: auto; display: flex; flex-direction: column; gap: 15px; align-items: center;}
-        .profile-icon { width: 45px; height: 45px; border-radius: 50%; background: #2a2a35; display: flex; justify-content: center; align-items: center; font-weight: bold; cursor: pointer; overflow: hidden; border: 2px solid transparent; transition: 0.2s; }
-        .profile-icon:hover { border-color: var(--accent); }
-
-        /* CONTENT AREA */
-        .content { flex: 1; position: relative; overflow-y: auto; overflow-x: hidden; }
-
-        .page {
-            position: absolute; top: 0; left: 0; width: 100%; min-height: 100%; padding: 40px;
-            display: none; flex-direction: column; animation: slideUp 0.4s ease forwards;
-        }
-        .page.active { display: flex; }
-        @keyframes slideUp { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
-
-        .header { font-size: 42px; font-weight: 700; margin-bottom: 8px; }
-        .subheader { color: var(--text-sub); font-size: 15px; margin-bottom: 40px; }
-
-        /* HOME */
-        .home-container { height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .home-title { font-size: 80px; font-weight: 800; margin-bottom: 10px; letter-spacing: 5px; }
-        .home-title span { color: var(--accent); text-shadow: 0 0 30px rgba(0,255,204,0.5); }
-        .main-search-box { width: 100%; max-width: 700px; position: relative; margin-top: 30px; }
-        .main-search-box input {
-            width: 100%; padding: 20px 30px; border-radius: 40px; border: 1px solid var(--glass-border);
-            background: rgba(25, 25, 35, 0.8); color: white; font-size: 18px; outline: none; transition: 0.3s;
-            backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-        .main-search-box input:focus { border-color: var(--accent); background: rgba(25, 25, 35, 1); box-shadow: 0 0 30px rgba(0,255,204,0.15); }
-
-        /* APP GRID */
-        .app-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 20px; }
-        .app-card {
-            background: var(--card-bg); backdrop-filter: blur(10px); border-radius: 20px; padding: 20px 15px;
-            display: flex; flex-direction: column; align-items: center; gap: 12px; cursor: pointer;
-            border: 1px solid var(--glass-border); transition: 0.2s; text-decoration: none; color: white;
-        }
-        .app-card:hover { background: rgba(40, 40, 50, 0.9); border-color: var(--accent); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
-        .app-icon { width: 60px; height: 60px; object-fit: contain; }
-        .app-name { font-size: 14px; font-weight: 600; text-align: center; }
-
-        .add-app-btn { background: transparent; border: 2px dashed var(--text-sub); justify-content: center; }
-        .add-app-btn:hover { border-color: var(--accent); color: var(--accent); }
-        .add-app-btn .plus-sign { font-size: 50px; font-weight: 300; line-height: 1; }
-
-        /* MEDIA GRIDS */
-        .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 25px; }
-        .media-card {
-            background: #111; border-radius: 12px; overflow: hidden; cursor: pointer;
-            transition: 0.3s; position: relative; border: 1px solid #222; height: 250px;
-        }
-        .media-card:hover { transform: scale(1.05); border-color: var(--accent); z-index: 10; }
-        .media-cover { width: 100%; height: 100%; object-fit: cover; }
-        .media-info { padding: 15px; background: linear-gradient(to top, #000, transparent); position: absolute; bottom: 0; width: 100%; }
-        .media-title { font-size: 16px; font-weight: 700; text-shadow: 0 2px 4px #000; }
-        .media-type { font-size: 12px; color: var(--accent); }
-
-        /* AI PAGE */
-        .ai-container { height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .ai-welcome { font-size: 40px; font-weight: 700; margin-bottom: 10px; }
-        .ai-chat-box { width: 100%; max-width: 800px; background: rgba(20, 20, 30, 0.9); border: 1px solid var(--glass-border); border-radius: 20px; display: flex; padding: 15px 25px; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-top: 20px;}
-        .ai-chat-box input { flex: 1; background: transparent; border: none; color: white; font-size: 18px; outline: none; }
-        .ai-chat-box button { background: var(--accent); color: black; border: none; width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; font-weight: bold; font-size: 20px; }
-
-        /* FULLSCREEN SETTINGS MENU */
-        #settings-screen {
-            position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(5, 5, 8, 0.95); backdrop-filter: blur(30px);
-            z-index: 1000; display: none; flex-direction: column; padding: 40px;
-            animation: fadeIn 0.3s ease forwards;
-        }
-        #settings-screen.active { display: flex; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        .settings-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
-        .settings-title { font-size: 36px; font-weight: 700; color: var(--accent); }
-        .close-settings { font-size: 30px; color: white; cursor: pointer; background: #e50914; width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: none; transition: 0.2s; }
-        .close-settings:hover { transform: scale(1.1); }
-
-        .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; max-width: 1000px; margin: 0 auto; width: 100%; }
-        .settings-column { background: rgba(20, 20, 30, 0.5); padding: 30px; border-radius: 16px; border: 1px solid var(--glass-border); }
-        .settings-column h3 { color: white; margin-bottom: 20px; font-size: 20px; }
-        
-        .setting-item { margin-bottom: 20px; }
-        .setting-item label { display: block; font-size: 13px; color: var(--text-sub); margin-bottom: 8px; text-transform: uppercase; }
-        .setting-item input { width: 100%; padding: 12px; border-radius: 8px; background: #111; border: 1px solid #333; color: white; outline: none; }
-
-        .wallpaper-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 15px; }
-        .wallpaper-thumb { width: 100%; height: 80px; border-radius: 8px; cursor: pointer; object-fit: cover; border: 2px solid transparent; transition: 0.2s; }
-        .wallpaper-thumb:hover { border-color: var(--accent); transform: scale(1.05); }
-
-        /* MEDIA PLAYER & IFRAME OVERLAYS */
-        #media-player-overlay, #iframe-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 300; display: none; flex-direction: column; }
-        #iframe-container.active, #media-player-overlay.active { display: flex; }
-        .overlay-top { padding: 15px 20px; background: #111; display: flex; justify-content: space-between; border-bottom: 1px solid #222; }
-        .close-btn { background: #e50914; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: bold;}
-        #site-frame { width: 100%; height: 100%; border: none; flex: 1; background: white; }
-        .media-body { flex: 1; display: flex; justify-content: center; align-items: center; }
-        audio, video { width: 90%; max-height: 80%; border-radius: 10px; }
-
-        /* MODAL */
-        #add-modal { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; backdrop-filter: blur(10px); }
-        #add-modal.active { display: flex; }
-        .modal-content { background: #1c1c24; padding: 30px; border-radius: 16px; width: 400px; border: 1px solid var(--glass-border); display: flex; flex-direction: column; gap: 15px; }
-        .modal-content input { padding: 12px; border-radius: 8px; background: #111; border: 1px solid #333; color: white; outline: none; }
-        .modal-content button { padding: 12px; border-radius: 8px; background: var(--accent); color: black; font-weight: bold; border: none; cursor: pointer; }
-
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+        .btn-primary:hover { background: #0ea5e9; }
     </style>
 </head>
 <body>
 
-    <!-- TOP BROWSER BAR -->
-    <div class="browser-bar">
-        <div class="nav-controls">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            <svg onclick="reloadIframe()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+    <div class="app-container">
+        <!-- Tabs -->
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('typing', this)">⌨️ Typing Speed</div>
+            <div class="tab" onclick="switchTab('reading', this)">🎙️ Reading Practice</div>
         </div>
-        <div class="url-bar">
-            <span class="padlock">🔒</span>
-            <input type="text" id="urlInput" class="url-input" placeholder="Search Google or enter URL..." onkeypress="handleUrlEnter(event)">
+
+        <div class="content-area">
+            
+            <!-- TYPING SECTION -->
+            <div id="typing-section" class="section active">
+                <h2>Typing Test</h2>
+                <p class="desc">Type the text below exactly as you see it to test your speed and accuracy.</p>
+                
+                <div class="typing-box" id="typing-text-display">
+                    <!-- Text will be injected here -->
+                </div>
+
+                <input type="text" class="input-field" id="typing-input" placeholder="Start typing here..." autocomplete="off" autofocus>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="wpm">0</div>
+                        <div class="stat-label">WPM</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="accuracy">100%</div>
+                        <div class="stat-label">Accuracy</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="time">0s</div>
+                        <div class="stat-label">Time</div>
+                    </div>
+                </div>
+                
+                <button class="btn-primary" onclick="resetTypingTest()">Reset Test</button>
+            </div>
+
+            <!-- READING SECTION -->
+            <div id="reading-section" class="section">
+                <h2>Reading Practice</h2>
+                <p class="desc">Click the microphone and read the sentence out loud. The app will check your pronunciation.</p>
+                
+                <div class="reading-text" id="reading-target-text">
+                    The quick brown fox jumps over the lazy dog.
+                </div>
+
+                <button class="mic-btn" id="mic-btn" onclick="toggleRecording()">
+                    🎙️ Start Reading
+                </button>
+
+                <div class="transcript-box" id="transcript-box">
+                    <strong>You said:</strong>
+                    <p id="transcript-text" style="margin-top: 10px; font-style: italic; color: #94a3b8;"></p>
+                    <div id="match-result" style="margin-top: 15px; font-weight: bold;"></div>
+                </div>
+            </div>
+
         </div>
     </div>
 
-    <!-- MAIN LAYOUT -->
-    <div class="layout">
-        
-        <!-- SIDEBAR -->
-        <div class="sidebar">
-            <div class="logo" onclick="switchPage('home', document.querySelectorAll('.nav-item')[0])">B</div>
-            <div class="nav-item active" onclick="switchPage('home', this)" title="Home">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
-            </div>
-            <div class="nav-item" onclick="switchPage('apps', this)" title="Apps">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
-            </div>
-            <div class="nav-item" onclick="switchPage('music', this)" title="Music">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
-            </div>
-            <div class="nav-item" onclick="switchPage('movies', this)" title="Movies">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line><line x1="2" y1="12" x2="22" y2="12"></line></svg>
-            </div>
-            <div class="nav-item" onclick="switchPage('ai', this)" title="AI">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-            </div>
-            <div class="sidebar-bottom">
-                <div class="nav-item" onclick="toggleSettings()" title="Settings">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-                </div>
-                <div class="profile-icon" id="profileAvatar" onclick="toggleSettings()">K</div>
-            </div>
-        </div>
-
-        <!-- CONTENT -->
-        <div class="content">
+    <script>
+        // --- TAB SWITCHING ---
+        function switchTab(tabId, element) {
+            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             
-            <!-- HOME -->
-            <div id="home-page" class="page active">
-                <div class="home-container">
-                    <div class="home-title">BLUE<span>OS</span></div>
-                    <div style="color: var(--text-sub); font-size: 18px; margin-top: 10px;">Welcome back, <span id="homeUserName" style="color:white; font-weight:bold;">kingbluerx</span></div>
-                    <div class="main-search-box">
-                        <input type="text" placeholder="Search the web..." onkeypress="handleUrlEnter(event)">
-                    </div>
-                </div>
-            </div>
+            document.getElementById(`${tabId}-section`).classList.add('active');
+            element.classList.add('active');
 
-            <!-- APPS -->
-            <div id="apps-page" class="page">
-                <div class="header">Apps</div>
-                <div class="subheader">Your installed applications.</div>
-                <div class="app-grid" id="appGrid">
-                    <div class="app-card add-app-btn" onclick="document.getElementById('add-modal').classList.add('active')">
-                        <div class="plus-sign">+</div>
-                        <span class="app-name">Add App</span>
-                    </div>
-                    <div class="app-card" onclick="openApp('YouTube', 'https://youtube.com')">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/0/09/YouTube_full-color_icon_%282017%29.svg" class="app-icon">
-                        <span class="app-name">YouTube</span>
-                    </div>
-                    <div class="app-card" onclick="openApp('TikTok', 'https://tiktok.com')">
-                        <img src="https://upload.wikimedia.org/wikipedia/en/a/a9/TikTok_logo.svg" class="app-icon">
-                        <span class="app-name">TikTok</span>
-                    </div>
-                    <div class="app-card" onclick="openApp('Instagram', 'https://instagram.com')">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" class="app-icon">
-                        <span class="app-name">Instagram</span>
-                    </div>
-                    <div class="app-card" onclick="openApp('Discord', 'https://discord.com/app')">
-                        <img src="https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0a6a49cf127bf92de1e2_icon_clyde_blurple_RGB.png" class="app-icon">
-                        <span class="app-name">Discord</span>
-                    </div>
-                </div>
-            </div>
+            if(tabId === 'typing') document.getElementById('typing-input').focus();
+        }
 
-            <!-- MUSIC -->
-            <div id="music-page" class="page">
-                <div class="header">Music</div>
-                <div class="subheader">Click an album to play.</div>
-                <div class="media-grid">
-                    <div class="media-card" onclick="playMedia('audio', 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3')">
-                        <img src="https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=400&auto=format&fit=crop" class="media-cover">
-                        <div class="media-info"><div class="media-title">Synthwave</div><div class="media-type">Audio</div></div>
-                    </div>
-                    <div class="media-card" onclick="playMedia('audio', 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3')">
-                        <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=400&auto=format&fit=crop" class="media-cover">
-                        <div class="media-info"><div class="media-title">Chill Vibes</div><div class="media-type">Audio</div></div>
-                    </div>
-                </div>
-            </div>
+        // ==========================================
+        // TYPING TEST LOGIC
+        // ==========================================
+        const typingText = "Practice makes perfect. The more you type, the faster and more accurate you will become. Keep your eyes on the screen.";
+        const typingDisplay = document.getElementById('typing-text-display');
+        const typingInput = document.getElementById('typing-input');
+        const wpmElement = document.getElementById('wpm');
+        const accuracyElement = document.getElementById('accuracy');
+        const timeElement = document.getElementById('time');
 
-            <!-- MOVIES -->
-            <div id="movies-page" class="page">
-                <div class="header">Movies</div>
-                <div class="subheader">Click a movie to watch.</div>
-                <div class="media-grid">
-                    <div class="media-card" onclick="playMedia('video', 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4')">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Big_buck_bunny_poster_big.jpg/800px-Big_buck_bunny_poster_big.jpg" class="media-cover">
-                        <div class="media-info"><div class="media-title">Big Buck Bunny</div><div class="media-type">Animation</div></div>
-                    </div>
-                    <div class="media-card" onclick="playMedia('video', 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4')">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Elephants_Dream_s5_both.jpg/800px-Elephants_Dream_s5_both.jpg" class="media-cover">
-                        <div class="media-info"><div class="media-title">Elephants Dream</div><div class="media-type">Sci-Fi</div></div>
-                    </div>
-                </div>
-            </div>
+        let typingStarted = false;
+        let startTime;
+        let timerInterval;
 
-            <!-- AI -->
-            <div id="ai-page" class="page">
-                <div class="ai-container">
-                    <div class="ai-welcome">Welcome back, <span id="aiUserName" style="color:var(--accent);">kingbluerx</span></div>
-                    <div style="color: var(--text-sub); margin-bottom: 20px;">What would you like to explore today?</div>
-                    <div class="ai-chat-box">
-                        <input type="text" placeholder="Message Blue AI...">
-                        <button>↑</button>
-                    </div>
-                </div>
-            </div>
+        function renderTypingText() {
+            typingDisplay.innerHTML = '';
+            typingText.split('').forEach((char, index) => {
+                const span = document.createElement('span');
+                span.innerText = char;
+                span.id = `char-${index}`;
+                typingDisplay.appendChild(span);
+            });
+            document.getElementById('char-0').classList.add('current');
+        }
 
-        </div>
+        function resetTypingTest() {
+            typingInput.value = '';
+            typingStarted = false;
+            clearInterval(timerInterval);
+            wpmElement.innerText = '0';
+            accuracyElement.innerText = '100%';
+            timeElement.innerText = '0s';
+            renderTypingText();
+            typingInput.focus();
+        }
 
-        <!-- IFRAME VIEWER -->
-        <div id="iframe-container">
-            <div class="overlay-top">
-                <span style="font-weight: bold; color: var(--accent);">App Viewer</span>
-                <button class="close-btn" onclick="closeApp()">Close App</button>
-            </div>
-            <iframe id="site-frame" sandbox="allow-same-origin allow-scripts allow-forms allow-popups"></iframe>
-        </div>
+        typingInput.addEventListener('input', () => {
+            if (!typingStarted) {
+                typingStarted = true;
+                startTime = new Date();
+                timerInterval = setInterval(updateTime, 1000);
+            }
 
-        <!-- MEDIA PLAYER -->
-        <div id="media-player-overlay">
-            <div class="overlay-top">
-                <span style="font-weight: bold; color: var(--accent);">Now Playing</span>
-                <button class="close-btn" onclick="closeMedia()">Close</button>
-            </div>
-            <div class="media-body">
-                <audio id="audioPlayer" controls style="display: none;"></audio>
-                <video id="videoPlayer" controls style="display: none;"></video>
-            </div>
-        </div>
+            const arrayText = typingText.split('');
+            const arrayInput = typingInput.value.split('');
+            let correctChars = 0;
 
-        <!-- FULLSCREEN SETTINGS -->
-        <div id="settings-screen">
-            <div class="settings-header">
-                <div class="settings-title">Settings</div>
-                <button class="close-settings" onclick="toggleSettings()">×</button>
-            </div>
-            <div class="settings-grid">
-                <div class="settings-column">
-                    <h3>Profile</h3>
-                    <div class="setting-item">
-                        <label>Username</label>
-                        <input type="text" id="nameInput" value="kingbluerx" onkeyup="updateName()">
-                    </div>
-                    <div class="setting-item">
-                        <label>Profile Picture URL</label>
-                        <input type="text" id="avatarInput" placeholder="https://example.com/pic.jpg" onkeyup="updateAvatar()">
-                    </div>
-                </div>
-                <div class="settings-column">
-                    <h3>Wallpapers</h3>
-                    <div class="setting-item">
-                        <label>Custom Image URL</label>
-                        <input type="text" id="bgInput" placeholder="Paste image URL and press Enter" onkeypress="customBg(event)">
-                    </div>
-                    <label style="margin-top: 20px; display: block; font-size: 13px; color: var(--text-sub);">Pro Wallpapers</label>
-                    <div class="wallpaper-grid">
-                        <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=200&auto=format&fit=crop" class="wallpaper-thumb" onclick="setBg('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1920&auto=format&fit=crop')">
-                        <img src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=200&auto=format&fit=crop" class="wallpaper-thumb" onclick="setBg('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=1920&auto=format&fit=crop')">
-                        <img src="https://images.unsplash.com/photo-1493246507139-91e8fad9978e?q=80&w=200&auto=format&fit=crop" class="wallpaper-thumb" onclick="setBg('https://images.unsplash.com/photo-1493246507139-91e8fad9978e?q=80&w=1920&auto=format&fit=crop')">
-                        <img src="https://images.unsplash.com/photo-1531306728370-e2ebd9d7bb99?q=80&w=200&auto=format&fit=crop" class="wallpaper-thumb" onclick="setBg('https://images.unsplash.com/photo-1531306728370-e2ebd9d7bb99?q=80&w=1920&auto=format&fit=crop')">
-                        <img src="https://images.unsplash.com/photo-1506703719100-a0f3a48c0f41?q=80&w=200&auto=format&fit=crop" class="wallpaper-thumb" onclick="setBg('https://images.unsplash.com/photo-1506703719100-a0f3a48c0f41?q=80&w=1920&auto=format&fit=crop')">
-                        <img src="https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?q=80&w=200&auto=format&fit=crop" class="wallpaper-thumb" onclick="setBg('https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?q=80&w=1920&auto=format&fit=crop')">
-                    </div>
-                </div>
-            </div>
-        </div>
+            arrayText.forEach((char, index) => {
+                const span = document.getElementById(`char-${index}`);
+                const typedChar = arrayInput[index];
 
-        <!-- ADD APP MODAL -->
-        <div id="add-modal">
-            <div class="modal-content">
-                <h3 style="color:var(--accent);">Add Custom App</h3>
-                <input type="text" id="modalAppName" placeholder="App Name">
-                <input type="text" id="modalAppUrl" placeholder="App Link (URL)">
-                <input type="text" id="modalAppIcon" placeholder="Icon Image URL (Optional)">
-                <div style="display: flex; gap: 10px; margin-top: 10px;">
-                    <button onclick="document.getElementById('add-modal').classList.remove('active')" style="background: #333; color: white;">Cancel</button>
-                    <button onclick="saveApp()">Add App</button>
-                </div>
-            </div>
-        </div>
+                if (typedChar == null) {
+                    span.classList.remove('correct', 'incorrect');
+                } else if (typedChar === char) {
+                    span.classList.add('correct');
+                    span.classList.remove('incorrect');
+                    correctChars++;
+                } else {
+                    span.classList.add('incorrect');
+                    span.classList.remove('correct');
+                }
 
-    </div
+                // Handle cursor
+                if(index === arrayInput.length) span.classList.add('current');
+                else span.classList.remove('current');
+            });
+
+            // Calculate stats
+            const accuracy = arrayInput.length > 0 ? Math.round((correctChars / arrayInput.length) * 100) : 100;
+            accuracyElement.innerText = `${accuracy}%`;
+
+            if (arrayInput.length === arrayText.length) {
+                clearInterval(timerInterval);
+                typingInput.blur();
+            }
+        });
+
+        function updateTime() {
+            const timeElapsed = Math.floor((new Date() - startTime) / 1000);
+            timeElement.innerText = `${timeElapsed}s`;
+            
+            // Calculate WPM
+            const wordsTyped = typingInput.value.length / 5;
+            const wpm = Math.round((wordsTyped / timeElapsed) * 60);
+            if (timeElapsed > 0) wpmElement.innerText = wpm;
+        }
+
+        // Initialize typing text
+        renderTypingText();
+
+        // ==========================================
+        // READING TEST LOGIC (Web Speech API)
+        // ==========================================
+        const micBtn = document.getElementById('mic-btn');
+        const transcriptBox = document.getElementById('transcript-box');
+        const transcriptText = document.getElementById('transcript-text');
+        const matchResult = document.getElementById('match-result');
+        const targetText = document.getElementById('reading-target-text').innerText.toLowerCase();
+
+        let isRecording = false;
+
+        // Check for browser support
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let recognition;
+
+        if (SpeechRecognition) {
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = 'en-US';
+
+            recognition.onstart = function() {
+                isRecording = true;
+                micBtn.classList.add('recording');
+                micBtn.innerHTML = '🛑 Listening... Tap to stop';
+                transcriptBox.classList.remove('active');
+            };
+
+            recognition.onresult = function(event) {
+                const spokenText = event.results[0][0].transcript.toLowerCase();
+                transcriptText.innerText = `"${spokenText}"`;
+                transcriptBox.classList.add('active');
+                checkReadingAccuracy(spokenText);
+            };
+
+            recognition.onerror = function(event) {
+                alert('Microphone error: ' + event.error + '. Please allow microphone access.');
+                stopRecording();
+            };
+
+            recognition.onend = function() {
+                stopRecording();
+            };
+        } else {
+            micBtn.innerText = '❌ Speech Recognition not supported in this browser';
+            micBtn.disabled = true;
+        }
+
+        function toggleRecording() {
+            if (!recognition) return;
+            if (isRecording) {
+                recognition.stop();
+            } else {
+                recognition.start();
+            }
+        }
+
+        function stopRecording() {
+            isRecording = false;
+            micBtn.classList.remove('recording');
+            micBtn.innerHTML = '🎙️ Start Reading';
+        }
+
+        function checkReadingAccuracy(spokenText) {
+            // Simple word-by-word comparison
+            const targetWords = targetText.replace(/[.,?]/g, '').split(' ');
+            const spokenWords = spokenText.replace(/[.,?]/g, '').split(' ');
+            
+            let correctWords = 0;
+            
+            targetWords.forEach((word, index) => {
+                if (spokenWords[index] === word) {
+                    correctWords++;
+                }
+            });
+
+            const accuracy = Math.round((correctWords / targetWords.length) * 100);
+
+            if (accuracy > 80) {
+                matchResult.innerHTML = `✅ <span style="color:#4ade80;">Excellent!</span> You read that perfectly. (Accuracy: ${accuracy}%)`;
+            } else if (accuracy > 50) {
+                matchResult.innerHTML = `⚠️ <span style="color:#fbbf24;">Good try!</span> You missed a few words. (Accuracy: ${accuracy}%)`;
+            } else {
+                matchResult.innerHTML = `❌ <span style="color:#f87171;">Try again.</span> It seems you missed some words. (Accuracy: ${accuracy}%)`;
+            }
+        }
+    </script>
+</body>
+</html>
