@@ -7,260 +7,227 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; user-select: none; }
+
+        :root {
+            --bg-color: #0a0a0f;
+            --sidebar-bg: rgba(15, 15, 20, 0.85);
+            --accent: #00ffcc;
+            --text-main: #ffffff;
+            --text-sub: #8b8b9f;
+            --card-bg: rgba(25, 25, 35, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
 
         body {
-            background: #0f172a;
-            color: #f8fafc;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
+            height: 100vh; width: 100vw; overflow: hidden; background-color: var(--bg-color);
+            /* Premium cinematic deep space/neon background */
+            background-image: radial-gradient(circle at 50% 0%, #1a1a2e 0%, #050508 80%);
+            color: var(--text-main); display: flex;
         }
 
-        .app-container {
-            width: 100%;
-            max-width: 850px;
-            background: #1e293b;
-            border-radius: 20px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            overflow: hidden;
-            border: 1px solid #334155;
+        /* SIDEBAR NAVIGATION */
+        .sidebar {
+            width: 90px; height: 100%; background: var(--sidebar-bg); backdrop-filter: blur(20px);
+            border-right: 1px solid var(--glass-border); display: flex; flex-direction: column;
+            align-items: center; padding: 30px 0; z-index: 10;
         }
 
-        /* Navigation Tabs */
-        .tabs {
-            display: flex;
-            background: #0f172a;
-            border-bottom: 1px solid #334155;
+        .logo-icon {
+            font-size: 32px; font-weight: 800; color: var(--accent); margin-bottom: 50px; 
+            cursor: pointer; text-shadow: 0 0 20px rgba(0,255,204,0.4);
+            transition: transform 0.3s;
+        }
+        .logo-icon:hover { transform: scale(1.1) rotate(-5deg); }
+
+        .nav-item {
+            width: 60px; height: 60px; border-radius: 16px; display: flex; justify-content: center; align-items: center;
+            margin-bottom: 20px; cursor: pointer; transition: all 0.3s ease; color: var(--text-sub);
+            font-size: 24px;
+        }
+        
+        .nav-item:hover, .nav-item.active { 
+            background: rgba(0, 255, 204, 0.15); 
+            color: var(--accent); 
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(0,255,204,0.1);
         }
 
-        .tab {
-            flex: 1;
-            padding: 20px;
-            text-align: center;
-            font-weight: 600;
-            font-size: 16px;
-            cursor: pointer;
-            transition: 0.3s;
-            color: #94a3b8;
-            border-bottom: 3px solid transparent;
+        /* MAIN CONTENT AREA */
+        .main-content {
+            flex: 1; height: 100%; position: relative; overflow-y: auto; padding: 50px 80px;
         }
 
-        .tab:hover { color: #e2e8f0; }
-        .tab.active {
-            color: #38bdf8;
-            border-bottom: 3px solid #38bdf8;
-            background: rgba(56, 189, 248, 0.05);
+        .page {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; padding: 50px 80px;
+            display: none; flex-direction: column; animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
-        /* Main Content */
-        .content-area { padding: 40px; }
+        .page.active { display: flex; }
 
-        .section {
-            display: none;
-            animation: fadeIn 0.4s ease forwards;
+        /* Smooth slide-up animation */
+        @keyframes slideUpFade {
+            0% { opacity: 0; transform: translateY(40px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
 
-        .section.active { display: block; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* --- HOME PAGE --- */
+        .home-container { height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; }
+        .home-title { font-size: 80px; font-weight: 800; letter-spacing: -2px; line-height: 1.1; margin-bottom: 20px; }
+        .home-title span { color: var(--accent); text-shadow: 0 0 40px rgba(0,255,204,0.4); }
+        .home-subtitle { font-size: 20px; color: var(--text-sub); max-width: 600px; margin-bottom: 40px; line-height: 1.6; }
+        
+        .start-btn {
+            padding: 18px 40px; font-size: 18px; font-weight: 700; border-radius: 30px;
+            background: var(--accent); color: #000; border: none; cursor: pointer; transition: 0.3s;
+            box-shadow: 0 10px 30px rgba(0,255,204,0.3);
         }
+        .start-btn:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(0,255,204,0.5); }
 
-        h2 { font-size: 24px; margin-bottom: 10px; color: #f8fafc; }
-        p.desc { color: #94a3b8; margin-bottom: 25px; font-size: 15px; }
+        /* --- LESSON PAGES --- */
+        .header { font-size: 42px; font-weight: 700; margin-bottom: 10px; }
+        .subheader { color: var(--text-sub); font-size: 16px; margin-bottom: 40px; }
 
-        /* Typing Test Styles */
+        /* Typing Module */
         .typing-box {
-            background: #0f172a;
-            padding: 25px;
-            border-radius: 12px;
-            border: 1px solid #334155;
-            margin-bottom: 20px;
-            font-size: 20px;
-            line-height: 1.8;
-            letter-spacing: 0.5px;
-            user-select: none;
+            background: var(--card-bg); padding: 30px; border-radius: 16px;
+            border: 1px solid var(--glass-border); margin-bottom: 25px;
+            font-size: 22px; line-height: 1.8; letter-spacing: 0.5px; backdrop-filter: blur(10px);
         }
-
-        .typing-box span.correct { color: #4ade80; }
-        .typing-box span.incorrect { color: #f87171; background: rgba(248, 113, 113, 0.2); border-radius: 3px; }
-        .typing-box span.current { border-bottom: 2px solid #38bdf8; }
+        .typing-box span.correct { color: #4ade80; text-shadow: 0 0 10px rgba(74, 222, 128, 0.4); }
+        .typing-box span.incorrect { color: #f87171; background: rgba(248, 113, 113, 0.2); border-radius: 4px; }
+        .typing-box span.current { border-bottom: 3px solid var(--accent); }
 
         .input-field {
-            width: 100%;
-            padding: 16px;
-            font-size: 18px;
-            background: #0f172a;
-            border: 2px solid #334155;
-            border-radius: 12px;
-            color: #f8fafc;
-            outline: none;
-            transition: 0.3s;
-            margin-bottom: 20px;
+            width: 100%; padding: 18px; font-size: 20px; background: rgba(0,0,0,0.5);
+            border: 2px solid var(--glass-border); border-radius: 12px;
+            color: var(--accent); outline: none; transition: 0.3s; margin-bottom: 30px; font-weight: 600;
         }
+        .input-field:focus { border-color: var(--accent); box-shadow: 0 0 20px rgba(0, 255, 204, 0.2); }
 
-        .input-field:focus { border-color: #38bdf8; box-shadow: 0 0 15px rgba(56, 189, 248, 0.2); }
-
-        /* Stats */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 600px; }
         .stat-card {
-            background: #0f172a;
-            padding: 15px;
-            border-radius: 10px;
-            text-align: center;
-            border: 1px solid #334155;
+            background: var(--card-bg); padding: 20px; border-radius: 16px; text-align: center;
+            border: 1px solid var(--glass-border); backdrop-filter: blur(10px);
         }
+        .stat-value { font-size: 32px; font-weight: 700; color: var(--accent); }
+        .stat-label { font-size: 12px; color: var(--text-sub); text-transform: uppercase; letter-spacing: 2px; margin-top: 5px;}
 
-        .stat-value { font-size: 28px; font-weight: 700; color: #38bdf8; }
-        .stat-label { font-size: 12px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; }
-
-        /* Reading Test Styles */
-        .reading-text {
-            font-size: 22px;
-            line-height: 1.6;
-            background: #0f172a;
-            padding: 25px;
-            border-radius: 12px;
-            border: 1px solid #334155;
-            margin-bottom: 20px;
-            font-weight: 500;
+        /* Reading Module */
+        .reading-display {
+            font-size: 28px; line-height: 1.6; background: var(--card-bg);
+            padding: 30px; border-radius: 16px; border: 1px solid var(--glass-border);
+            margin-bottom: 30px; font-weight: 500; backdrop-filter: blur(10px);
         }
 
         .mic-btn {
-            width: 100%;
-            padding: 16px;
-            font-size: 18px;
-            font-weight: 700;
-            background: #38bdf8;
-            color: #0f172a;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: 0.3s;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
+            padding: 18px 40px; font-size: 20px; font-weight: 700; border-radius: 30px;
+            background: var(--accent); color: #000; border: none; cursor: pointer; transition: 0.3s;
+            display: flex; align-items: center; gap: 10px; box-shadow: 0 10px 30px rgba(0,255,204,0.2);
         }
-
         .mic-btn.recording { background: #ef4444; color: white; animation: pulse 1.5s infinite; }
-        .mic-btn:hover { opacity: 0.9; }
-
+        
         @keyframes pulse {
             0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
-            70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
+            70% { box-shadow: 0 0 0 20px rgba(239, 68, 68, 0); }
             100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
 
-        .transcript-box {
-            margin-top: 20px;
-            padding: 20px;
-            background: rgba(56, 189, 248, 0.1);
-            border: 1px solid #38bdf8;
-            border-radius: 12px;
-            font-size: 16px;
-            display: none;
+        .result-box {
+            margin-top: 30px; padding: 20px; background: rgba(0, 255, 204, 0.1);
+            border-left: 4px solid var(--accent); border-radius: 8px; font-size: 18px; display: none;
         }
-        .transcript-box.active { display: block; }
-        .highlight-match { color: #4ade80; font-weight: bold; }
-        .highlight-miss { color: #f87171; text-decoration: line-through; }
-        
-        .btn-primary {
-            padding: 12px 24px;
-            background: #38bdf8;
-            color: #0f172a;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .btn-primary:hover { background: #0ea5e9; }
+        .result-box.active { display: block; animation: slideUpFade 0.3s ease; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
     </style>
 </head>
 <body>
 
-    <div class="app-container">
-        <!-- Tabs -->
-        <div class="tabs">
-            <div class="tab active" onclick="switchTab('typing', this)">⌨️ Typing Speed</div>
-            <div class="tab" onclick="switchTab('reading', this)">🎙️ Reading Practice</div>
+    <!-- OS SIDEBAR -->
+    <div class="sidebar">
+        <div class="logo-icon" onclick="switchPage('home', this)">R</div>
+        
+        <div class="nav-item active" onclick="switchPage('home', this)" title="Home">🏠</div>
+        <div class="nav-item" onclick="switchPage('typing', this)" title="Typing Master">⌨️</div>
+        <div class="nav-item" onclick="switchPage('reading', this)" title="Reading Master">🎙️</div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        
+        <!-- HOME PAGE -->
+        <div id="home-page" class="page active">
+            <div class="home-container">
+                <div class="home-title">Welcome to<br><span>Read OS</span></div>
+                <div class="home-subtitle">The ultimate operating system to master your typing speed and reading pronunciation. Choose a module to begin your training.</div>
+                <button class="start-btn" onclick="switchPage('typing', document.querySelectorAll('.nav-item')[1])">Start Training</button>
+            </div>
         </div>
 
-        <div class="content-area">
+        <!-- TYPING PAGE -->
+        <div id="typing-page" class="page">
+            <div class="header">Typing Speed</div>
+            <div class="subheader">Type the text below exactly as you see it to test your WPM.</div>
             
-            <!-- TYPING SECTION -->
-            <div id="typing-section" class="section active">
-                <h2>Typing Test</h2>
-                <p class="desc">Type the text below exactly as you see it to test your speed and accuracy.</p>
-                
-                <div class="typing-box" id="typing-text-display">
-                    <!-- Text will be injected here -->
+            <div class="typing-box" id="typing-text-display"></div>
+            <input type="text" class="input-field" id="typing-input" placeholder="Start typing here..." autocomplete="off">
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="wpm">0</div>
+                    <div class="stat-label">Words/Min</div>
                 </div>
-
-                <input type="text" class="input-field" id="typing-input" placeholder="Start typing here..." autocomplete="off" autofocus>
-
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-value" id="wpm">0</div>
-                        <div class="stat-label">WPM</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="accuracy">100%</div>
-                        <div class="stat-label">Accuracy</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="time">0s</div>
-                        <div class="stat-label">Time</div>
-                    </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="accuracy">100%</div>
+                    <div class="stat-label">Accuracy</div>
                 </div>
-                
-                <button class="btn-primary" onclick="resetTypingTest()">Reset Test</button>
-            </div>
-
-            <!-- READING SECTION -->
-            <div id="reading-section" class="section">
-                <h2>Reading Practice</h2>
-                <p class="desc">Click the microphone and read the sentence out loud. The app will check your pronunciation.</p>
-                
-                <div class="reading-text" id="reading-target-text">
-                    The quick brown fox jumps over the lazy dog.
-                </div>
-
-                <button class="mic-btn" id="mic-btn" onclick="toggleRecording()">
-                    🎙️ Start Reading
-                </button>
-
-                <div class="transcript-box" id="transcript-box">
-                    <strong>You said:</strong>
-                    <p id="transcript-text" style="margin-top: 10px; font-style: italic; color: #94a3b8;"></p>
-                    <div id="match-result" style="margin-top: 15px; font-weight: bold;"></div>
+                <div class="stat-card">
+                    <div class="stat-value" id="time">0s</div>
+                    <div class="stat-label">Time</div>
                 </div>
             </div>
-
+            <button class="start-btn" style="margin-top: 20px; padding: 10px 20px; font-size: 14px;" onclick="resetTypingTest()">Reset Test</button>
         </div>
+
+        <!-- READING PAGE -->
+        <div id="reading-page" class="page">
+            <div class="header">Reading Practice</div>
+            <div class="subheader">Click the microphone and read the sentence out loud. The AI will grade your pronunciation.</div>
+            
+            <div class="reading-display" id="reading-target">
+                "Reading is to the mind what exercise is to the body."
+            </div>
+
+            <button class="mic-btn" id="mic-btn" onclick="toggleRecording()">
+                🎙️ Start Reading
+            </button>
+
+            <div class="result-box" id="result-box">
+                <strong>You said:</strong> <span id="spoken-text" style="color: var(--text-sub); font-style: italic;"></span>
+                <div id="match-result" style="margin-top: 15px; font-weight: bold; font-size: 20px;"></div>
+            </div>
+        </div>
+
     </div>
 
     <script>
-        // --- TAB SWITCHING ---
-        function switchTab(tabId, element) {
-            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        // --- PAGE NAVIGATION & ANIMATIONS ---
+        function switchPage(pageId, element) {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById(`${pageId}-page`).classList.add('active');
             
-            document.getElementById(`${tabId}-section`).classList.add('active');
-            element.classList.add('active');
+            // Update Sidebar active state
+            if (element && element.classList.contains('nav-item')) {
+                document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                element.classList.add('active');
+            }
 
-            if(tabId === 'typing') document.getElementById('typing-input').focus();
+            if(pageId === 'typing') {
+                setTimeout(() => document.getElementById('typing-input').focus(), 100);
+            }
         }
 
         // ==========================================
@@ -325,12 +292,10 @@
                     span.classList.remove('correct');
                 }
 
-                // Handle cursor
                 if(index === arrayInput.length) span.classList.add('current');
                 else span.classList.remove('current');
             });
 
-            // Calculate stats
             const accuracy = arrayInput.length > 0 ? Math.round((correctChars / arrayInput.length) * 100) : 100;
             accuracyElement.innerText = `${accuracy}%`;
 
@@ -344,27 +309,23 @@
             const timeElapsed = Math.floor((new Date() - startTime) / 1000);
             timeElement.innerText = `${timeElapsed}s`;
             
-            // Calculate WPM
             const wordsTyped = typingInput.value.length / 5;
             const wpm = Math.round((wordsTyped / timeElapsed) * 60);
             if (timeElapsed > 0) wpmElement.innerText = wpm;
         }
 
-        // Initialize typing text
         renderTypingText();
 
         // ==========================================
         // READING TEST LOGIC (Web Speech API)
         // ==========================================
         const micBtn = document.getElementById('mic-btn');
-        const transcriptBox = document.getElementById('transcript-box');
-        const transcriptText = document.getElementById('transcript-text');
+        const resultBox = document.getElementById('result-box');
+        const spokenText = document.getElementById('spoken-text');
         const matchResult = document.getElementById('match-result');
-        const targetText = document.getElementById('reading-target-text').innerText.toLowerCase();
+        const targetText = document.getElementById('reading-target').innerText.replace(/["']/g, "").toLowerCase();
 
         let isRecording = false;
-
-        // Check for browser support
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         let recognition;
 
@@ -377,15 +338,15 @@
             recognition.onstart = function() {
                 isRecording = true;
                 micBtn.classList.add('recording');
-                micBtn.innerHTML = '🛑 Listening... Tap to stop';
-                transcriptBox.classList.remove('active');
+                micBtn.innerHTML = '🛑 Listening...';
+                resultBox.classList.remove('active');
             };
 
             recognition.onresult = function(event) {
-                const spokenText = event.results[0][0].transcript.toLowerCase();
-                transcriptText.innerText = `"${spokenText}"`;
-                transcriptBox.classList.add('active');
-                checkReadingAccuracy(spokenText);
+                const text = event.results[0][0].transcript.toLowerCase();
+                spokenText.innerText = `"${text}"`;
+                resultBox.classList.add('active');
+                checkReadingAccuracy(text);
             };
 
             recognition.onerror = function(event) {
@@ -403,11 +364,8 @@
 
         function toggleRecording() {
             if (!recognition) return;
-            if (isRecording) {
-                recognition.stop();
-            } else {
-                recognition.start();
-            }
+            if (isRecording) recognition.stop();
+            else recognition.start();
         }
 
         function stopRecording() {
@@ -416,10 +374,9 @@
             micBtn.innerHTML = '🎙️ Start Reading';
         }
 
-        function checkReadingAccuracy(spokenText) {
-            // Simple word-by-word comparison
+        function checkReadingAccuracy(spoken) {
             const targetWords = targetText.replace(/[.,?]/g, '').split(' ');
-            const spokenWords = spokenText.replace(/[.,?]/g, '').split(' ');
+            const spokenWords = spoken.replace(/[.,?]/g, '').split(' ');
             
             let correctWords = 0;
             
@@ -432,11 +389,11 @@
             const accuracy = Math.round((correctWords / targetWords.length) * 100);
 
             if (accuracy > 80) {
-                matchResult.innerHTML = `✅ <span style="color:#4ade80;">Excellent!</span> You read that perfectly. (Accuracy: ${accuracy}%)`;
+                matchResult.innerHTML = `✅ <span style="color:#4ade80;">Perfect!</span> (${accuracy}%)`;
             } else if (accuracy > 50) {
-                matchResult.innerHTML = `⚠️ <span style="color:#fbbf24;">Good try!</span> You missed a few words. (Accuracy: ${accuracy}%)`;
+                matchResult.innerHTML = `⚠️ <span style="color:#fbbf24;">Good try.</span> (${accuracy}%)`;
             } else {
-                matchResult.innerHTML = `❌ <span style="color:#f87171;">Try again.</span> It seems you missed some words. (Accuracy: ${accuracy}%)`;
+                matchResult.innerHTML = `❌ <span style="color:#f87171;">Try again.</span> (${accuracy}%)`;
             }
         }
     </script>
