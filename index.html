@@ -23,6 +23,34 @@
             position: relative;
         }
 
+        /* --- INTRO ANIMATION --- */
+        #intro-screen {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: 9999; display: flex; justify-content: center; align-items: center;
+            animation: fadeOutIntro 1s ease-in-out 2.5s forwards;
+        }
+
+        .intro-text {
+            font-family: 'Oswald', sans-serif; font-size: 60px; font-weight: 700; text-transform: uppercase;
+            color: #fff; text-shadow: 0 0 30px var(--blue-main), 0 0 60px var(--blue-main);
+            animation: zoomInIntro 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0; transform: scale(0.8);
+        }
+
+        .intro-text span { color: var(--blue-main); }
+
+        @keyframes zoomInIntro {
+            0% { opacity: 0; transform: scale(0.8); filter: blur(10px); }
+            50% { opacity: 1; transform: scale(1); filter: blur(0); }
+            100% { opacity: 1; transform: scale(1.05); filter: blur(0); }
+        }
+
+        @keyframes fadeOutIntro {
+            0% { opacity: 1; pointer-events: all; }
+            100% { opacity: 0; pointer-events: none; display: none; }
+        }
+
+        /* --- MAIN APP --- */
         .bg-animation {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
             background: radial-gradient(circle at 50% 50%, rgba(0, 85, 255, 0.15) 0%, transparent 70%);
@@ -48,6 +76,12 @@
             backdrop-filter: blur(15px); border: 1px solid rgba(0, 85, 255, 0.3);
             border-radius: 20px; box-shadow: 0 20px 50px rgba(0, 85, 255, 0.2);
             overflow-y: auto;
+            animation: fadeInApp 1s ease 2s forwards; opacity: 0;
+        }
+
+        @keyframes fadeInApp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
 
         .header {
@@ -57,7 +91,7 @@
 
         .header-left { display: flex; flex-direction: column; }
         .header-left h1 {
-            font-family: 'Oswald', sans-serif; font-size: 48px; font-weight: 700;
+            font-family: 'Oswald', sans-serif; font-size: 42px; font-weight: 700;
             text-transform: uppercase; line-height: 1; letter-spacing: 1px;
             text-shadow: 0 0 15px rgba(0, 170, 255, 0.5);
         }
@@ -89,7 +123,6 @@
         .profile-info h2 { font-size: 24px; font-weight: 800; }
         .profile-info p { color: var(--text-sub); font-size: 13px; margin-top: 4px; }
 
-        /* Sensitivity Grid */
         .sensi-grid {
             display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
         }
@@ -119,7 +152,6 @@
             text-shadow: 0 0 15px rgba(0, 170, 255, 0.6); transition: 0.3s;
         }
 
-        /* Buttons */
         .btn-container { display: flex; gap: 15px; margin-top: 30px; }
 
         .copy-btn {
@@ -146,7 +178,7 @@
         }
         .barcode { font-family: 'Libre Barcode 39', cursive; font-size: 24px; letter-spacing: 2px; opacity: 0.5;}
 
-        /* MODAL FOR GENERATOR */
+        /* MODAL */
         #generator-modal {
             position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
             background: rgba(0,0,0,0.8); backdrop-filter: blur(10px);
@@ -168,12 +200,13 @@
 
         .input-group { margin-bottom: 20px; }
         .input-group label { display: block; font-size: 12px; color: var(--blue-main); margin-bottom: 8px; font-weight: bold; text-transform: uppercase;}
-        .input-group select, .input-group input {
+        .input-group select {
             width: 100%; padding: 15px; background: rgba(255,255,255,0.05);
             border: 1px solid rgba(0, 85, 255, 0.3); border-radius: 10px;
             color: white; font-size: 16px; outline: none; font-family: 'Inter', sans-serif;
+            appearance: none;
         }
-        .input-group select:focus, .input-group input:focus { border-color: var(--blue-glow); }
+        .input-group select:focus { border-color: var(--blue-glow); }
 
         .modal-actions { display: flex; gap: 10px; margin-top: 30px; }
         .modal-actions button {
@@ -185,6 +218,12 @@
 </head>
 <body>
 
+    <!-- INTRO ANIMATION -->
+    <div id="intro-screen">
+        <div class="intro-text">KING <span>BLUE</span> RX</div>
+    </div>
+
+    <!-- MAIN APP -->
     <div class="bg-animation"></div>
     <div class="texture-overlay"></div>
 
@@ -192,7 +231,7 @@
         
         <div class="header">
             <div class="header-left">
-                <h1>KING <span>BLUE</span> 63</h1>
+                <h1>KING <span>BLUE</span> RX</h1>
                 <div class="header-quote">STAY HUNGRY × STAY HUMBLE</div>
             </div>
             <a href="https://www.tiktok.com/@kingbluerx" target="_blank" class="tiktok-badge">
@@ -203,7 +242,6 @@
 
         <div class="profile-card">
             <div class="profile-img-container">
-                <!-- Replaced with a cool gaming avatar so it doesn't break -->
                 <img src="https://api.dicebear.com/7.x/bottts/svg?seed=KingBlue&backgroundColor=0055ff" alt="Profile"> 
             </div>
             <div class="profile-info">
@@ -213,7 +251,6 @@
         </div>
 
         <div class="sensi-grid" id="sensi-display">
-            <!-- Values will generate here -->
             <div class="sensi-card">
                 <div class="sensi-info"><h3>General</h3><p>Look around</p></div>
                 <div class="sensi-value" id="val-general">98</div>
@@ -272,10 +309,7 @@
             <div class="input-group">
                 <label>Device Model</label>
                 <select id="deviceModel">
-                    <option value="iPhone 13">iPhone 13</option>
-                    <option value="iPhone 14 Pro">iPhone 14 Pro</option>
-                    <option value="iPhone 15">iPhone 15</option>
-                    <option value="iPhone 16">iPhone 16</option>
+                    <!-- Populated by JS -->
                 </select>
             </div>
 
@@ -296,11 +330,12 @@
     </div>
 
     <script>
-        // Modal Logic
+        // Initialize models on load
+        window.onload = updateModels;
+
         function openModal() { document.getElementById('generator-modal').classList.add('active'); }
         function closeModal() { document.getElementById('generator-modal').classList.remove('active'); }
 
-        // Update models based on brand
         function updateModels() {
             const brand = document.getElementById('deviceBrand').value;
             const modelSelect = document.getElementById('deviceModel');
@@ -325,11 +360,9 @@
             });
         }
 
-        // Generate Sensi Algorithm
         function generateSensi() {
             const playstyle = document.getElementById('playstyle').value;
             
-            // Base algorithms based on playstyle
             let base = 50;
             let multiplier = 1;
 
@@ -337,7 +370,6 @@
             if (playstyle === 'Freestyler') { base = 95; multiplier = 1.1; }
             if (playstyle === 'Pro Player') { base = 75; multiplier = 1.05; }
 
-            // Generate random-ish but balanced values
             const general = Math.floor(base * multiplier) + Math.floor(Math.random() * 5);
             const redDot = Math.floor(base) + Math.floor(Math.random() * 5);
             const scope2x = Math.floor(base * 0.85) + Math.floor(Math.random() * 5);
@@ -345,7 +377,6 @@
             const awm = Math.floor(base * 0.5) + Math.floor(Math.random() * 5);
             const fireButton = Math.floor(base * 0.6) + Math.floor(Math.random() * 5);
 
-            // Animate the numbers counting up
             animateValue("val-general", general);
             animateValue("val-reddot", redDot);
             animateValue("val-2x", scope2x);
@@ -356,12 +387,11 @@
             closeModal();
         }
 
-        // Number counting animation
         function animateValue(id, end) {
             const obj = document.getElementById(id);
             let start = parseInt(obj.innerText);
             if (isNaN(start)) start = 0;
-            const duration = 500; // ms
+            const duration = 500;
             const startTime = performance.now();
 
             function update(currentTime) {
@@ -373,7 +403,6 @@
             requestAnimationFrame(update);
         }
 
-        // Copy Settings
         function copySettings() {
             const btn = document.querySelector('.copy-btn');
             const originalText = btn.innerText;
