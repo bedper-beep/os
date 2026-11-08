@@ -23,7 +23,7 @@
             position: relative;
         }
 
-        /* Large Water Particle Canvas */
+        /* Canvas for Falling Particles */
         #fluid-canvas {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
             pointer-events: none;
@@ -45,47 +45,45 @@
         #intro-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: #000; z-index: 9999; display: flex; justify-content: center; align-items: center;
-            animation: hideIntro 0.5s ease-in-out 6s forwards; /* Total intro length: 6s */
         }
 
         .intro-container {
-            font-family: 'Oswald', sans-serif; font-size: 70px; font-weight: 700; text-transform: uppercase;
+            font-family: 'Oswald', sans-serif; font-size: 65px; font-weight: 700; text-transform: uppercase;
             display: flex; align-items: center; position: relative;
             letter-spacing: 2px; text-shadow: 0 0 20px rgba(0, 170, 255, 0.5);
         }
 
         #typed-text {
-            white-space: pre; /* Keeps the spaces exact */
+            white-space: pre;
         }
 
-        /* The cursor */
         .cursor {
-            display: inline-block; width: 4px; height: 70px; background-color: var(--blue-main);
-            animation: blink 0.7s step-end infinite;
-            margin-left: 5px;
+            display: inline-block; width: 4px; height: 65px; background-color: var(--blue-main);
+            animation: blink 0.7s step-end infinite; margin-left: 5px;
         }
 
-        /* The Crown Animation */
+        /* The Crown */
         .crown {
-            position: absolute; left: 180px; top: -100px; font-size: 55px; opacity: 0;
-            animation: dropCrown 0.6s cubic-bezier(0.25, 1, 0.5, 1) 1.8s forwards;
+            position: absolute; 
+            left: 350px; /* Exact pixel position over the K in King */
+            top: -100px; 
+            font-size: 55px; 
+            opacity: 0;
             z-index: 10;
+        }
+
+        /* Triggered by JS */
+        .drop-animation {
+            animation: dropCrown 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
         }
 
         @keyframes dropCrown {
             0% { top: -100px; opacity: 0; transform: scale(1.5) rotate(-20deg); }
-            70% { top: -30px; opacity: 1; transform: scale(0.9) rotate(5deg); }
-            100% { top: -40px; opacity: 1; transform: scale(1) rotate(0deg); }
+            70% { top: -20px; opacity: 1; transform: scale(0.9) rotate(5deg); }
+            100% { top: -30px; opacity: 1; transform: scale(1) rotate(0deg); }
         }
 
-        @keyframes blink {
-            50% { border-color: transparent; }
-        }
-
-        @keyframes hideIntro {
-            0% { opacity: 1; pointer-events: all; }
-            100% { opacity: 0; pointer-events: none; display: none; }
-        }
+        @keyframes blink { 50% { border-color: transparent; } }
 
         /* --- MAIN APP --- */
         .app-container {
@@ -95,12 +93,16 @@
             background: rgba(2, 4, 10, 0.7);
             backdrop-filter: blur(25px); border: 1px solid rgba(0, 85, 255, 0.3);
             border-radius: 20px; box-shadow: 0 20px 50px rgba(0, 85, 255, 0.2);
-            overflow-y: auto; opacity: 0;
-            animation: fadeInApp 0.8s ease 6.2s forwards;
+            overflow-y: auto; opacity: 0; pointer-events: none;
+        }
+
+        .app-container.show {
+            animation: fadeInApp 0.4s ease forwards;
+            pointer-events: all;
         }
 
         @keyframes fadeInApp {
-            0% { opacity: 0; transform: scale(0.95); }
+            0% { opacity: 0; transform: scale(0.98); }
             100% { opacity: 1; transform: scale(1); }
         }
 
@@ -160,14 +162,14 @@
         </div>
     </div>
 
-    <!-- LARGE FLUID BACKGROUND -->
+    <!-- FALLING PARTICLE BACKGROUND -->
     <canvas id="fluid-canvas"></canvas>
     
     <div class="bg-overlay"></div>
     <div class="texture-overlay"></div>
 
     <!-- MAIN APP -->
-    <div class="app-container">
+    <div class="app-container" id="app-container">
         <div class="header">
             <div class="header-left">
                 <h1>KING <span>BLUE</span> RX</h1>
@@ -244,48 +246,46 @@
     </div>
 
     <script>
-        // --- TYPEWRITER INTRO LOGIC ---
+        // --- INSTANT TYPEWRITER INTRO LOGIC ---
         const textToType = "WELCOME TO KING BLUE RX SENSES";
         const typedTextElement = document.getElementById('typed-text');
         const crownElement = document.getElementById('crown');
+        const introScreen = document.getElementById('intro-screen');
+        const appContainer = document.getElementById('app-container');
         
         let charIndex = 0;
         
         function typeWriter() {
             if (charIndex < textToType.length) {
                 const char = textToType.charAt(charIndex);
-                typedTextElement.innerHTML += char;
                 
-                // Apply color to "BLUE"
+                // Rebuild text to color "BLUE"
                 if (charIndex >= 16 && charIndex < 21) {
-                    // We have to wrap the blue text in a span to color it
-                    // To keep it simple and prevent bugs, we rebuild the string with the span
                     const before = textToType.substring(0, 16);
                     const blue = textToType.substring(16, 21);
                     const after = textToType.substring(21, charIndex + 1);
                     typedTextElement.innerHTML = `${before}<span style="color: var(--blue-main);">${blue}</span>${after}`;
+                } else {
+                    typedTextElement.innerHTML = textToType.substring(0, charIndex + 1);
                 }
 
-                // Drop crown exactly when "KING" finishes typing (after the K in King, but we'll place it at index 14)
+                // Drop crown exactly when "KING" is typed
                 if (charIndex === 14) {
-                    crownElement.style.animation = 'dropCrown 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards';
+                    crownElement.classList.add('drop-animation');
                 }
 
                 charIndex++;
-                setTimeout(typeWriter, 80); // Speed of typing
+                setTimeout(typeWriter, 60); // Fast typing speed
             } else {
-                // Once done typing, wait 2 seconds before fading out
-                setTimeout(() => {
-                    document.getElementById('intro-screen').style.display = 'none';
-                    document.querySelector('.app-container').style.animation = 'fadeInApp 0.8s ease forwards';
-                }, 2000);
+                // ONCE FINISHED TYPING -> Instant transition
+                introScreen.style.display = 'none'; 
+                appContainer.classList.add('show'); 
             }
         }
 
-        // Start typing after a tiny delay
-        setTimeout(typeWriter, 500);
+        setTimeout(typeWriter, 300); // Small delay before typing starts
 
-        // --- MASSIVE FLUID BACKGROUND EFFECT ---
+        // --- FALLING PARTICLE EFFECT ---
         const canvas = document.getElementById('fluid-canvas');
         const ctx = canvas.getContext('2d');
         let width, height;
@@ -300,27 +300,28 @@
 
         class Particle {
             constructor() {
+                // Spawn from top
                 this.x = Math.random() * width;
-                this.y = height + 20;
-                this.vx = (Math.random() - 0.5) * 4;
-                this.vy = (Math.random() * -8) - 2; 
-                this.radius = Math.random() * 8 + 4;
+                this.y = -20; 
+                this.vx = (Math.random() - 0.5) * 2;
+                this.vy = (Math.random() * 4) + 2; // Falling down speed
+                this.radius = Math.random() * 6 + 2; 
                 this.life = 1;
-                this.color = Math.random() > 0.5 ? '0, 170, 255' : '0, 85, 255';
+                this.color = Math.random() > 0.5 ? '0, 170, 255' : '0, 85, 255'; 
             }
             update() {
                 this.x += this.vx;
                 this.y += this.vy;
+                this.vy += 0.05; // Gravity pulling it down
                 this.vx *= 0.98;
-                this.vy *= 0.99;
                 this.life -= 0.005;
-                if (this.y < -50) this.life = 0;
+                if (this.y > height + 50) this.life = 0;
             }
             draw() {
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
                 ctx.fillStyle = `rgba(${this.color}, ${this.life * 0.6})`;
-                ctx.shadowBlur = 20;
+                ctx.shadowBlur = 15;
                 ctx.shadowColor = `rgba(${this.color}, 0.8)`;
                 ctx.fill();
                 ctx.shadowBlur = 0;
@@ -331,8 +332,9 @@
             ctx.fillStyle = 'rgba(2, 4, 10, 0.2)';
             ctx.fillRect(0, 0, width, height);
 
-            if(particles.length < 150) {
-                for(let i=0; i<3; i++) particles.push(new Particle());
+            // Constantly spawn particles from top
+            if(particles.length < 200) {
+                for(let i=0; i<4; i++) particles.push(new Particle());
             }
 
             for (let i = 0; i < particles.length; i++) {
