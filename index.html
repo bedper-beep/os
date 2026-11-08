@@ -26,6 +26,7 @@
         /* Canvas for Mouse Particles */
         #particle-canvas {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            pointer-events: none; /* Ensures you can still click buttons */
         }
 
         /* Dark overlay to keep text readable */
@@ -46,12 +47,13 @@
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: #000; z-index: 9999; display: flex; justify-content: center; align-items: center;
             overflow: hidden;
+            /* Force it to vanish completely after 2.5s */
+            animation: hideIntro 0.1s ease-in-out 2.5s forwards;
         }
 
         .intro-text {
             font-family: 'Oswald', sans-serif; font-size: 60px; font-weight: 700; text-transform: uppercase;
             color: #fff; text-shadow: 0 0 30px var(--blue-main), 0 0 60px var(--blue-main);
-            /* Animates to top left */
             animation: flyToCorner 2.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
@@ -59,9 +61,14 @@
 
         @keyframes flyToCorner {
             0% { transform: scale(1) translate(0, 0); opacity: 1; filter: blur(0); }
-            40% { transform: scale(1.2) translate(0, 0); opacity: 1; filter: blur(0); text-shadow: 0 0 100px #fff, 0 0 200px var(--blue-main); }
-            60% { transform: scale(0.8) translate(-20vw, -20vh); opacity: 1; }
-            100% { transform: scale(0.4) translate(-34vw, -40vh); opacity: 0; }
+            20% { transform: scale(1.1) translate(0, 0); opacity: 1; filter: blur(0); text-shadow: 0 0 100px #fff, 0 0 200px var(--blue-main); }
+            40% { transform: scale(1) translate(0, 0); opacity: 1; }
+            80% { transform: scale(0.5) translate(-30vw, -30vh); opacity: 1; }
+            100% { transform: scale(0.2) translate(-35vw, -42vh); opacity: 0; }
+        }
+
+        @keyframes hideIntro {
+            to { opacity: 0; visibility: hidden; display: none; }
         }
 
         /* --- MAIN APP --- */
@@ -74,7 +81,8 @@
             border-radius: 20px; box-shadow: 0 20px 50px rgba(0, 85, 255, 0.2);
             overflow-y: auto;
             opacity: 0;
-            animation: fadeInApp 1s ease 2s forwards;
+            /* Fade the app in at 2.5s exactly when the intro dies */
+            animation: fadeInApp 0.5s ease 2.5s forwards;
         }
 
         @keyframes fadeInApp {
@@ -227,9 +235,7 @@
         <div class="intro-text">KING <span>BLUE</span> RX</div>
     </div>
 
-    <!-- MOUSE PARTICLES CANVAS -->
     <canvas id="particle-canvas"></canvas>
-    
     <div class="bg-overlay"></div>
     <div class="texture-overlay"></div>
 
@@ -248,8 +254,8 @@
 
         <div class="profile-card">
             <div class="profile-img-container">
-                <!-- PASTE YOUR TIKTOK PROFILE PICTURE LINK HERE -->
-                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=KingBlue&backgroundColor=0055ff" alt="King Blue RX" id="profilePic"> 
+                <!-- PASTE YOUR IMAGE LINK HERE -->
+                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=KingBlue&backgroundColor=0055ff" alt="King Blue RX"> 
             </div>
             <div class="profile-info">
                 <h2>KING BLUE RX</h2>
@@ -350,7 +356,6 @@
         window.addEventListener('resize', resize);
         resize();
 
-        // Particle Class
         class Particle {
             constructor(x, y) {
                 this.x = x;
@@ -358,7 +363,6 @@
                 this.size = Math.random() * 3 + 1;
                 this.speedX = Math.random() * 2 - 1;
                 this.speedY = Math.random() * 2 - 1;
-                this.color = '#00aaff';
                 this.alpha = 1;
             }
             update() {
@@ -375,9 +379,8 @@
             }
         }
 
-        // Mouse movement event
         window.addEventListener('mousemove', (e) => {
-            for (let i = 0; i < 3; i++) {
+            for (let i = 0; i < 2; i++) {
                 particles.push(new Particle(e.x, e.y));
             }
         });
