@@ -23,18 +23,16 @@
             position: relative;
         }
 
-        /* --- COOL ANIMATED GIF BACKGROUND --- */
-        .gif-bg {
+        /* Canvas for Mouse Particles */
+        #particle-canvas {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
-            background-image: url('https://media.giphy.com/media/xT9IgG50Fb7Mi0prBC/giphy.gif'); /* Cyber Blue Particles */
-            background-size: cover; background-position: center;
-            opacity: 0.2; filter: hue-rotate(180deg) contrast(150%);
         }
 
-        /* Dark overlay on top of GIF so text is readable */
+        /* Dark overlay to keep text readable */
         .bg-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
-            background: radial-gradient(circle at 50% 50%, rgba(2, 4, 10, 0.6) 0%, rgba(2, 4, 10, 0.95) 100%);
+            background: radial-gradient(circle at 50% 50%, rgba(2, 4, 10, 0.5) 0%, rgba(2, 4, 10, 0.95) 100%);
+            pointer-events: none;
         }
 
         .texture-overlay {
@@ -47,30 +45,23 @@
         #intro-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: #000; z-index: 9999; display: flex; justify-content: center; align-items: center;
-            animation: fadeOutIntro 0.5s ease-in-out 2.5s forwards;
+            overflow: hidden;
         }
 
         .intro-text {
             font-family: 'Oswald', sans-serif; font-size: 60px; font-weight: 700; text-transform: uppercase;
             color: #fff; text-shadow: 0 0 30px var(--blue-main), 0 0 60px var(--blue-main);
-            animation: zoomToCorner 2.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            /* Animates to top left */
+            animation: flyToCorner 2.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
         .intro-text span { color: var(--blue-main); }
 
-        /* The Flash and Zoom to Top Left */
-        @keyframes zoomToCorner {
-            0% { opacity: 0; transform: scale(0.8); filter: blur(10px); }
-            20% { opacity: 1; transform: scale(1.1); filter: blur(0); text-shadow: 0 0 100px #fff, 0 0 200px var(--blue-main); } /* FLASH */
-            30% { opacity: 1; transform: scale(1); filter: blur(0); text-shadow: 0 0 30px var(--blue-main); }
-            80% { opacity: 1; transform: scale(1) translate(0, 0); }
-            /* Shrinks and flies up to the top left where the header is */
-            100% { opacity: 0; transform: scale(0.3) translate(-35vw, -40vh); }
-        }
-
-        @keyframes fadeOutIntro {
-            0% { opacity: 1; pointer-events: all; }
-            100% { opacity: 0; pointer-events: none; display: none; }
+        @keyframes flyToCorner {
+            0% { transform: scale(1) translate(0, 0); opacity: 1; filter: blur(0); }
+            40% { transform: scale(1.2) translate(0, 0); opacity: 1; filter: blur(0); text-shadow: 0 0 100px #fff, 0 0 200px var(--blue-main); }
+            60% { transform: scale(0.8) translate(-20vw, -20vh); opacity: 1; }
+            100% { transform: scale(0.4) translate(-34vw, -40vh); opacity: 0; }
         }
 
         /* --- MAIN APP --- */
@@ -78,15 +69,16 @@
             position: relative; z-index: 10;
             width: 100%; max-width: 800px; height: 95vh;
             display: flex; flex-direction: column; padding: 30px;
-            background: rgba(2, 4, 10, 0.7);
-            backdrop-filter: blur(20px); border: 1px solid rgba(0, 85, 255, 0.3);
+            background: rgba(2, 4, 10, 0.6);
+            backdrop-filter: blur(25px); border: 1px solid rgba(0, 85, 255, 0.3);
             border-radius: 20px; box-shadow: 0 20px 50px rgba(0, 85, 255, 0.2);
             overflow-y: auto;
-            animation: fadeInApp 1s ease 2.5s forwards; opacity: 0;
+            opacity: 0;
+            animation: fadeInApp 1s ease 2s forwards;
         }
 
         @keyframes fadeInApp {
-            0% { opacity: 0; transform: translateY(20px); }
+            0% { opacity: 0; transform: translateY(10px); }
             100% { opacity: 1; transform: translateY(0); }
         }
 
@@ -207,24 +199,18 @@
         .input-group { margin-bottom: 20px; }
         .input-group label { display: block; font-size: 12px; color: var(--blue-main); margin-bottom: 8px; font-weight: bold; text-transform: uppercase;}
         
-        /* FIXED DROPDOWN STYLING */
         .input-group select {
-            width: 100%; padding: 15px; background: #000; /* Force black background */
+            width: 100%; padding: 15px; background: #000;
             border: 1px solid rgba(0, 85, 255, 0.3); border-radius: 10px;
             color: white; font-size: 16px; outline: none; font-family: 'Inter', sans-serif;
-            appearance: none; /* Remove default arrow */
+            appearance: none;
             background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%230055ff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
             background-repeat: no-repeat;
             background-position: right 15px top 50%;
             background-size: 12px auto;
         }
         .input-group select:focus { border-color: var(--blue-glow); }
-        
-        /* Force options to be dark on Chromebooks */
-        .input-group select option {
-            background: #000;
-            color: #fff;
-        }
+        .input-group select option { background: #000; color: #fff; }
 
         .modal-actions { display: flex; gap: 10px; margin-top: 30px; }
         .modal-actions button {
@@ -241,8 +227,9 @@
         <div class="intro-text">KING <span>BLUE</span> RX</div>
     </div>
 
-    <!-- BACKGROUNDS -->
-    <div class="gif-bg"></div>
+    <!-- MOUSE PARTICLES CANVAS -->
+    <canvas id="particle-canvas"></canvas>
+    
     <div class="bg-overlay"></div>
     <div class="texture-overlay"></div>
 
@@ -261,7 +248,8 @@
 
         <div class="profile-card">
             <div class="profile-img-container">
-                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=KingBlue&backgroundColor=0055ff" alt="Profile"> 
+                <!-- PASTE YOUR TIKTOK PROFILE PICTURE LINK HERE -->
+                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=KingBlue&backgroundColor=0055ff" alt="King Blue RX" id="profilePic"> 
             </div>
             <div class="profile-info">
                 <h2>KING BLUE RX</h2>
@@ -349,6 +337,66 @@
     </div>
 
     <script>
+        // --- PARTICLE ANIMATION ENGINE ---
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        // Particle Class
+        class Particle {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.size = Math.random() * 3 + 1;
+                this.speedX = Math.random() * 2 - 1;
+                this.speedY = Math.random() * 2 - 1;
+                this.color = '#00aaff';
+                this.alpha = 1;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.size > 0.2) this.size -= 0.05;
+                if (this.alpha > 0) this.alpha -= 0.02;
+            }
+            draw() {
+                ctx.fillStyle = `rgba(0, 170, 255, ${this.alpha})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        // Mouse movement event
+        window.addEventListener('mousemove', (e) => {
+            for (let i = 0; i < 3; i++) {
+                particles.push(new Particle(e.x, e.y));
+            }
+        });
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+                if (particles[i].alpha <= 0) {
+                    particles.splice(i, 1);
+                    i--;
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // --- APP LOGIC ---
         window.onload = updateModels;
 
         function openModal() { document.getElementById('generator-modal').classList.add('active'); }
