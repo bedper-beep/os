@@ -23,52 +23,63 @@
             position: relative;
         }
 
-        /* Canvas for Mouse Particles */
-        #particle-canvas {
+        /* The Fluid Water Effect Canvas */
+        #fluid-canvas {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
-            pointer-events: none; /* Ensures you can still click buttons */
+            /* We use a script later to make it interactive */
         }
 
-        /* Dark overlay to keep text readable */
         .bg-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
-            background: radial-gradient(circle at 50% 50%, rgba(2, 4, 10, 0.5) 0%, rgba(2, 4, 10, 0.95) 100%);
+            background: radial-gradient(circle at 50% 50%, rgba(2, 4, 10, 0.4) 0%, rgba(2, 4, 10, 0.9) 100%);
             pointer-events: none;
         }
 
         .texture-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2;
             background-image: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
-            opacity: 0.3; pointer-events: none;
+            opacity: 0.2; pointer-events: none;
         }
 
         /* --- INTRO ANIMATION --- */
         #intro-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: #000; z-index: 9999; display: flex; justify-content: center; align-items: center;
-            overflow: hidden;
-            /* Force it to vanish completely after 2.5s */
-            animation: hideIntro 0.1s ease-in-out 2.5s forwards;
+            animation: hideIntro 0.5s ease-in-out 5s forwards; /* Total intro length: 5s */
         }
 
-        .intro-text {
-            font-family: 'Oswald', sans-serif; font-size: 60px; font-weight: 700; text-transform: uppercase;
-            color: #fff; text-shadow: 0 0 30px var(--blue-main), 0 0 60px var(--blue-main);
-            animation: flyToCorner 2.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        .intro-container {
+            display: flex; align-items: center; gap: 10px;
+            font-family: 'Oswald', sans-serif; font-size: 50px; font-weight: 700; text-transform: uppercase;
         }
 
-        .intro-text span { color: var(--blue-main); }
+        /* Typing effect classes */
+        .type-welcome { width: 0; overflow: hidden; white-space: nowrap; border-right: 3px solid #fff; animation: typing1 1s steps(14) forwards, blink 0.5s step-end infinite alternate; }
+        .type-king { width: 0; overflow: hidden; white-space: nowrap; border-right: 3px solid #fff; animation: typing2 0.5s steps(5) 1.2s forwards, blink 0.5s step-end 1.2s infinite alternate; }
+        .type-blue { width: 0; overflow: hidden; white-space: nowrap; color: var(--blue-main); animation: typing3 0.5s steps(5) 2s forwards; }
+        .type-rx { width: 0; overflow: hidden; white-space: nowrap; animation: typing4 0.5s steps(3) 2.7s forwards; }
 
-        @keyframes flyToCorner {
-            0% { transform: scale(1) translate(0, 0); opacity: 1; filter: blur(0); }
-            20% { transform: scale(1.1) translate(0, 0); opacity: 1; filter: blur(0); text-shadow: 0 0 100px #fff, 0 0 200px var(--blue-main); }
-            40% { transform: scale(1) translate(0, 0); opacity: 1; }
-            80% { transform: scale(0.5) translate(-30vw, -30vh); opacity: 1; }
-            100% { transform: scale(0.2) translate(-35vw, -42vh); opacity: 0; }
+        /* Crown Drop */
+        .crown {
+            display: inline-block; font-size: 40px; position: relative; top: -40px; opacity: 0;
+            animation: dropCrown 0.5s cubic-bezier(0.25, 1, 0.5, 1) 1.8s forwards;
         }
+
+        @keyframes dropCrown {
+            0% { top: -100px; opacity: 0; transform: scale(1.5); }
+            70% { top: 5px; opacity: 1; transform: scale(0.9); }
+            100% { top: -5px; opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes typing1 { from { width: 0; } to { width: 170px; } }
+        @keyframes typing2 { from { width: 0; } to { width: 100px; } }
+        @keyframes typing3 { from { width: 0; } to { width: 100px; } }
+        @keyframes typing4 { from { width: 0; } to { width: 140px; } }
+        @keyframes blink { 50% { border-color: transparent; } }
 
         @keyframes hideIntro {
-            to { opacity: 0; visibility: hidden; display: none; }
+            0% { opacity: 1; pointer-events: all; }
+            100% { opacity: 0; pointer-events: none; display: none; }
         }
 
         /* --- MAIN APP --- */
@@ -79,151 +90,57 @@
             background: rgba(2, 4, 10, 0.6);
             backdrop-filter: blur(25px); border: 1px solid rgba(0, 85, 255, 0.3);
             border-radius: 20px; box-shadow: 0 20px 50px rgba(0, 85, 255, 0.2);
-            overflow-y: auto;
-            opacity: 0;
-            /* Fade the app in at 2.5s exactly when the intro dies */
-            animation: fadeInApp 0.5s ease 2.5s forwards;
+            overflow-y: auto; opacity: 0;
+            animation: fadeInApp 0.8s ease 5s forwards;
         }
 
         @keyframes fadeInApp {
-            0% { opacity: 0; transform: translateY(10px); }
-            100% { opacity: 1; transform: translateY(0); }
+            0% { opacity: 0; transform: scale(0.95); }
+            100% { opacity: 1; transform: scale(1); }
         }
 
-        .header {
-            display: flex; justify-content: space-between; align-items: flex-start;
-            margin-bottom: 20px;
-        }
-
+        /* ... Rest of the app CSS (Header, Profile, Grid, Buttons) remains the exact same ... */
+        .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
         .header-left { display: flex; flex-direction: column; }
-        .header-left h1 {
-            font-family: 'Oswald', sans-serif; font-size: 42px; font-weight: 700;
-            text-transform: uppercase; line-height: 1; letter-spacing: 1px;
-            text-shadow: 0 0 15px rgba(0, 170, 255, 0.5);
-        }
+        .header-left h1 { font-family: 'Oswald', sans-serif; font-size: 42px; font-weight: 700; text-transform: uppercase; line-height: 1; letter-spacing: 1px; text-shadow: 0 0 15px rgba(0, 170, 255, 0.5); }
         .header-left h1 span { color: var(--blue-main); }
-        
         .header-quote { font-size: 12px; font-weight: 600; color: var(--blue-glow); letter-spacing: 2px; margin-top: 5px; text-transform: uppercase; }
-
-        .tiktok-badge {
-            background: rgba(0, 85, 255, 0.2); border: 1px solid var(--blue-main);
-            padding: 8px 15px; border-radius: 30px; font-size: 12px; font-weight: 600;
-            color: #fff; text-decoration: none; display: flex; align-items: center; gap: 5px;
-            transition: 0.3s;
-        }
+        .tiktok-badge { background: rgba(0, 85, 255, 0.2); border: 1px solid var(--blue-main); padding: 8px 15px; border-radius: 30px; font-size: 12px; font-weight: 600; color: #fff; text-decoration: none; display: flex; align-items: center; gap: 5px; transition: 0.3s; }
         .tiktok-badge:hover { background: var(--blue-main); box-shadow: 0 0 15px var(--blue-main); }
-
-        .profile-card {
-            display: flex; align-items: center; gap: 20px;
-            background: rgba(0, 10, 30, 0.8); border: 1px solid rgba(0, 85, 255, 0.2);
-            border-radius: 16px; padding: 20px; margin-bottom: 25px;
-        }
-        
-        .profile-img-container {
-            width: 80px; height: 80px; border-radius: 12px; overflow: hidden;
-            border: 2px solid var(--blue-main); box-shadow: 0 0 15px rgba(0, 85, 255, 0.4);
-            background: #111;
-        }
+        .profile-card { display: flex; align-items: center; gap: 20px; background: rgba(0, 10, 30, 0.8); border: 1px solid rgba(0, 85, 255, 0.2); border-radius: 16px; padding: 20px; margin-bottom: 25px; }
+        .profile-img-container { width: 80px; height: 80px; border-radius: 12px; overflow: hidden; border: 2px solid var(--blue-main); box-shadow: 0 0 15px rgba(0, 85, 255, 0.4); background: #111; }
         .profile-img-container img { width: 100%; height: 100%; object-fit: cover; }
-        
         .profile-info h2 { font-size: 24px; font-weight: 800; }
         .profile-info p { color: var(--text-sub); font-size: 13px; margin-top: 4px; }
-
-        .sensi-grid {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
-        }
-
-        .sensi-card {
-            background: linear-gradient(135deg, rgba(0, 20, 50, 0.8), rgba(0, 5, 15, 0.9));
-            border: 1px solid rgba(0, 85, 255, 0.2);
-            border-radius: 12px; padding: 20px; display: flex; justify-content: space-between; align-items: center;
-            transition: 0.3s; position: relative; overflow: hidden;
-        }
-
-        .sensi-card::before {
-            content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 4px;
-            background: var(--blue-main); box-shadow: 0 0 10px var(--blue-main);
-        }
-
-        .sensi-card:hover {
-            border-color: var(--blue-glow); transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0, 85, 255, 0.15);
-        }
-
+        .sensi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .sensi-card { background: linear-gradient(135deg, rgba(0, 20, 50, 0.8), rgba(0, 5, 15, 0.9)); border: 1px solid rgba(0, 85, 255, 0.2); border-radius: 12px; padding: 20px; display: flex; justify-content: space-between; align-items: center; transition: 0.3s; position: relative; overflow: hidden; }
+        .sensi-card::before { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 4px; background: var(--blue-main); box-shadow: 0 0 10px var(--blue-main); }
+        .sensi-card:hover { border-color: var(--blue-glow); transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0, 85, 255, 0.15); }
         .sensi-info h3 { font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px;}
         .sensi-info p { font-size: 11px; color: var(--text-sub); font-weight: 500;}
-
-        .sensi-value {
-            font-size: 32px; font-weight: 900; color: var(--blue-glow);
-            text-shadow: 0 0 15px rgba(0, 170, 255, 0.6); transition: 0.3s;
-        }
-
+        .sensi-value { font-size: 32px; font-weight: 900; color: var(--blue-glow); text-shadow: 0 0 15px rgba(0, 170, 255, 0.6); transition: 0.3s; }
         .btn-container { display: flex; gap: 15px; margin-top: 30px; }
-
-        .copy-btn {
-            flex: 1; padding: 20px;
-            background: transparent; border: 2px solid var(--blue-main); color: var(--blue-main);
-            font-size: 18px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;
-            border-radius: 12px; cursor: pointer; transition: 0.3s;
-        }
+        .copy-btn { flex: 1; padding: 20px; background: transparent; border: 2px solid var(--blue-main); color: var(--blue-main); font-size: 18px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; border-radius: 12px; cursor: pointer; transition: 0.3s; }
         .copy-btn:hover { background: rgba(0, 85, 255, 0.2); box-shadow: 0 0 15px var(--blue-main); }
-
-        .generate-btn {
-            flex: 2; padding: 20px;
-            background: var(--blue-main); color: #fff;
-            font-size: 18px; font-weight: 800; text-transform: uppercase; letter-spacing: 3px;
-            border: none; border-radius: 12px; cursor: pointer;
-            box-shadow: 0 10px 30px rgba(0, 85, 255, 0.4); transition: 0.3s;
-        }
+        .generate-btn { flex: 2; padding: 20px; background: var(--blue-main); color: #fff; font-size: 18px; font-weight: 800; text-transform: uppercase; letter-spacing: 3px; border: none; border-radius: 12px; cursor: pointer; box-shadow: 0 10px 30px rgba(0, 85, 255, 0.4); transition: 0.3s; }
         .generate-btn:hover { background: #0044cc; transform: scale(1.02); box-shadow: 0 15px 40px rgba(0, 85, 255, 0.6); }
-
-        .barcode-footer {
-            margin-top: 30px; display: flex; justify-content: space-between; align-items: center;
-            border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;
-            font-size: 10px; color: var(--text-sub); letter-spacing: 2px;
-        }
+        .barcode-footer { margin-top: 30px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; font-size: 10px; color: var(--text-sub); letter-spacing: 2px; }
         .barcode { font-family: 'Libre Barcode 39', cursive; font-size: 24px; letter-spacing: 2px; opacity: 0.5;}
-
-        /* MODAL & DARK DROPDOWNS */
-        #generator-modal {
-            position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);
-            z-index: 100; display: none; justify-content: center; align-items: center;
-        }
-        #generator-modal.active { display: flex; }
         
-        .modal-box {
-            background: #050a15; border: 1px solid var(--blue-main);
-            border-radius: 20px; padding: 40px; width: 90%; max-width: 500px;
-            box-shadow: 0 0 50px rgba(0, 85, 255, 0.3);
-            animation: popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-
+        /* Modal */
+        #generator-modal { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); z-index: 100; display: none; justify-content: center; align-items: center; }
+        #generator-modal.active { display: flex; }
+        .modal-box { background: #050a15; border: 1px solid var(--blue-main); border-radius: 20px; padding: 40px; width: 90%; max-width: 500px; box-shadow: 0 0 50px rgba(0, 85, 255, 0.3); animation: popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         @keyframes popIn { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-
         .modal-box h2 { font-size: 28px; color: var(--blue-glow); margin-bottom: 10px; font-family: 'Oswald', sans-serif; text-transform: uppercase;}
         .modal-box p { color: var(--text-sub); font-size: 14px; margin-bottom: 25px; }
-
         .input-group { margin-bottom: 20px; }
         .input-group label { display: block; font-size: 12px; color: var(--blue-main); margin-bottom: 8px; font-weight: bold; text-transform: uppercase;}
-        
-        .input-group select {
-            width: 100%; padding: 15px; background: #000;
-            border: 1px solid rgba(0, 85, 255, 0.3); border-radius: 10px;
-            color: white; font-size: 16px; outline: none; font-family: 'Inter', sans-serif;
-            appearance: none;
-            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%230055ff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
-            background-repeat: no-repeat;
-            background-position: right 15px top 50%;
-            background-size: 12px auto;
-        }
+        .input-group select { width: 100%; padding: 15px; background: #000; border: 1px solid rgba(0, 85, 255, 0.3); border-radius: 10px; color: white; font-size: 16px; outline: none; font-family: 'Inter', sans-serif; appearance: none; background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%230055ff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E"); background-repeat: no-repeat; background-position: right 15px top 50%; background-size: 12px auto; }
         .input-group select:focus { border-color: var(--blue-glow); }
         .input-group select option { background: #000; color: #fff; }
-
         .modal-actions { display: flex; gap: 10px; margin-top: 30px; }
-        .modal-actions button {
-            flex: 1; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; border: none; font-size: 16px;
-        }
+        .modal-actions button { flex: 1; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; border: none; font-size: 16px; }
         .cancel-btn { background: #333; color: white; }
         .confirm-btn { background: var(--blue-main); color: white; }
     </style>
@@ -232,15 +149,22 @@
 
     <!-- INTRO ANIMATION -->
     <div id="intro-screen">
-        <div class="intro-text">KING <span>BLUE</span> RX</div>
+        <div class="intro-container">
+            <div class="type-welcome">Welcome to </div>
+            <div class="type-king">King <span class="crown">👑</span> </div>
+            <div class="type-blue">Blue </div>
+            <div class="type-rx">RX Senses</div>
+        </div>
     </div>
 
-    <canvas id="particle-canvas"></canvas>
+    <!-- FLUID BACKGROUND -->
+    <canvas id="fluid-canvas"></canvas>
+    
     <div class="bg-overlay"></div>
     <div class="texture-overlay"></div>
 
+    <!-- MAIN APP -->
     <div class="app-container">
-        
         <div class="header">
             <div class="header-left">
                 <h1>KING <span>BLUE</span> RX</h1>
@@ -254,7 +178,7 @@
 
         <div class="profile-card">
             <div class="profile-img-container">
-                <!-- PASTE YOUR IMAGE LINK HERE -->
+                <!-- Paste your image link here -->
                 <img src="https://api.dicebear.com/7.x/bottts/svg?seed=KingBlue&backgroundColor=0055ff" alt="King Blue RX"> 
             </div>
             <div class="profile-info">
@@ -263,31 +187,13 @@
             </div>
         </div>
 
-        <div class="sensi-grid" id="sensi-display">
-            <div class="sensi-card">
-                <div class="sensi-info"><h3>General</h3><p>Look around</p></div>
-                <div class="sensi-value" id="val-general">98</div>
-            </div>
-            <div class="sensi-card">
-                <div class="sensi-info"><h3>Red Dot</h3><p>Close range</p></div>
-                <div class="sensi-value" id="val-reddot">95</div>
-            </div>
-            <div class="sensi-card">
-                <div class="sensi-info"><h3>2x Scope</h3><p>Mid range</p></div>
-                <div class="sensi-value" id="val-2x">85</div>
-            </div>
-            <div class="sensi-card">
-                <div class="sensi-info"><h3>4x Scope</h3><p>Long range</p></div>
-                <div class="sensi-value" id="val-4x">75</div>
-            </div>
-            <div class="sensi-card">
-                <div class="sensi-info"><h3>AWM Scope</h3><p>Sniper</p></div>
-                <div class="sensi-value" id="val-awm">60</div>
-            </div>
-            <div class="sensi-card">
-                <div class="sensi-info"><h3>Fire Button</h3><p>Size</p></div>
-                <div class="sensi-value" id="val-fire">55</div>
-            </div>
+        <div class="sensi-grid">
+            <div class="sensi-card"><div class="sensi-info"><h3>General</h3><p>Look around</p></div><div class="sensi-value" id="val-general">98</div></div>
+            <div class="sensi-card"><div class="sensi-info"><h3>Red Dot</h3><p>Close range</p></div><div class="sensi-value" id="val-reddot">95</div></div>
+            <div class="sensi-card"><div class="sensi-info"><h3>2x Scope</h3><p>Mid range</p></div><div class="sensi-value" id="val-2x">85</div></div>
+            <div class="sensi-card"><div class="sensi-info"><h3>4x Scope</h3><p>Long range</p></div><div class="sensi-value" id="val-4x">75</div></div>
+            <div class="sensi-card"><div class="sensi-info"><h3>AWM Scope</h3><p>Sniper</p></div><div class="sensi-value" id="val-awm">60</div></div>
+            <div class="sensi-card"><div class="sensi-info"><h3>Fire Button</h3><p>Size</p></div><div class="sensi-value" id="val-fire">55</div></div>
         </div>
 
         <div class="btn-container">
@@ -300,7 +206,6 @@
             <div class="barcode">||||||||||||||||||||</div>
             <span>MADE FOR GREATNESS</span>
         </div>
-
     </div>
 
     <!-- GENERATOR MODAL -->
@@ -308,24 +213,18 @@
         <div class="modal-box">
             <h2>Sensi Generator</h2>
             <p>Select your device for AI-optimized headshot settings.</p>
-            
             <div class="input-group">
                 <label>Device Brand</label>
                 <select id="deviceBrand" onchange="updateModels()">
                     <option value="iPhone">iPhone (iOS)</option>
                     <option value="Samsung">Samsung (Android)</option>
                     <option value="Nokia">Nokia (Android)</option>
-                    <option value="Other">Other Android</option>
                 </select>
             </div>
-
             <div class="input-group">
                 <label>Device Model</label>
-                <select id="deviceModel">
-                    <!-- Populated by JS -->
-                </select>
+                <select id="deviceModel"></select>
             </div>
-
             <div class="input-group">
                 <label>Playstyle</label>
                 <select id="playstyle">
@@ -334,7 +233,6 @@
                     <option value="Pro Player">Pro Player (Balanced)</option>
                 </select>
             </div>
-
             <div class="modal-actions">
                 <button class="cancel-btn" onclick="closeModal()">Cancel</button>
                 <button class="confirm-btn" onclick="generateSensi()">Generate</button>
@@ -343,8 +241,8 @@
     </div>
 
     <script>
-        // --- PARTICLE ANIMATION ENGINE ---
-        const canvas = document.getElementById('particle-canvas');
+        // --- FLUID WATER EFFECT (Particles that stretch and connect) ---
+        const canvas = document.getElementById('fluid-canvas');
         const ctx = canvas.getContext('2d');
         let width, height;
         let particles = [];
@@ -360,43 +258,50 @@
             constructor(x, y) {
                 this.x = x;
                 this.y = y;
-                this.size = Math.random() * 3 + 1;
-                this.speedX = Math.random() * 2 - 1;
-                this.speedY = Math.random() * 2 - 1;
-                this.alpha = 1;
+                this.vx = (Math.random() - 0.5) * 2;
+                this.vy = (Math.random() - 0.5) * 2;
+                this.radius = Math.random() * 3 + 1;
+                this.life = 1;
             }
             update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
-                if (this.size > 0.2) this.size -= 0.05;
-                if (this.alpha > 0) this.alpha -= 0.02;
+                this.x += this.vx;
+                this.y += this.vy;
+                this.vx *= 0.95; // Friction (water slowing down)
+                this.vy *= 0.95;
+                this.life -= 0.02;
             }
             draw() {
-                ctx.fillStyle = `rgba(0, 170, 255, ${this.alpha})`;
                 ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(0, 170, 255, ${this.life})`;
                 ctx.fill();
             }
         }
 
         window.addEventListener('mousemove', (e) => {
-            for (let i = 0; i < 2; i++) {
+            for (let i = 0; i < 4; i++) {
                 particles.push(new Particle(e.x, e.y));
             }
         });
 
         function animate() {
-            ctx.clearRect(0, 0, width, height);
+            // Slight fade for the motion blur/water trail effect
+            ctx.fillStyle = 'rgba(2, 4, 10, 0.1)';
+            ctx.fillRect(0, 0, width, height);
+
             for (let i = 0; i < particles.length; i++) {
                 particles[i].update();
                 particles[i].draw();
-                if (particles[i].alpha <= 0) {
+                if (particles[i].life <= 0) {
                     particles.splice(i, 1);
                     i--;
                 }
             }
             requestAnimationFrame(animate);
         }
+        // Clear canvas initially
+        ctx.fillStyle = '#02040a';
+        ctx.fillRect(0, 0, width, height);
         animate();
 
         // --- APP LOGIC ---
@@ -409,18 +314,10 @@
             const brand = document.getElementById('deviceBrand').value;
             const modelSelect = document.getElementById('deviceModel');
             modelSelect.innerHTML = '';
-
             let models = [];
-            if (brand === 'iPhone') {
-                models = ['iPhone 11', 'iPhone 12', 'iPhone 13', 'iPhone 14 Pro', 'iPhone 15', 'iPhone 16'];
-            } else if (brand === 'Samsung') {
-                models = ['Galaxy S21', 'Galaxy S22', 'Galaxy S23 Ultra', 'Galaxy S24', 'Galaxy A54'];
-            } else if (brand === 'Nokia') {
-                models = ['Nokia G50', 'Nokia XR20', 'Nokia X30'];
-            } else {
-                models = ['Generic Android 1', 'Generic Android 2', 'Generic Android 3'];
-            }
-
+            if (brand === 'iPhone') models = ['iPhone 11', 'iPhone 12', 'iPhone 13', 'iPhone 14 Pro', 'iPhone 15', 'iPhone 16'];
+            else if (brand === 'Samsung') models = ['Galaxy S21', 'Galaxy S22', 'Galaxy S23 Ultra', 'Galaxy S24', 'Galaxy A54'];
+            else if (brand === 'Nokia') models = ['Nokia G50', 'Nokia XR20', 'Nokia X30'];
             models.forEach(m => {
                 let opt = document.createElement('option');
                 opt.value = m;
@@ -431,10 +328,7 @@
 
         function generateSensi() {
             const playstyle = document.getElementById('playstyle').value;
-            
-            let base = 50;
-            let multiplier = 1;
-
+            let base = 50, multiplier = 1;
             if (playstyle === 'Headshot Hunter') { base = 85; multiplier = 1.2; }
             if (playstyle === 'Freestyler') { base = 95; multiplier = 1.1; }
             if (playstyle === 'Pro Player') { base = 75; multiplier = 1.05; }
@@ -452,17 +346,14 @@
             animateValue("val-4x", scope4x);
             animateValue("val-awm", awm);
             animateValue("val-fire", fireButton);
-
             closeModal();
         }
 
         function animateValue(id, end) {
             const obj = document.getElementById(id);
-            let start = parseInt(obj.innerText);
-            if (isNaN(start)) start = 0;
+            let start = parseInt(obj.innerText) || 0;
             const duration = 500;
             const startTime = performance.now();
-
             function update(currentTime) {
                 const elapsed = currentTime - startTime;
                 const progress = Math.min(elapsed / duration, 1);
@@ -475,12 +366,10 @@
         function copySettings() {
             const btn = document.querySelector('.copy-btn');
             const originalText = btn.innerText;
-            
             btn.innerText = "COPIED!";
             btn.style.background = "#00ffcc";
             btn.style.color = "#000";
             btn.style.borderColor = "#00ffcc";
-            
             setTimeout(() => {
                 btn.innerText = originalText;
                 btn.style.background = "transparent";
