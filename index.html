@@ -3,426 +3,187 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sensi Lab | King Blue RX</title>
+    <title>King Blue Cinema</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&family=Oswald:wght@500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&display=swap');
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; user-select: none; }
 
-        :root {
-            --blue-main: #0055ff;
-            --blue-glow: #00aaff;
-            --bg-color: #02040a;
-            --text-main: #ffffff;
-            --text-sub: #6b7280;
-        }
-
         body {
-            height: 100vh; width: 100vw; overflow: hidden; background-color: var(--bg-color);
-            color: var(--text-main); display: flex; justify-content: center; align-items: center;
-            position: relative;
+            background-color: #0b0c10; color: #fff; min-height: 100vh;
+            background-image: radial-gradient(circle at 50% 0%, #1a1a2e 0%, #0b0c10 80%);
         }
 
-        /* Canvas for Falling Particles */
-        #fluid-canvas {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
-            pointer-events: none;
+        /* Header */
+        header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px 40px; background: rgba(11, 12, 16, 0.9); backdrop-filter: blur(10px);
+            position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #222;
         }
 
-        .bg-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
-            background: radial-gradient(circle at 50% 50%, rgba(2, 4, 10, 0.2) 0%, rgba(2, 4, 10, 0.85) 100%);
-            pointer-events: none;
+        .logo {
+            font-size: 28px; font-weight: 900; color: #fff; letter-spacing: 2px;
+            text-transform: uppercase;
         }
+        .logo span { color: #0055ff; text-shadow: 0 0 10px rgba(0,85,255,0.6); }
 
-        .texture-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2;
-            background-image: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
-            opacity: 0.2; pointer-events: none;
+        /* Hero Banner */
+        .hero {
+            position: relative; height: 400px; display: flex; align-items: flex-end;
+            padding: 40px; background-image: url('https://image.tmdb.org/t/p/original/9O7gLzmreU0nGkIB6K3BsJbzvNv.jpg');
+            background-size: cover; background-position: center top;
         }
-
-        /* --- INTRO ANIMATION --- */
-        #intro-screen {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 9999; display: flex; justify-content: center; align-items: center;
+        .hero::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to top, #0b0c10 0%, transparent 80%);
         }
-
-        .intro-container {
-            font-family: 'Oswald', sans-serif; font-size: 65px; font-weight: 700; text-transform: uppercase;
-            display: flex; align-items: center; position: relative;
-            letter-spacing: 2px; text-shadow: 0 0 20px rgba(0, 170, 255, 0.5);
-        }
-
-        #typed-text {
-            white-space: pre;
-        }
-
-        .cursor {
-            display: inline-block; width: 4px; height: 65px; background-color: var(--blue-main);
-            animation: blink 0.7s step-end infinite; margin-left: 5px;
-        }
-
-        /* The Crown */
-        .crown {
-            position: absolute; 
-            left: 350px; /* Exact pixel position over the K in King */
-            top: -100px; 
-            font-size: 55px; 
-            opacity: 0;
-            z-index: 10;
-        }
-
-        /* Triggered by JS */
-        .drop-animation {
-            animation: dropCrown 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-        }
-
-        @keyframes dropCrown {
-            0% { top: -100px; opacity: 0; transform: scale(1.5) rotate(-20deg); }
-            70% { top: -20px; opacity: 1; transform: scale(0.9) rotate(5deg); }
-            100% { top: -30px; opacity: 1; transform: scale(1) rotate(0deg); }
-        }
-
-        @keyframes blink { 50% { border-color: transparent; } }
-
-        /* --- MAIN APP --- */
-        .app-container {
-            position: relative; z-index: 10;
-            width: 100%; max-width: 800px; height: 95vh;
-            display: flex; flex-direction: column; padding: 30px;
-            background: rgba(2, 4, 10, 0.7);
-            backdrop-filter: blur(25px); border: 1px solid rgba(0, 85, 255, 0.3);
-            border-radius: 20px; box-shadow: 0 20px 50px rgba(0, 85, 255, 0.2);
-            overflow-y: auto; opacity: 0; pointer-events: none;
-        }
-
-        .app-container.show {
-            animation: fadeInApp 0.4s ease forwards;
-            pointer-events: all;
-        }
-
-        @keyframes fadeInApp {
-            0% { opacity: 0; transform: scale(0.98); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-
-        .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
-        .header-left { display: flex; flex-direction: column; }
-        .header-left h1 { font-family: 'Oswald', sans-serif; font-size: 42px; font-weight: 700; text-transform: uppercase; line-height: 1; letter-spacing: 1px; text-shadow: 0 0 15px rgba(0, 170, 255, 0.5); }
-        .header-left h1 span { color: var(--blue-main); }
-        .header-quote { font-size: 12px; font-weight: 600; color: var(--blue-glow); letter-spacing: 2px; margin-top: 5px; text-transform: uppercase; }
-        .tiktok-badge { background: rgba(0, 85, 255, 0.2); border: 1px solid var(--blue-main); padding: 8px 15px; border-radius: 30px; font-size: 12px; font-weight: 600; color: #fff; text-decoration: none; display: flex; align-items: center; gap: 5px; transition: 0.3s; }
-        .tiktok-badge:hover { background: var(--blue-main); box-shadow: 0 0 15px var(--blue-main); }
-        .profile-card { display: flex; align-items: center; gap: 20px; background: rgba(0, 10, 30, 0.8); border: 1px solid rgba(0, 85, 255, 0.2); border-radius: 16px; padding: 20px; margin-bottom: 25px; }
-        .profile-img-container { width: 80px; height: 80px; border-radius: 12px; overflow: hidden; border: 2px solid var(--blue-main); box-shadow: 0 0 15px rgba(0, 85, 255, 0.4); background: #111; }
-        .profile-img-container img { width: 100%; height: 100%; object-fit: cover; }
-        .profile-info h2 { font-size: 24px; font-weight: 800; }
-        .profile-info p { color: var(--text-sub); font-size: 13px; margin-top: 4px; }
-        .sensi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .sensi-card { background: linear-gradient(135deg, rgba(0, 20, 50, 0.8), rgba(0, 5, 15, 0.9)); border: 1px solid rgba(0, 85, 255, 0.2); border-radius: 12px; padding: 20px; display: flex; justify-content: space-between; align-items: center; transition: 0.3s; position: relative; overflow: hidden; }
-        .sensi-card::before { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 4px; background: var(--blue-main); box-shadow: 0 0 10px var(--blue-main); }
-        .sensi-card:hover { border-color: var(--blue-glow); transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0, 85, 255, 0.15); }
-        .sensi-info h3 { font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px;}
-        .sensi-info p { font-size: 11px; color: var(--text-sub); font-weight: 500;}
-        .sensi-value { font-size: 32px; font-weight: 900; color: var(--blue-glow); text-shadow: 0 0 15px rgba(0, 170, 255, 0.6); transition: 0.3s; }
-        .btn-container { display: flex; gap: 15px; margin-top: 30px; }
-        .copy-btn { flex: 1; padding: 20px; background: transparent; border: 2px solid var(--blue-main); color: var(--blue-main); font-size: 18px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; border-radius: 12px; cursor: pointer; transition: 0.3s; }
-        .copy-btn:hover { background: rgba(0, 85, 255, 0.2); box-shadow: 0 0 15px var(--blue-main); }
-        .generate-btn { flex: 2; padding: 20px; background: var(--blue-main); color: #fff; font-size: 18px; font-weight: 800; text-transform: uppercase; letter-spacing: 3px; border: none; border-radius: 12px; cursor: pointer; box-shadow: 0 10px 30px rgba(0, 85, 255, 0.4); transition: 0.3s; }
-        .generate-btn:hover { background: #0044cc; transform: scale(1.02); box-shadow: 0 15px 40px rgba(0, 85, 255, 0.6); }
-        .barcode-footer { margin-top: 30px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; font-size: 10px; color: var(--text-sub); letter-spacing: 2px; }
-        .barcode { font-family: 'Libre Barcode 39', cursive; font-size: 24px; letter-spacing: 2px; opacity: 0.5;}
+        .hero-content { position: relative; z-index: 10; max-width: 600px; }
+        .hero-content h1 { font-size: 48px; font-weight: 900; margin-bottom: 10px; }
+        .hero-content p { color: #aaa; font-size: 16px; line-height: 1.5; margin-bottom: 20px; }
         
-        /* Modal */
-        #generator-modal { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); z-index: 100; display: none; justify-content: center; align-items: center; }
-        #generator-modal.active { display: flex; }
-        .modal-box { background: #050a15; border: 1px solid var(--blue-main); border-radius: 20px; padding: 40px; width: 90%; max-width: 500px; box-shadow: 0 0 50px rgba(0, 85, 255, 0.3); animation: popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        @keyframes popIn { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-        .modal-box h2 { font-size: 28px; color: var(--blue-glow); margin-bottom: 10px; font-family: 'Oswald', sans-serif; text-transform: uppercase;}
-        .modal-box p { color: var(--text-sub); font-size: 14px; margin-bottom: 25px; }
-        .input-group { margin-bottom: 20px; }
-        .input-group label { display: block; font-size: 12px; color: var(--blue-main); margin-bottom: 8px; font-weight: bold; text-transform: uppercase;}
-        .input-group select { width: 100%; padding: 15px; background: #000; border: 1px solid rgba(0, 85, 255, 0.3); border-radius: 10px; color: white; font-size: 16px; outline: none; font-family: 'Inter', sans-serif; appearance: none; background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%230055ff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E"); background-repeat: no-repeat; background-position: right 15px top 50%; background-size: 12px auto; }
-        .input-group select:focus { border-color: var(--blue-glow); }
-        .input-group select option { background: #000; color: #fff; }
-        .modal-actions { display: flex; gap: 10px; margin-top: 30px; }
-        .modal-actions button { flex: 1; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; border: none; font-size: 16px; }
-        .cancel-btn { background: #333; color: white; }
-        .confirm-btn { background: var(--blue-main); color: white; }
+        .watch-btn {
+            padding: 15px 30px; background: #0055ff; color: white; font-weight: bold;
+            border: none; border-radius: 8px; cursor: pointer; font-size: 16px;
+            display: flex; align-items: center; gap: 10px; transition: 0.3s;
+            box-shadow: 0 10px 20px rgba(0, 85, 255, 0.3);
+        }
+        .watch-btn:hover { background: #0044cc; transform: scale(1.05); }
+
+        /* Movie Rows */
+        .row { padding: 40px; }
+        .row h2 { font-size: 24px; margin-bottom: 20px; color: #eee; }
+        
+        .movie-grid {
+            display: flex; gap: 20px; overflow-x: auto; padding-bottom: 20px;
+            scrollbar-width: none; /* Hide scrollbar Firefox */
+        }
+        .movie-grid::-webkit-scrollbar { display: none; } /* Hide scrollbar Chrome */
+
+        .movie-card {
+            min-width: 200px; width: 200px; cursor: pointer; transition: 0.3s;
+            position: relative; border-radius: 12px; overflow: hidden;
+        }
+        .movie-card:hover { transform: scale(1.05); z-index: 10; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+        
+        .movie-poster {
+            width: 100%; height: 300px; object-fit: cover; border-radius: 12px;
+            border: 1px solid #333;
+        }
+        
+        .movie-info { margin-top: 10px; }
+        .movie-title { font-size: 16px; font-weight: 600; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .movie-meta { font-size: 12px; color: #888; margin-top: 5px; }
+
     </style>
 </head>
 <body>
 
-    <!-- INTRO ANIMATION -->
-    <div id="intro-screen">
-        <div class="intro-container">
-            <span id="typed-text"></span>
-            <span class="cursor"></span>
-            <span class="crown" id="crown">👑</span>
+    <!-- Header -->
+    <header>
+        <div class="logo">KING BLUE <span>CINEMA</span></div>
+        <div style="font-size: 20px; color: #555;">Search 🔍</div>
+    </header>
+
+    <!-- Hero Banner (Gumball) -->
+    <div class="hero">
+        <div class="hero-content">
+            <h1>The Amazing World of Gumball</h1>
+            <p>The life of a twelve-year-old boy named Gumball Watterson. He attends middle school in Elmore, with his best friend, Darwin.</p>
+            <button class="watch-btn" onclick="openStream('The Amazing World of Gumball', 'https://www.wcostream.tv/the-amazing-world-of-gumball')">
+                ▶ Watch Now
+            </button>
         </div>
     </div>
 
-    <!-- FALLING PARTICLE BACKGROUND -->
-    <canvas id="fluid-canvas"></canvas>
-    
-    <div class="bg-overlay"></div>
-    <div class="texture-overlay"></div>
-
-    <!-- MAIN APP -->
-    <div class="app-container" id="app-container">
-        <div class="header">
-            <div class="header-left">
-                <h1>KING <span>BLUE</span> RX</h1>
-                <div class="header-quote">STAY HUNGRY × STAY HUMBLE</div>
+    <!-- Movie Row -->
+    <div class="row">
+        <h2>Trending Movies</h2>
+        <div class="movie-grid">
+            <!-- Movie 1 -->
+            <div class="movie-card" onclick="openStream('Deadpool & Wolverine', 'https://www.google.com/search?q=watch+Deadpool+and+Wolverine+free')">
+                <img src="https://image.tmdb.org/t/p/w500/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg" class="movie-poster">
+                <div class="movie-info">
+                    <div class="movie-title">Deadpool & Wolverine</div>
+                    <div class="movie-meta">2024 • Action/Comedy</div>
+                </div>
             </div>
-            <a href="https://www.tiktok.com/@kingbluerx" target="_blank" class="tiktok-badge">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg>
-                @kingbluerx
-            </a>
-        </div>
 
-        <div class="profile-card">
-            <div class="profile-img-container">
-                <!-- Paste your image link here -->
-                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=KingBlue&backgroundColor=0055ff" alt="King Blue RX"> 
+            <!-- Movie 2 -->
+            <div class="movie-card" onclick="openStream('Inside Out 2', 'https://www.google.com/search?q=watch+Inside+Out+2+free')">
+                <img src="https://image.tmdb.org/t/p/w500/vpnVM9B6NMmQpWeZvzLvDESb2QY.jpg" class="movie-poster">
+                <div class="movie-info">
+                    <div class="movie-title">Inside Out 2</div>
+                    <div class="movie-meta">2024 • Animation</div>
+                </div>
             </div>
-            <div class="profile-info">
-                <h2>KING BLUE RX</h2>
-                <p>Free Fire Pro Sensi 2026</p>
+
+            <!-- Movie 3 -->
+            <div class="movie-card" onclick="openStream('Bad Boys: Ride or Die', 'https://www.google.com/search?q=watch+Bad+Boys+Ride+or+Die+free')">
+                <img src="https://image.tmdb.org/t/p/w500/oGythE98MYleE6mZlGs5oBGkux1.jpg" class="movie-poster">
+                <div class="movie-info">
+                    <div class="movie-title">Bad Boys: Ride or Die</div>
+                    <div class="movie-meta">2024 • Action</div>
+                </div>
             </div>
-        </div>
 
-        <div class="sensi-grid">
-            <div class="sensi-card"><div class="sensi-info"><h3>General</h3><p>Look around</p></div><div class="sensi-value" id="val-general">98</div></div>
-            <div class="sensi-card"><div class="sensi-info"><h3>Red Dot</h3><p>Close range</p></div><div class="sensi-value" id="val-reddot">95</div></div>
-            <div class="sensi-card"><div class="sensi-info"><h3>2x Scope</h3><p>Mid range</p></div><div class="sensi-value" id="val-2x">85</div></div>
-            <div class="sensi-card"><div class="sensi-info"><h3>4x Scope</h3><p>Long range</p></div><div class="sensi-value" id="val-4x">75</div></div>
-            <div class="sensi-card"><div class="sensi-info"><h3>AWM Scope</h3><p>Sniper</p></div><div class="sensi-value" id="val-awm">60</div></div>
-            <div class="sensi-card"><div class="sensi-info"><h3>Fire Button</h3><p>Size</p></div><div class="sensi-value" id="val-fire">55</div></div>
-        </div>
-
-        <div class="btn-container">
-            <button class="copy-btn" onclick="copySettings()">COPY</button>
-            <button class="generate-btn" onclick="openModal()">GENERATE</button>
-        </div>
-
-        <div class="barcode-footer">
-            <span>BUILT DIFFERENT</span>
-            <div class="barcode">||||||||||||||||||||</div>
-            <span>MADE FOR GREATNESS</span>
+            <!-- Movie 4 -->
+            <div class="movie-card" onclick="openStream('Dune: Part Two', 'https://www.google.com/search?q=watch+Dune+Part+Two+free')">
+                <img src="https://image.tmdb.org/t/p/w500/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg" class="movie-poster">
+                <div class="movie-info">
+                    <div class="movie-title">Dune: Part Two</div>
+                    <div class="movie-meta">2024 • Sci-Fi</div>
+                </div>
+            </div>
+            
+            <!-- Movie 5 -->
+            <div class="movie-card" onclick="openStream('Godzilla x Kong', 'https://www.google.com/search?q=watch+Godzilla+x+Kong+free')">
+                <img src="https://image.tmdb.org/t/p/w500/z1p34vh7dEOnLDmyCrlUVLuoDzd.jpg" class="movie-poster">
+                <div class="movie-info">
+                    <div class="movie-title">Godzilla x Kong</div>
+                    <div class="movie-meta">2024 • Action</div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- GENERATOR MODAL -->
-    <div id="generator-modal">
-        <div class="modal-box">
-            <h2>Sensi Generator</h2>
-            <p>Select your device for AI-optimized headshot settings.</p>
-            <div class="input-group">
-                <label>Device Brand</label>
-                <select id="deviceBrand" onchange="updateModels()">
-                    <option value="iPhone">iPhone (iOS)</option>
-                    <option value="Samsung">Samsung (Android)</option>
-                    <option value="Nokia">Nokia (Android)</option>
-                </select>
+    <!-- Animated Row -->
+    <div class="row">
+        <h2>Animated Series</h2>
+        <div class="movie-grid">
+            <!-- Gumball -->
+            <div class="movie-card" onclick="openStream('Gumball', 'https://www.wcostream.tv/the-amazing-world-of-gumball')">
+                <img src="https://image.tmdb.org/t/p/w500/z3ryB0p0W4K1g1g4g4.jpg" class="movie-poster" style="object-fit: cover;" onerror="this.src='https://upload.wikimedia.org/wikipedia/en/0/0b/The_Amazing_World_of_Gumball_logo.png'; this.style.objectFit='contain'; this.style.background='#111';">
+                <div class="movie-info">
+                    <div class="movie-title">The Amazing World of Gumball</div>
+                    <div class="movie-meta">2011 • Cartoon Network</div>
+                </div>
             </div>
-            <div class="input-group">
-                <label>Device Model</label>
-                <select id="deviceModel"></select>
+
+            <!-- Adventure Time -->
+            <div class="movie-card" onclick="openStream('Adventure Time', 'https://www.wcostream.tv/adventure-time')">
+                <img src="https://image.tmdb.org/t/p/w500/pdbD2XjP5Xk5K0tK0v5v5v5.jpg" class="movie-poster" onerror="this.src='https://upload.wikimedia.org/wikipedia/en/3/3a/Adventure_Time_title_card.png'; this.style.objectFit='contain'; this.style.background='#111';">
+                <div class="movie-info">
+                    <div class="movie-title">Adventure Time</div>
+                    <div class="movie-meta">2010 • Cartoon Network</div>
+                </div>
             </div>
-            <div class="input-group">
-                <label>Playstyle</label>
-                <select id="playstyle">
-                    <option value="Headshot Hunter">Headshot Hunter (Aim focused)</option>
-                    <option value="Freestyler">Freestyler (Fast movement)</option>
-                    <option value="Pro Player">Pro Player (Balanced)</option>
-                </select>
-            </div>
-            <div class="modal-actions">
-                <button class="cancel-btn" onclick="closeModal()">Cancel</button>
-                <button class="confirm-btn" onclick="generateSensi()">Generate</button>
+            
+            <!-- Regular Show -->
+            <div class="movie-card" onclick="openStream('Regular Show', 'https://www.wcostream.tv/regular-show')">
+                <img src="https://image.tmdb.org/t/p/w500/l0f5X2bQ7Q7Q7Q7Q7Q7Q7Q7.jpg" class="movie-poster" onerror="this.src='https://upload.wikimedia.org/wikipedia/en/8/8a/Regular_Show_Title_Card.png'; this.style.objectFit='contain'; this.style.background='#111';">
+                <div class="movie-info">
+                    <div class="movie-title">Regular Show</div>
+                    <div class="movie-meta">2010 • Cartoon Network</div>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        // --- INSTANT TYPEWRITER INTRO LOGIC ---
-        const textToType = "WELCOME TO KING BLUE RX SENSES";
-        const typedTextElement = document.getElementById('typed-text');
-        const crownElement = document.getElementById('crown');
-        const introScreen = document.getElementById('intro-screen');
-        const appContainer = document.getElementById('app-container');
-        
-        let charIndex = 0;
-        
-        function typeWriter() {
-            if (charIndex < textToType.length) {
-                const char = textToType.charAt(charIndex);
-                
-                // Rebuild text to color "BLUE"
-                if (charIndex >= 16 && charIndex < 21) {
-                    const before = textToType.substring(0, 16);
-                    const blue = textToType.substring(16, 21);
-                    const after = textToType.substring(21, charIndex + 1);
-                    typedTextElement.innerHTML = `${before}<span style="color: var(--blue-main);">${blue}</span>${after}`;
-                } else {
-                    typedTextElement.innerHTML = textToType.substring(0, charIndex + 1);
-                }
-
-                // Drop crown exactly when "KING" is typed
-                if (charIndex === 14) {
-                    crownElement.classList.add('drop-animation');
-                }
-
-                charIndex++;
-                setTimeout(typeWriter, 60); // Fast typing speed
-            } else {
-                // ONCE FINISHED TYPING -> Instant transition
-                introScreen.style.display = 'none'; 
-                appContainer.classList.add('show'); 
-            }
-        }
-
-        setTimeout(typeWriter, 300); // Small delay before typing starts
-
-        // --- FALLING PARTICLE EFFECT ---
-        const canvas = document.getElementById('fluid-canvas');
-        const ctx = canvas.getContext('2d');
-        let width, height;
-        let particles = [];
-
-        function resize() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resize);
-        resize();
-
-        class Particle {
-            constructor() {
-                // Spawn from top
-                this.x = Math.random() * width;
-                this.y = -20; 
-                this.vx = (Math.random() - 0.5) * 2;
-                this.vy = (Math.random() * 4) + 2; // Falling down speed
-                this.radius = Math.random() * 6 + 2; 
-                this.life = 1;
-                this.color = Math.random() > 0.5 ? '0, 170, 255' : '0, 85, 255'; 
-            }
-            update() {
-                this.x += this.vx;
-                this.y += this.vy;
-                this.vy += 0.05; // Gravity pulling it down
-                this.vx *= 0.98;
-                this.life -= 0.005;
-                if (this.y > height + 50) this.life = 0;
-            }
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(${this.color}, ${this.life * 0.6})`;
-                ctx.shadowBlur = 15;
-                ctx.shadowColor = `rgba(${this.color}, 0.8)`;
-                ctx.fill();
-                ctx.shadowBlur = 0;
-            }
-        }
-
-        function animate() {
-            ctx.fillStyle = 'rgba(2, 4, 10, 0.2)';
-            ctx.fillRect(0, 0, width, height);
-
-            // Constantly spawn particles from top
-            if(particles.length < 200) {
-                for(let i=0; i<4; i++) particles.push(new Particle());
-            }
-
-            for (let i = 0; i < particles.length; i++) {
-                particles[i].update();
-                particles[i].draw();
-                if (particles[i].life <= 0) {
-                    particles.splice(i, 1);
-                    i--;
-                }
-            }
-            requestAnimationFrame(animate);
-        }
-        ctx.fillStyle = '#02040a';
-        ctx.fillRect(0, 0, width, height);
-        animate();
-
-        // --- APP LOGIC ---
-        window.onload = updateModels;
-
-        function openModal() { document.getElementById('generator-modal').classList.add('active'); }
-        function closeModal() { document.getElementById('generator-modal').classList.remove('active'); }
-
-        function updateModels() {
-            const brand = document.getElementById('deviceBrand').value;
-            const modelSelect = document.getElementById('deviceModel');
-            modelSelect.innerHTML = '';
-            let models = [];
-            if (brand === 'iPhone') models = ['iPhone 11', 'iPhone 12', 'iPhone 13', 'iPhone 14 Pro', 'iPhone 15', 'iPhone 16'];
-            else if (brand === 'Samsung') models = ['Galaxy S21', 'Galaxy S22', 'Galaxy S23 Ultra', 'Galaxy S24', 'Galaxy A54'];
-            else if (brand === 'Nokia') models = ['Nokia G50', 'Nokia XR20', 'Nokia X30'];
-            models.forEach(m => {
-                let opt = document.createElement('option');
-                opt.value = m;
-                opt.innerText = m;
-                modelSelect.appendChild(opt);
-            });
-        }
-
-        function generateSensi() {
-            const playstyle = document.getElementById('playstyle').value;
-            let base = 50, multiplier = 1;
-            if (playstyle === 'Headshot Hunter') { base = 85; multiplier = 1.2; }
-            if (playstyle === 'Freestyler') { base = 95; multiplier = 1.1; }
-            if (playstyle === 'Pro Player') { base = 75; multiplier = 1.05; }
-
-            const general = Math.floor(base * multiplier) + Math.floor(Math.random() * 5);
-            const redDot = Math.floor(base) + Math.floor(Math.random() * 5);
-            const scope2x = Math.floor(base * 0.85) + Math.floor(Math.random() * 5);
-            const scope4x = Math.floor(base * 0.7) + Math.floor(Math.random() * 5);
-            const awm = Math.floor(base * 0.5) + Math.floor(Math.random() * 5);
-            const fireButton = Math.floor(base * 0.6) + Math.floor(Math.random() * 5);
-
-            animateValue("val-general", general);
-            animateValue("val-reddot", redDot);
-            animateValue("val-2x", scope2x);
-            animateValue("val-4x", scope4x);
-            animateValue("val-awm", awm);
-            animateValue("val-fire", fireButton);
-            closeModal();
-        }
-
-        function animateValue(id, end) {
-            const obj = document.getElementById(id);
-            let start = parseInt(obj.innerText) || 0;
-            const duration = 500;
-            const startTime = performance.now();
-            function update(currentTime) {
-                const elapsed = currentTime - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-                obj.innerText = Math.floor(progress * (end - start) + start);
-                if (progress < 1) requestAnimationFrame(update);
-            }
-            requestAnimationFrame(update);
-        }
-
-        function copySettings() {
-            const btn = document.querySelector('.copy-btn');
-            const originalText = btn.innerText;
-            btn.innerText = "COPIED!";
-            btn.style.background = "#00ffcc";
-            btn.style.color = "#000";
-            btn.style.borderColor = "#00ffcc";
-            setTimeout(() => {
-                btn.innerText = originalText;
-                btn.style.background = "transparent";
-                btn.style.color = "var(--blue-main)";
-                btn.style.borderColor = "var(--blue-main)";
-            }, 2000);
+        // Function to open the stream
+        function openStream(title, url) {
+            // We open the link in a new tab so the school's iframe blocker doesn't stop it
+            window.open(url, '_blank');
         }
     </script>
 </body>
