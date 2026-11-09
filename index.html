@@ -3,273 +3,320 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>King Blue Proxy</title>
+    <title>King Blue Cinema</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&display=swap');
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; user-select: none; }
+
+        :root {
+            --bg-color: #0b0c10;
+            --text-main: #ffffff;
+            --text-sub: #8b8b9f;
+            --accent: #00ffcc;
+        }
 
         body {
-            height: 100vh; width: 100vw; overflow: hidden;
-            background: #02040a; color: white;
-            background-image: radial-gradient(circle at 50% 0%, #1a1a2e 0%, #02040a 80%);
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            overflow-x: hidden;
         }
 
-        /* Sidebar */
-        .sidebar {
-            position: absolute; left: 0; top: 0; width: 80px; height: 100%;
-            background: rgba(10, 10, 15, 0.8); backdrop-filter: blur(20px);
-            border-right: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column;
-            align-items: center; padding: 20px 0; z-index: 10;
-        }
-        
-        .logo { font-size: 28px; font-weight: 800; color: #00ffcc; margin-bottom: 40px; cursor: pointer; text-shadow: 0 0 15px rgba(0,255,204,0.4); }
-        
-        .nav-item {
-            width: 50px; height: 50px; border-radius: 12px; display: flex; justify-content: center; align-items: center;
-            margin-bottom: 15px; cursor: pointer; transition: 0.3s; color: #666; font-size: 20px;
-        }
-        .nav-item:hover, .nav-item.active { background: rgba(0, 255, 204, 0.1); color: #00ffcc; }
-
-        /* Main Content */
-        .main { margin-left: 80px; height: 100%; display: flex; flex-direction: column; }
-
-        /* Browser Bar */
-        .browser-bar {
-            height: 70px; display: flex; align-items: center; padding: 0 30px;
-            background: rgba(10, 10, 15, 0.5); border-bottom: 1px solid rgba(255,255,255,0.05);
+        /* Top Navigation */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px;
+            background: linear-gradient(to bottom, rgba(11, 12, 16, 1), rgba(11, 12, 16, 0));
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
         }
 
-        .search-box {
-            flex: 1; max-width: 600px; position: relative; margin: 0 auto;
+        .logo {
+            font-size: 28px;
+            font-weight: 900;
+            color: #fff;
+            letter-spacing: 2px;
+        }
+        .logo span { color: var(--accent); text-shadow: 0 0 10px rgba(0,255,204,0.5); }
+
+        .nav-links { display: flex; gap: 20px; font-size: 14px; color: var(--text-sub); font-weight: 600; }
+        .nav-links span { cursor: pointer; transition: 0.3s; }
+        .nav-links span:hover { color: #fff; }
+
+        /* Hero Banner */
+        .hero {
+            position: relative;
+            height: 90vh;
+            background-image: url('https://image.tmdb.org/t/p/original/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg'); /* Deadpool & Wolverine */
+            background-size: cover;
+            background-position: center top;
+            display: flex;
+            align-items: center;
+            padding: 0 50px;
         }
 
-        .search-box input {
-            width: 100%; padding: 15px 20px 15px 50px; border-radius: 30px;
-            background: rgba(20, 20, 30, 0.8); border: 1px solid rgba(0, 255, 204, 0.3);
-            color: white; font-size: 16px; outline: none; transition: 0.3s;
-        }
-        .search-box input:focus { border-color: #00ffcc; box-shadow: 0 0 20px rgba(0, 255, 204, 0.2); }
-        .search-icon { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: #00ffcc; }
-
-        /* Page Views */
-        .page-view { flex: 1; padding: 40px; display: none; overflow-y: auto; }
-        .page-view.active { display: block; animation: fadeIn 0.4s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Settings Page (Matching your photos) */
-        .settings-container { max-width: 800px; }
-        .settings-header { font-size: 32px; font-weight: 800; margin-bottom: 30px; }
-        
-        .setting-row {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 25px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-        
-        .setting-info h3 { font-size: 18px; font-weight: 600; margin-bottom: 5px; }
-        .setting-info p { font-size: 13px; color: #888; }
-        
-        .setting-control select {
-            padding: 12px 20px; border-radius: 8px; background: rgba(0, 255, 204, 0.1);
-            border: 1px solid #00ffcc; color: white; font-size: 15px; outline: none; cursor: pointer;
-            appearance: none; min-width: 200px;
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to right, rgba(11, 12, 16, 0.9) 0%, rgba(11, 12, 16, 0.4) 50%, transparent 100%),
+                        linear-gradient(to top, rgba(11, 12, 16, 1) 0%, transparent 30%);
         }
 
-        .setting-control select option { background: #111; color: white; }
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            max-width: 600px;
+        }
 
-        /* App Grid */
-        .app-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 20px; }
-        .app-card {
-            background: rgba(25, 25, 35, 0.6); border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 16px; padding: 20px; display: flex; flex-direction: column; align-items: center; gap: 10px;
-            cursor: pointer; transition: 0.3s;
+        .hero-title {
+            font-size: 64px;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 15px;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.8);
         }
-        .app-card:hover { background: rgba(40, 40, 50, 0.8); border-color: #00ffcc; transform: translateY(-5px); }
-        .app-card img { width: 50px; height: 50px; object-fit: contain; }
 
-        /* Iframe Container */
-        #proxy-frame-container {
-            position: absolute; top: 70px; left: 80px; right: 0; bottom: 0;
-            background: #fff; display: none; z-index: 50;
+        .hero-meta {
+            display: flex;
+            gap: 15px;
+            color: var(--accent);
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 20px;
         }
-        #proxy-frame-container.active { display: block; }
-        #proxy-frame { width: 100%; height: 100%; border: none; }
-        
-        .close-frame {
-            position: absolute; top: 10px; right: 10px; z-index: 60;
-            background: #ff0000; color: white; border: none; padding: 10px 20px;
-            border-radius: 8px; cursor: pointer; font-weight: bold;
+
+        .hero-desc {
+            font-size: 16px;
+            color: #ddd;
+            line-height: 1.5;
+            margin-bottom: 30px;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.8);
         }
+
+        .play-btn {
+            padding: 15px 35px;
+            background: #fff;
+            color: #000;
+            font-size: 18px;
+            font-weight: 800;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: 0.3s;
+        }
+        .play-btn:hover { background: var(--accent); transform: scale(1.05); }
+
+        /* Movie Rows */
+        .row {
+            padding: 40px 50px;
+            position: relative;
+            z-index: 20;
+            margin-top: -50px;
+        }
+
+        .row-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        .movie-grid {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            padding-bottom: 30px;
+            scrollbar-width: none;
+        }
+        .movie-grid::-webkit-scrollbar { display: none; }
+
+        .movie-card {
+            min-width: 220px;
+            width: 220px;
+            cursor: pointer;
+            transition: transform 0.3s, z-index 0.3s;
+            position: relative;
+        }
+
+        .movie-card:hover {
+            transform: scale(1.08);
+            z-index: 50;
+        }
+
+        .movie-poster {
+            width: 100%;
+            height: 330px;
+            object-fit: cover;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        }
+
+        .movie-info {
+            margin-top: 10px;
+        }
+
+        .movie-name {
+            font-size: 15px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .movie-year {
+            font-size: 12px;
+            color: var(--text-sub);
+            margin-top: 4px;
+        }
+
+        /* Search Overlay */
+        #search-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(11, 12, 16, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 100px;
+        }
+
+        #search-overlay.active { display: flex; }
+
+        .search-input {
+            width: 80%;
+            max-width: 800px;
+            padding: 20px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--accent);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 24px;
+            outline: none;
+            text-align: center;
+        }
+
+        .close-search {
+            position: absolute;
+            top: 30px; right: 50px;
+            background: none; border: none; color: white;
+            font-size: 30px; cursor: pointer;
+        }
+
     </style>
 </head>
 <body>
 
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <div class="logo" onclick="switchPage('home')">B</div>
-        <div class="nav-item active" onclick="switchPage('home', this)" title="Home">🏠</div>
-        <div class="nav-item" onclick="switchPage('apps', this)" title="Apps">🧩</div>
-        <div class="nav-item" onclick="switchPage('settings', this)" title="Settings">⚙️</div>
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">KING BLUE <span>CINEMA</span></div>
+        <div class="nav-links">
+            <span onclick="openSearch()">Search 🔍</span>
+            <span>Movies</span>
+            <span>TV Shows</span>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <div class="hero-content">
+            <div class="hero-title">Deadpool & Wolverine</div>
+            <div class="hero-meta">
+                <span>2024</span>
+                <span>Action / Comedy</span>
+                <span>R</span>
+                <span>★ 8.1</span>
+            </div>
+            <div class="hero-desc">
+                Wolverine is recovering from his injuries when he crosses paths with the loudmouth, Deadpool. They team up to defeat a common enemy.
+            </div>
+            <button class="play-btn" onclick="watchMovie('Deadpool & Wolverine')">
+                ▶ Watch Now
+            </button>
+        </div>
     </div>
 
-    <!-- Main Content -->
-    <div class="main">
-        
-        <!-- Browser Bar -->
-        <div class="browser-bar">
-            <div class="search-box">
-                <span class="search-icon">🔍</span>
-                <input type="text" id="urlInput" placeholder="Search DuckDuckGo or enter URL..." onkeypress="handleSearch(event)">
-            </div>
-        </div>
-
-        <!-- Home Page -->
-        <div id="home-page" class="page-view active">
-            <h1 style="font-size: 48px; font-weight: 800; margin-bottom: 10px;">Welcome back.</h1>
-            <p style="color: #888; font-size: 18px;">Ready to bypass the restrictions?</p>
+    <!-- Movie Rows -->
+    <div class="row">
+        <div class="row-title">Trending Now</div>
+        <div class="movie-grid">
             
-            <div style="margin-top: 50px;">
-                <h2 style="font-size: 20px; margin-bottom: 20px; color: #00ffcc;">Quick Links</h2>
-                <div class="app-grid">
-                    <!-- Replace these links with your actual proxy URLs, e.g., https://your-proxy.com/uv/service/... -->
-                    <div class="app-card" onclick="openFrame('https://www.google.com')">
-                        <span style="font-size: 30px;">🔍</span><span>Google</span>
-                    </div>
-                    <div class="app-card" onclick="openFrame('https://youtube.com')">
-                        <span style="font-size: 30px;">▶️</span><span>YouTube</span>
-                    </div>
-                    <div class="app-card" onclick="openFrame('https://tiktok.com')">
-                        <span style="font-size: 30px;">🎵</span><span>TikTok</span>
-                    </div>
+            <div class="movie-card" onclick="watchMovie('Inside Out 2')">
+                <img src="https://image.tmdb.org/t/p/w500/vpnVM9B6NMmQpWeZvzLvDESb2QY.jpg" class="movie-poster">
+                <div class="movie-info">
+                    <div class="movie-name">Inside Out 2</div>
+                    <div class="movie-year">2024</div>
                 </div>
             </div>
-        </div>
 
-        <!-- Apps Page -->
-        <div id="apps-page" class="page-view">
-            <h1 style="font-size: 32px; font-weight: 800; margin-bottom: 30px;">App Hub</h1>
-            <div class="app-grid">
-                <div class="app-card" onclick="openFrame('https://discord.com')">
-                    <img src="https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0a6a49cf127bf92de1e2_icon_clyde_blurple_RGB.png">
-                    <span>Discord</span>
-                </div>
-                <div class="app-card" onclick="openFrame('https://chatgpt.com')">
-                    <span style="font-size: 40px;">🤖</span>
-                    <span>ChatGPT</span>
+            <div class="movie-card" onclick="watchMovie('Dune: Part Two')">
+                <img src="https://image.tmdb.org/t/p/w500/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg" class="movie-poster">
+                <div class="movie-info">
+                    <div class="movie-name">Dune: Part Two</div>
+                    <div class="movie-year">2024</div>
                 </div>
             </div>
-        </div>
 
-        <!-- Settings Page (Recreated from your screenshots) -->
-        <div id="settings-page" class="page-view">
-            <div class="settings-container">
-                <div class="settings-header">Proxy Settings</div>
-                
-                <div class="setting-row">
-                    <div class="setting-info">
-                        <h3>Tabs Layout</h3>
-                        <p>Show tabs across the top, or in a sidebar on the left.</p>
-                    </div>
-                    <div class="setting-control">
-                        <select>
-                            <option>Horizontal</option>
-                            <option>Vertical (Sidebar)</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="setting-row">
-                    <div class="setting-info">
-                        <h3>Search Engine</h3>
-                        <p>Change the search engine when searching.</p>
-                    </div>
-                    <div class="setting-control">
-                        <select>
-                            <option>DuckDuckGo (Default)</option>
-                            <option>Brave</option>
-                            <option>Google</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="setting-row">
-                    <div class="setting-info">
-                        <h3>Framework</h3>
-                        <p>Choose the proxy you want to use.</p>
-                    </div>
-                    <div class="setting-control">
-                        <select>
-                            <option>Scramjet (Default)</option>
-                            <option>Ultraviolet</option>
-                            <option>Epoxy</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="setting-row">
-                    <div class="setting-info">
-                        <h3>Transport</h3>
-                        <p>Choose how Scramjet moves traffic.</p>
-                    </div>
-                    <div class="setting-control">
-                        <select>
-                            <option>Epoxy (Default)</option>
-                            <option>Libcurl</option>
-                        </select>
-                    </div>
+            <div class="movie-card" onclick="watchMovie('Godzilla x Kong')">
+                <img src="https://image.tmdb.org/t/p/w500/z1p34vh7dEOnLDmyCrlUVLuoDzd.jpg" class="movie-poster">
+                <div class="movie-info">
+                    <div class="movie-name">Godzilla x Kong</div>
+                    <div class="movie-year">2024</div>
                 </div>
             </div>
-        </div>
 
-        <!-- Iframe Container -->
-        <div id="proxy-frame-container">
-            <button class="close-frame" onclick="closeFrame()">Close App</button>
-            <iframe id="proxy-frame" sandbox="allow-same-origin allow-scripts allow-forms allow-popups"></iframe>
+            <div class="movie-card" onclick="watchMovie('Bad Boys: Ride or Die')">
+                <img src="https://image.tmdb.org/t/p/w500/oGythE98MYleE6mZlGs5oBGkux1.jpg" class="movie-poster">
+                <div class="movie-info">
+                    <div class="movie-name">Bad Boys 4</div>
+                    <div class="movie-year">2024</div>
+                </div>
+            </div>
+
+            <div class="movie-card" onclick="watchMovie('The Amazing World of Gumball')">
+                <img src="https://upload.wikimedia.org/wikipedia/en/0/0b/The_Amazing_World_of_Gumball_logo.png" class="movie-poster" style="object-fit: contain; background: #111; padding: 20px;">
+                <div class="movie-info">
+                    <div class="movie-name">Gumball</div>
+                    <div class="movie-year">2011</div>
+                </div>
+            </div>
+
         </div>
+    </div>
+
+    <!-- Search Overlay -->
+    <div id="search-overlay">
+        <button class="close-search" onclick="closeSearch()">×</button>
+        <input type="text" class="search-input" placeholder="Search for a movie or show..." autofocus>
     </div>
 
     <script>
-        // Switch Pages
-        function switchPage(pageId, element) {
-            document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
-            document.getElementById(`${pageId}-page`).classList.add('active');
+        // Open/Close Search
+        function openSearch() {
+            document.getElementById('search-overlay').classList.add('active');
+        }
+        function closeSearch() {
+            document.getElementById('search-overlay').classList.remove('active');
+        }
+
+        // The Streaming Logic
+        function watchMovie(title) {
+            // We use a public search URL to find the movie on a free streaming site
+            // This opens in a new tab so the school's popup blocker doesn't stop the video player
+            const searchUrl = `https://www.google.com/search?q=watch+${encodeURIComponent(title)}+free+online`;
             
-            if(element) {
-                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-                element.classList.add('active');
-            }
-            closeFrame();
-        }
-
-        // Open Search or URL
-        function handleSearch(e) {
-            if(e.key === 'Enter') {
-                let query = e.target.value.trim();
-                if(!query) return;
-                if(!query.startsWith('http')) {
-                    query = 'https://duckduckgo.com/?q=' + encodeURIComponent(query);
-                }
-                openFrame(query);
-                e.target.value = '';
-            }
-        }
-
-        // Open App in Iframe (Using a CORS proxy for demonstration)
-        function openFrame(url) {
-            const container = document.getElementById('proxy-frame-container');
-            const iframe = document.getElementById('proxy-frame');
-            container.classList.add('active');
-            
-            // Using allorigins to bypass basic iframe restrictions for the demo
-            iframe.src = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
-        }
-
-        // Close Iframe
-        function closeFrame() {
-            const container = document.getElementById('proxy-frame-container');
-            const iframe = document.getElementById('proxy-frame');
-            container.classList.remove('active');
-            iframe.src = 'about:blank';
+            // In a real app, this would route to your proxy or a direct video link
+            window.open(searchUrl, '_blank');
         }
     </script>
 </body>
