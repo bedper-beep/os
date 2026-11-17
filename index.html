@@ -3,321 +3,294 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>King Blue Cinema</title>
+    <title>Hoop Dreamz: Chromebook Edition</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&display=swap');
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; user-select: none; }
-
-        :root {
-            --bg-color: #0b0c10;
-            --text-main: #ffffff;
-            --text-sub: #8b8b9f;
-            --accent: #00ffcc;
-        }
-
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
         body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            overflow-x: hidden;
+            margin: 0; padding: 0; overflow: hidden; background: #111;
+            font-family: 'Inter', sans-serif; color: white;
         }
-
-        /* Top Navigation */
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 50px;
-            background: linear-gradient(to bottom, rgba(11, 12, 16, 1), rgba(11, 12, 16, 0));
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 100;
+        canvas { display: block; background: #1a1a2e; }
+        
+        #ui {
+            position: absolute; top: 20px; left: 20px; right: 20px;
+            display: flex; justify-content: space-between; pointer-events: none;
         }
-
-        .logo {
-            font-size: 28px;
-            font-weight: 900;
-            color: #fff;
-            letter-spacing: 2px;
+        .hud-box {
+            background: rgba(0,0,0,0.6); padding: 15px 25px;
+            border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);
+            font-size: 24px; font-weight: 900;
         }
-        .logo span { color: var(--accent); text-shadow: 0 0 10px rgba(0,255,204,0.5); }
-
-        .nav-links { display: flex; gap: 20px; font-size: 14px; color: var(--text-sub); font-weight: 600; }
-        .nav-links span { cursor: pointer; transition: 0.3s; }
-        .nav-links span:hover { color: #fff; }
-
-        /* Hero Banner */
-        .hero {
-            position: relative;
-            height: 90vh;
-            background-image: url('https://image.tmdb.org/t/p/original/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg'); /* Deadpool & Wolverine */
-            background-size: cover;
-            background-position: center top;
-            display: flex;
-            align-items: center;
-            padding: 0 50px;
+        #score { color: #00ffcc; }
+        #controls {
+            position: absolute; bottom: 20px; left: 20px;
+            background: rgba(0,0,0,0.6); padding: 15px; border-radius: 12px;
+            font-size: 14px; color: #aaa; pointer-events: none;
         }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to right, rgba(11, 12, 16, 0.9) 0%, rgba(11, 12, 16, 0.4) 50%, transparent 100%),
-                        linear-gradient(to top, rgba(11, 12, 16, 1) 0%, transparent 30%);
+        kbd {
+            background: #333; padding: 3px 8px; border-radius: 4px;
+            color: white; font-weight: bold; font-family: monospace;
         }
-
-        .hero-content {
-            position: relative;
-            z-index: 10;
-            max-width: 600px;
-        }
-
-        .hero-title {
-            font-size: 64px;
-            font-weight: 900;
-            line-height: 1.1;
-            margin-bottom: 15px;
-            text-shadow: 0 4px 10px rgba(0,0,0,0.8);
-        }
-
-        .hero-meta {
-            display: flex;
-            gap: 15px;
-            color: var(--accent);
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 20px;
-        }
-
-        .hero-desc {
-            font-size: 16px;
-            color: #ddd;
-            line-height: 1.5;
-            margin-bottom: 30px;
-            text-shadow: 0 2px 5px rgba(0,0,0,0.8);
-        }
-
-        .play-btn {
-            padding: 15px 35px;
-            background: #fff;
-            color: #000;
-            font-size: 18px;
-            font-weight: 800;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: 0.3s;
-        }
-        .play-btn:hover { background: var(--accent); transform: scale(1.05); }
-
-        /* Movie Rows */
-        .row {
-            padding: 40px 50px;
-            position: relative;
-            z-index: 20;
-            margin-top: -50px;
-        }
-
-        .row-title {
-            font-size: 22px;
-            font-weight: 700;
-            margin-bottom: 20px;
-            color: #fff;
-        }
-
-        .movie-grid {
-            display: flex;
-            gap: 20px;
-            overflow-x: auto;
-            padding-bottom: 30px;
-            scrollbar-width: none;
-        }
-        .movie-grid::-webkit-scrollbar { display: none; }
-
-        .movie-card {
-            min-width: 220px;
-            width: 220px;
-            cursor: pointer;
-            transition: transform 0.3s, z-index 0.3s;
-            position: relative;
-        }
-
-        .movie-card:hover {
-            transform: scale(1.08);
-            z-index: 50;
-        }
-
-        .movie-poster {
-            width: 100%;
-            height: 330px;
-            object-fit: cover;
-            border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-        }
-
-        .movie-info {
-            margin-top: 10px;
-        }
-
-        .movie-name {
-            font-size: 15px;
-            font-weight: 600;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .movie-year {
-            font-size: 12px;
-            color: var(--text-sub);
-            margin-top: 4px;
-        }
-
-        /* Search Overlay */
-        #search-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(11, 12, 16, 0.95);
-            backdrop-filter: blur(20px);
-            z-index: 1000;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            padding-top: 100px;
-        }
-
-        #search-overlay.active { display: flex; }
-
-        .search-input {
-            width: 80%;
-            max-width: 800px;
-            padding: 20px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--accent);
-            border-radius: 12px;
-            color: #fff;
-            font-size: 24px;
-            outline: none;
-            text-align: center;
-        }
-
-        .close-search {
-            position: absolute;
-            top: 30px; right: 50px;
-            background: none; border: none; color: white;
-            font-size: 30px; cursor: pointer;
-        }
-
     </style>
 </head>
 <body>
 
-    <!-- Navigation -->
-    <nav>
-        <div class="logo">KING BLUE <span>CINEMA</span></div>
-        <div class="nav-links">
-            <span onclick="openSearch()">Search 🔍</span>
-            <span>Movies</span>
-            <span>TV Shows</span>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <div class="hero">
-        <div class="hero-content">
-            <div class="hero-title">Deadpool & Wolverine</div>
-            <div class="hero-meta">
-                <span>2024</span>
-                <span>Action / Comedy</span>
-                <span>R</span>
-                <span>★ 8.1</span>
-            </div>
-            <div class="hero-desc">
-                Wolverine is recovering from his injuries when he crosses paths with the loudmouth, Deadpool. They team up to defeat a common enemy.
-            </div>
-            <button class="play-btn" onclick="watchMovie('Deadpool & Wolverine')">
-                ▶ Watch Now
-            </button>
-        </div>
+    <div id="ui">
+        <div class="hud-box">SCORE: <span id="score">0</span></div>
+        <div class="hud-box" style="color:#ffd700;">TIME: <span id="time">60</span>s</div>
     </div>
 
-    <!-- Movie Rows -->
-    <div class="row">
-        <div class="row-title">Trending Now</div>
-        <div class="movie-grid">
-            
-            <div class="movie-card" onclick="watchMovie('Inside Out 2')">
-                <img src="https://image.tmdb.org/t/p/w500/vpnVM9B6NMmQpWeZvzLvDESb2QY.jpg" class="movie-poster">
-                <div class="movie-info">
-                    <div class="movie-name">Inside Out 2</div>
-                    <div class="movie-year">2024</div>
-                </div>
-            </div>
-
-            <div class="movie-card" onclick="watchMovie('Dune: Part Two')">
-                <img src="https://image.tmdb.org/t/p/w500/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg" class="movie-poster">
-                <div class="movie-info">
-                    <div class="movie-name">Dune: Part Two</div>
-                    <div class="movie-year">2024</div>
-                </div>
-            </div>
-
-            <div class="movie-card" onclick="watchMovie('Godzilla x Kong')">
-                <img src="https://image.tmdb.org/t/p/w500/z1p34vh7dEOnLDmyCrlUVLuoDzd.jpg" class="movie-poster">
-                <div class="movie-info">
-                    <div class="movie-name">Godzilla x Kong</div>
-                    <div class="movie-year">2024</div>
-                </div>
-            </div>
-
-            <div class="movie-card" onclick="watchMovie('Bad Boys: Ride or Die')">
-                <img src="https://image.tmdb.org/t/p/w500/oGythE98MYleE6mZlGs5oBGkux1.jpg" class="movie-poster">
-                <div class="movie-info">
-                    <div class="movie-name">Bad Boys 4</div>
-                    <div class="movie-year">2024</div>
-                </div>
-            </div>
-
-            <div class="movie-card" onclick="watchMovie('The Amazing World of Gumball')">
-                <img src="https://upload.wikimedia.org/wikipedia/en/0/0b/The_Amazing_World_of_Gumball_logo.png" class="movie-poster" style="object-fit: contain; background: #111; padding: 20px;">
-                <div class="movie-info">
-                    <div class="movie-name">Gumball</div>
-                    <div class="movie-year">2011</div>
-                </div>
-            </div>
-
-        </div>
+    <div id="controls">
+        <kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> to Move | <kbd>Space</kbd> to Shoot
     </div>
 
-    <!-- Search Overlay -->
-    <div id="search-overlay">
-        <button class="close-search" onclick="closeSearch()">×</button>
-        <input type="text" class="search-input" placeholder="Search for a movie or show..." autofocus>
-    </div>
+    <canvas id="gameCanvas"></canvas>
 
     <script>
-        // Open/Close Search
-        function openSearch() {
-            document.getElementById('search-overlay').classList.add('active');
-        }
-        function closeSearch() {
-            document.getElementById('search-overlay').classList.remove('active');
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // Game State
+        let score = 0;
+        let timeLeft = 60;
+        let gameActive = true;
+
+        // The Player
+        const player = {
+            x: canvas.width / 2,
+            y: canvas.height - 150,
+            radius: 20,
+            speed: 6,
+            color: '#00ffcc', // Cyan player
+            hasBall: true
+        };
+
+        // The Ball
+        const ball = {
+            x: player.x,
+            y: player.y,
+            radius: 10,
+            color: '#ff6600',
+            isShot: false,
+            vx: 0,
+            vy: 0,
+            targetY: 100 // Where the hoop is
+        };
+
+        // The Hoop
+        const hoop = {
+            x: canvas.width / 2 - 40,
+            y: 100,
+            width: 80,
+            height: 10,
+            color: '#ff3333'
+        };
+
+        // Defenders (NPCs)
+        let defenders = [
+            { x: canvas.width / 2 - 150, y: canvas.height / 2, radius: 22, speed: 3, color: '#ff0033' },
+            { x: canvas.width / 2 + 150, y: canvas.height / 2, radius: 22, speed: 4, color: '#ff0033' }
+        ];
+
+        // Keyboard Input Tracking
+        const keys = { w: false, a: false, s: false, d: false, space: false };
+        
+        window.addEventListener('keydown', (e) => {
+            if(e.key === 'w' || e.key === 'W') keys.w = true;
+            if(e.key === 'a' || e.key === 'A') keys.a = true;
+            if(e.key === 's' || e.key === 'S') keys.s = true;
+            if(e.key === 'd' || e.key === 'D') keys.d = true;
+            if(e.key === ' ') keys.space = true;
+        });
+
+        window.addEventListener('keyup', (e) => {
+            if(e.key === 'w' || e.key === 'W') keys.w = false;
+            if(e.key === 'a' || e.key === 'A') keys.a = false;
+            if(e.key === 's' || e.key === 'S') keys.s = false;
+            if(e.key === 'd' || e.key === 'D') keys.d = false;
+            if(e.key === ' ') keys.space = false;
+        });
+
+        // Shoot the Ball
+        function shootBall() {
+            if (!player.hasBall || ball.isShot) return;
+            player.hasBall = false;
+            ball.isShot = true;
+            
+            // Calculate trajectory towards hoop center
+            const hoopCenterX = hoop.x + hoop.width / 2;
+            ball.vx = (hoopCenterX - player.x) * 0.04;
+            ball.vy = -25; // Shoot upward
         }
 
-        // The Streaming Logic
-        function watchMovie(title) {
-            // We use a public search URL to find the movie on a free streaming site
-            // This opens in a new tab so the school's popup blocker doesn't stop the video player
-            const searchUrl = `https://www.google.com/search?q=watch+${encodeURIComponent(title)}+free+online`;
-            
-            // In a real app, this would route to your proxy or a direct video link
-            window.open(searchUrl, '_blank');
+        // Reset after a shot
+        function resetBall() {
+            ball.isShot = false;
+            player.hasBall = true;
+            ball.x = player.x;
+            ball.y = player.y - 20;
         }
+
+        function update() {
+            if (!gameActive) return;
+
+            // Player Movement
+            if (keys.w) player.y -= player.speed;
+            if (keys.s) player.y += player.speed;
+            if (keys.a) player.x -= player.speed;
+            if (keys.d) player.x += player.speed;
+
+            // Keep player on screen
+            if (player.x < 30) player.x = 30;
+            if (player.x > canvas.width - 30) player.x = canvas.width - 30;
+            if (player.y > canvas.height - 30) player.y = canvas.height - 30;
+            if (player.y < canvas.height / 2) player.y = canvas.height / 2; // Don't go past half court
+
+            // Update Ball Position (if held)
+            if (player.hasBall) {
+                ball.x = player.x;
+                ball.y = player.y - 20;
+            }
+
+            // Ball Physics (if shot)
+            if (ball.isShot) {
+                ball.x += ball.vx;
+                ball.y += ball.vy;
+                ball.vy += 0.5; // Gravity
+
+                // Collision with Hoop (Rim)
+                if (ball.y > hoop.y && ball.y < hoop.y + 20 && ball.x > hoop.x && ball.x < hoop.x + hoop.width) {
+                    if (ball.vy > 0) {
+                        score += 2;
+                        document.getElementById('score').innerText = score;
+                        resetBall();
+                    }
+                }
+
+                // If ball misses (goes below screen)
+                if (ball.y > canvas.height) {
+                    resetBall();
+                }
+            }
+
+            // Shoot logic
+            if (keys.space && player.hasBall) {
+                shootBall();
+            }
+
+            // Defender AI (Chase the player)
+            defenders.forEach(def => {
+                let dx = player.x - def.x;
+                let dy = player.y - def.y;
+                let dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist > 0) {
+                    def.x += (dx / dist) * def.speed;
+                    def.y += (dy / dist) * def.speed;
+                }
+
+                // If defender touches player, steal the ball
+                if (dist < player.radius + def.radius && player.hasBall) {
+                    player.hasBall = false;
+                    // Deflect ball away
+                    ball.isShot = true;
+                    ball.vx = (Math.random() - 0.5) * 20;
+                    ball.vy = (Math.random() - 0.5) * 20 - 10; 
+                    
+                    // Flash red
+                    document.body.style.background = '#ff0000';
+                    setTimeout(() => document.body.style.background = '#111', 100);
+                }
+            });
+
+            draw();
+            requestAnimationFrame(update);
+        }
+
+        function draw() {
+            // Clear Canvas
+            ctx.fillStyle = '#1a1a2e';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw Court
+            ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(0, canvas.height / 2);
+            ctx.lineTo(canvas.width, canvas.height / 2);
+            ctx.stroke();
+            // 3-Point Line
+            ctx.beginPath();
+            ctx.arc(canvas.width / 2, hoop.y + 30, 250, 0, Math.PI);
+            ctx.stroke();
+
+            // Draw Hoop
+            ctx.fillStyle = hoop.color;
+            ctx.fillRect(hoop.x, hoop.y, hoop.width, hoop.height);
+            // Backboard
+            ctx.fillStyle = 'rgba(255,255,255,0.2)';
+            ctx.fillRect(hoop.x + hoop.width, hoop.y - 40, 10, 80);
+
+            // Draw Defenders
+            defenders.forEach(def => {
+                ctx.beginPath();
+                ctx.arc(def.x, def.y, def.radius, 0, Math.PI * 2);
+                ctx.fillStyle = def.color;
+                ctx.fill();
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 3;
+                ctx.stroke();
+                
+                // Draw jersey number
+                ctx.fillStyle = 'white';
+                ctx.font = 'bold 16px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('D', def.x, def.y + 6);
+            });
+
+            // Draw Player
+            ctx.beginPath();
+            ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
+            ctx.fillStyle = player.color;
+            ctx.fill();
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            
+            // Draw jersey number
+            ctx.fillStyle = 'black';
+            ctx.font = 'bold 16px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('1', player.x, player.y + 6);
+
+            // Draw Ball
+            ctx.beginPath();
+            ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+            ctx.fillStyle = ball.color;
+            ctx.fill();
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        }
+
+        // Timer
+        setInterval(() => {
+            if (gameActive) {
+                timeLeft--;
+                document.getElementById('time').innerText = timeLeft;
+                if (timeLeft <= 0) gameActive = false;
+            }
+        }, 1000);
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        update();
     </script>
 </body>
 </html>
