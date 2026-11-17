@@ -3,286 +3,272 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hoop Dreamz: Chromebook Edition</title>
+    <title>Nexus Audio | Premium Visualizer</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
         body {
-            margin: 0; padding: 0; overflow: hidden; background: #111;
-            font-family: 'Inter', sans-serif; color: white;
+            background-color: #000; color: #fff; height: 100vh; overflow: hidden;
+            display: flex; justify-content: center; align-items: center;
+            background-image: radial-gradient(circle at 50% 0%, #1a1a2e 0%, #000000 80%);
         }
-        canvas { display: block; background: #1a1a2e; }
+
+        /* The Canvas that draws the audio bars */
+        #visualizer-canvas {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1;
+        }
+
+        /* The Premium UI Overlay */
+        .app-container {
+            position: relative; z-index: 10;
+            width: 90%; max-width: 1000px; height: 85vh;
+            background: rgba(20, 20, 30, 0.4); backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 24px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+            display: flex; flex-direction: column;
+        }
+
+        /* Top Bar (Search/Profile) */
+        .top-bar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 25px 40px; border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .logo { font-size: 20px; font-weight: 800; letter-spacing: 2px; color: #00ffcc; }
         
-        #ui {
-            position: absolute; top: 20px; left: 20px; right: 20px;
-            display: flex; justify-content: space-between; pointer-events: none;
+        /* The Album Art & Info Center */
+        .center-display {
+            flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            text-align: center;
         }
-        .hud-box {
-            background: rgba(0,0,0,0.6); padding: 15px 25px;
-            border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);
-            font-size: 24px; font-weight: 900;
+
+        .album-art {
+            width: 220px; height: 220px; border-radius: 50%;
+            background: linear-gradient(135deg, #00ffcc, #0055ff);
+            box-shadow: 0 0 40px rgba(0, 255, 204, 0.3);
+            margin-bottom: 30px; display: flex; justify-content: center; align-items: center;
+            animation: spin 10s linear infinite; animation-play-state: paused; /* Pauses when music pauses */
         }
-        #score { color: #00ffcc; }
-        #controls {
-            position: absolute; bottom: 20px; left: 20px;
-            background: rgba(0,0,0,0.6); padding: 15px; border-radius: 12px;
-            font-size: 14px; color: #aaa; pointer-events: none;
+        .album-art.playing { animation-play-state: running; }
+
+        /* The vinyl record look */
+        .album-art::after {
+            content: ''; width: 50px; height: 50px; background: #000; border-radius: 50%;
+            border: 5px solid #111;
         }
-        kbd {
-            background: #333; padding: 3px 8px; border-radius: 4px;
-            color: white; font-weight: bold; font-family: monospace;
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        h1 { font-size: 32px; font-weight: 800; margin-bottom: 10px; }
+        p { color: #aaa; font-size: 16px; margin-bottom: 40px; }
+
+        /* Upload Button */
+        .upload-btn {
+            background: #00ffcc; color: #000; padding: 15px 35px;
+            border: none; border-radius: 30px; font-weight: 800; font-size: 16px;
+            cursor: pointer; transition: 0.3s; box-shadow: 0 10px 20px rgba(0,255,204,0.2);
         }
+        .upload-btn:hover { transform: scale(1.05); box-shadow: 0 15px 30px rgba(0,255,204,0.4); }
+
+        /* The bottom player controls */
+        .player-bar {
+            padding: 25px 40px; display: flex; align-items: center; gap: 20px;
+            background: rgba(0,0,0,0.2); border-top: 1px solid rgba(255,255,255,0.05);
+            border-radius: 0 0 24px 24px;
+        }
+        
+        .play-btn {
+            width: 50px; height: 50px; border-radius: 50%; background: #fff;
+            display: flex; justify-content: center; align-items: center; cursor: pointer;
+            transition: 0.2s;
+        }
+        .play-btn:hover { transform: scale(1.1); }
+        .play-btn::before {
+            content: '▶'; font-size: 18px; color: #000; margin-left: 3px;
+        }
+        .play-btn.playing::before { content: '⏸'; margin-left: 0; }
+
+        /* Progress Bar */
+        .progress-container {
+            flex: 1; display: flex; align-items: center; gap: 15px; font-size: 12px; color: #aaa;
+        }
+        .progress-bar {
+            flex: 1; height: 6px; background: #333; border-radius: 3px; cursor: pointer; position: relative;
+        }
+        .progress-fill {
+            height: 100%; width: 0%; background: #00ffcc; border-radius: 3px; transition: width 0.1s;
+        }
+
+        /* Hidden Audio Input */
+        #audio-upload { display: none; }
     </style>
 </head>
 <body>
 
-    <div id="ui">
-        <div class="hud-box">SCORE: <span id="score">0</span></div>
-        <div class="hud-box" style="color:#ffd700;">TIME: <span id="time">60</span>s</div>
+    <!-- The Background Visualizer -->
+    <canvas id="visualizer-canvas"></canvas>
+
+    <!-- The Main App UI -->
+    <div class="app-container">
+        
+        <div class="top-bar">
+            <div class="logo">NEXUS AUDIO</div>
+            <div>👤</div>
+        </div>
+
+        <div class="center-display">
+            <div class="album-art" id="album-art"></div>
+            <h1 id="track-title">No Track Loaded</h1>
+            <p id="track-artist">Upload a song to visualize</p>
+            
+            <label for="audio-upload" class="upload-btn">UPLOAD AUDIO FILE</label>
+            <input type="file" id="audio-upload" accept="audio/*">
+        </div>
+
+        <div class="player-bar">
+            <div class="play-btn" id="play-btn" onclick="togglePlay()"></div>
+            
+            <div class="progress-container">
+                <span id="current-time">0:00</span>
+                <div class="progress-bar" id="progress-bar" onclick="seek(event)">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <span id="duration">0:00</span>
+            </div>
+        </div>
     </div>
 
-    <div id="controls">
-        <kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> to Move | <kbd>Space</kbd> to Shoot
-    </div>
-
-    <canvas id="gameCanvas"></canvas>
+    <!-- Hidden Audio Element -->
+    <audio id="audio-player"></audio>
 
     <script>
-        const canvas = document.getElementById('gameCanvas');
+        // --- 1. SETUP CANVAS & AUDIO ENGINE ---
+        const canvas = document.getElementById('visualizer-canvas');
         const ctx = canvas.getContext('2d');
+        const audio = document.getElementById('audio-player');
+        
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
-        // Game State
-        let score = 0;
-        let timeLeft = 60;
-        let gameActive = true;
+        let audioContext;
+        let analyser;
+        let dataArray;
+        let source;
 
-        // The Player
-        const player = {
-            x: canvas.width / 2,
-            y: canvas.height - 150,
-            radius: 20,
-            speed: 6,
-            color: '#00ffcc', // Cyan player
-            hasBall: true
-        };
+        // --- 2. INITIALIZE AUDIO API ---
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 256; // Quality of the bars
+                
+                source = audioContext.createMediaElementSource(audio);
+                source.connect(analyser);
+                analyser.connect(audioContext.destination);
+                
+                const bufferLength = analyser.frequencyBinCount;
+                dataArray = new Uint8Array(bufferLength);
+            }
+        }
 
-        // The Ball
-        const ball = {
-            x: player.x,
-            y: player.y,
-            radius: 10,
-            color: '#ff6600',
-            isShot: false,
-            vx: 0,
-            vy: 0,
-            targetY: 100 // Where the hoop is
-        };
+        // --- 3. UPLOAD MUSIC ---
+        const fileUpload = document.getElementById('audio-upload');
+        fileUpload.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
 
-        // The Hoop
-        const hoop = {
-            x: canvas.width / 2 - 40,
-            y: 100,
-            width: 80,
-            height: 10,
-            color: '#ff3333'
-        };
-
-        // Defenders (NPCs)
-        let defenders = [
-            { x: canvas.width / 2 - 150, y: canvas.height / 2, radius: 22, speed: 3, color: '#ff0033' },
-            { x: canvas.width / 2 + 150, y: canvas.height / 2, radius: 22, speed: 4, color: '#ff0033' }
-        ];
-
-        // Keyboard Input Tracking
-        const keys = { w: false, a: false, s: false, d: false, space: false };
-        
-        window.addEventListener('keydown', (e) => {
-            if(e.key === 'w' || e.key === 'W') keys.w = true;
-            if(e.key === 'a' || e.key === 'A') keys.a = true;
-            if(e.key === 's' || e.key === 'S') keys.s = true;
-            if(e.key === 'd' || e.key === 'D') keys.d = true;
-            if(e.key === ' ') keys.space = true;
-        });
-
-        window.addEventListener('keyup', (e) => {
-            if(e.key === 'w' || e.key === 'W') keys.w = false;
-            if(e.key === 'a' || e.key === 'A') keys.a = false;
-            if(e.key === 's' || e.key === 'S') keys.s = false;
-            if(e.key === 'd' || e.key === 'D') keys.d = false;
-            if(e.key === ' ') keys.space = false;
-        });
-
-        // Shoot the Ball
-        function shootBall() {
-            if (!player.hasBall || ball.isShot) return;
-            player.hasBall = false;
-            ball.isShot = true;
+            const fileURL = URL.createObjectURL(file);
+            audio.src = fileURL;
             
-            // Calculate trajectory towards hoop center
-            const hoopCenterX = hoop.x + hoop.width / 2;
-            ball.vx = (hoopCenterX - player.x) * 0.04;
-            ball.vy = -25; // Shoot upward
+            // Update UI
+            document.getElementById('track-title').innerText = file.name.replace(/\.[^/.]+$/, ""); // Remove file extension
+            document.getElementById('track-artist').innerText = "Local File";
+            
+            // Ready to play
+            initAudio();
+            audio.load();
+        });
+
+        // --- 4. PLAYER CONTROLS ---
+        const playBtn = document.getElementById('play-btn');
+        const albumArt = document.getElementById('album-art');
+
+        function togglePlay() {
+            if (!audio.src) return; // Nothing uploaded
+
+            if (audio.paused) {
+                audio.play();
+                playBtn.classList.add('playing');
+                albumArt.classList.add('playing');
+                if(audioContext.state === 'suspended') audioContext.resume();
+            } else {
+                audio.pause();
+                playBtn.classList.remove('playing');
+                albumArt.classList.remove('playing');
+            }
         }
 
-        // Reset after a shot
-        function resetBall() {
-            ball.isShot = false;
-            player.hasBall = true;
-            ball.x = player.x;
-            ball.y = player.y - 20;
+        // Progress bar update
+        audio.addEventListener('timeupdate', () => {
+            if (audio.duration) {
+                const percent = (audio.currentTime / audio.duration) * 100;
+                document.getElementById('progress-fill').style.width = `${percent}%`;
+                
+                // Update time text
+                document.getElementById('current-time').innerText = formatTime(audio.currentTime);
+                document.getElementById('duration').innerText = formatTime(audio.duration);
+            }
+        });
+
+        function formatTime(seconds) {
+            const min = Math.floor(seconds / 60);
+            const sec = Math.floor(seconds % 60);
+            return `${min}:${sec < 10 ? '0' : ''}${sec}`;
         }
 
-        function update() {
-            if (!gameActive) return;
-
-            // Player Movement
-            if (keys.w) player.y -= player.speed;
-            if (keys.s) player.y += player.speed;
-            if (keys.a) player.x -= player.speed;
-            if (keys.d) player.x += player.speed;
-
-            // Keep player on screen
-            if (player.x < 30) player.x = 30;
-            if (player.x > canvas.width - 30) player.x = canvas.width - 30;
-            if (player.y > canvas.height - 30) player.y = canvas.height - 30;
-            if (player.y < canvas.height / 2) player.y = canvas.height / 2; // Don't go past half court
-
-            // Update Ball Position (if held)
-            if (player.hasBall) {
-                ball.x = player.x;
-                ball.y = player.y - 20;
-            }
-
-            // Ball Physics (if shot)
-            if (ball.isShot) {
-                ball.x += ball.vx;
-                ball.y += ball.vy;
-                ball.vy += 0.5; // Gravity
-
-                // Collision with Hoop (Rim)
-                if (ball.y > hoop.y && ball.y < hoop.y + 20 && ball.x > hoop.x && ball.x < hoop.x + hoop.width) {
-                    if (ball.vy > 0) {
-                        score += 2;
-                        document.getElementById('score').innerText = score;
-                        resetBall();
-                    }
-                }
-
-                // If ball misses (goes below screen)
-                if (ball.y > canvas.height) {
-                    resetBall();
-                }
-            }
-
-            // Shoot logic
-            if (keys.space && player.hasBall) {
-                shootBall();
-            }
-
-            // Defender AI (Chase the player)
-            defenders.forEach(def => {
-                let dx = player.x - def.x;
-                let dy = player.y - def.y;
-                let dist = Math.sqrt(dx * dx + dy * dy);
-
-                if (dist > 0) {
-                    def.x += (dx / dist) * def.speed;
-                    def.y += (dy / dist) * def.speed;
-                }
-
-                // If defender touches player, steal the ball
-                if (dist < player.radius + def.radius && player.hasBall) {
-                    player.hasBall = false;
-                    // Deflect ball away
-                    ball.isShot = true;
-                    ball.vx = (Math.random() - 0.5) * 20;
-                    ball.vy = (Math.random() - 0.5) * 20 - 10; 
-                    
-                    // Flash red
-                    document.body.style.background = '#ff0000';
-                    setTimeout(() => document.body.style.background = '#111', 100);
-                }
-            });
-
-            draw();
-            requestAnimationFrame(update);
+        function seek(e) {
+            if (!audio.duration) return;
+            const bar = document.getElementById('progress-bar');
+            const rect = bar.getBoundingClientRect();
+            const pos = (e.clientX - rect.left) / bar.offsetWidth;
+            audio.currentTime = pos * audio.duration;
         }
 
+        // --- 5. THE VISUALIZER DRAW LOOP ---
         function draw() {
-            // Clear Canvas
-            ctx.fillStyle = '#1a1a2e';
+            requestAnimationFrame(draw);
+
+            if (!analyser) return; // Wait until music is loaded
+
+            analyser.getByteFrequencyData(dataArray);
+
+            // Clear canvas with a slight fade effect for smooth trails
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Draw Court
-            ctx.strokeStyle = 'rgba(255,255,255,0.1)';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(0, canvas.height / 2);
-            ctx.lineTo(canvas.width, canvas.height / 2);
-            ctx.stroke();
-            // 3-Point Line
-            ctx.beginPath();
-            ctx.arc(canvas.width / 2, hoop.y + 30, 250, 0, Math.PI);
-            ctx.stroke();
+            const bufferLength = analyser.frequencyBinCount;
+            const barWidth = (canvas.width / bufferLength) * 2.5;
+            let x = 0;
 
-            // Draw Hoop
-            ctx.fillStyle = hoop.color;
-            ctx.fillRect(hoop.x, hoop.y, hoop.width, hoop.height);
-            // Backboard
-            ctx.fillStyle = 'rgba(255,255,255,0.2)';
-            ctx.fillRect(hoop.x + hoop.width, hoop.y - 40, 10, 80);
+            for (let i = 0; i < bufferLength; i++) {
+                const barHeight = dataArray[i] * 1.5; // Scale the height
 
-            // Draw Defenders
-            defenders.forEach(def => {
-                ctx.beginPath();
-                ctx.arc(def.x, def.y, def.radius, 0, Math.PI * 2);
-                ctx.fillStyle = def.color;
-                ctx.fill();
-                ctx.strokeStyle = '#000';
-                ctx.lineWidth = 3;
-                ctx.stroke();
+                // Gradient color (Cyan to Blue to Purple)
+                const gradient = ctx.createLinearGradient(0, canvas.height, 0, canvas.height - barHeight);
+                gradient.addColorStop(0, 'rgba(0, 255, 204, 0.1)');
+                gradient.addColorStop(0.5, 'rgba(0, 170, 255, 0.8)');
+                gradient.addColorStop(1, 'rgba(138, 43, 226, 1)');
+
+                ctx.fillStyle = gradient;
                 
-                // Draw jersey number
-                ctx.fillStyle = 'white';
-                ctx.font = 'bold 16px Arial';
-                ctx.textAlign = 'center';
-                ctx.fillText('D', def.x, def.y + 6);
-            });
+                // Draw the bars from the bottom up
+                ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
 
-            // Draw Player
-            ctx.beginPath();
-            ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
-            ctx.fillStyle = player.color;
-            ctx.fill();
-            ctx.strokeStyle = '#000';
-            ctx.lineWidth = 3;
-            ctx.stroke();
-            
-            // Draw jersey number
-            ctx.fillStyle = 'black';
-            ctx.font = 'bold 16px Arial';
-            ctx.textAlign = 'center';
-            ctx.fillText('1', player.x, player.y + 6);
-
-            // Draw Ball
-            ctx.beginPath();
-            ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-            ctx.fillStyle = ball.color;
-            ctx.fill();
-            ctx.strokeStyle = '#000';
-            ctx.lineWidth = 2;
-            ctx.stroke();
-        }
-
-        // Timer
-        setInterval(() => {
-            if (gameActive) {
-                timeLeft--;
-                document.getElementById('time').innerText = timeLeft;
-                if (timeLeft <= 0) gameActive = false;
+                x += barWidth + 2; // Spacing between bars
             }
-        }, 1000);
+        }
 
         // Handle window resize
         window.addEventListener('resize', () => {
@@ -290,7 +276,9 @@
             canvas.height = window.innerHeight;
         });
 
-        update();
+        // Start the draw loop
+        draw();
+
     </script>
 </body>
 </html>
