@@ -3,282 +3,300 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Audio | Premium Visualizer</title>
+    <title>VEX OS</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; user-select: none; }
+
+        :root {
+            --red-main: #ff0033;
+            --red-glow: rgba(255, 0, 51, 0.5);
+            --dark-bg: #0a0000;
+            --glass: rgba(20, 5, 5, 0.6);
+            --glass-border: rgba(255, 0, 51, 0.2);
+        }
 
         body {
-            background-color: #000; color: #fff; height: 100vh; overflow: hidden;
-            display: flex; justify-content: center; align-items: center;
-            background-image: radial-gradient(circle at 50% 0%, #1a1a2e 0%, #000000 80%);
+            height: 100vh; width: 100vw; overflow: hidden;
+            /* Cool moving red/black gradient background */
+            background: linear-gradient(135deg, #000000 0%, #2a0005 50%, #0a0000 100%);
+            background-size: 400% 400%;
+            animation: bgAnim 15s ease infinite;
+            color: white;
         }
 
-        /* The Canvas that draws the audio bars */
-        #visualizer-canvas {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 1;
+        @keyframes bgAnim {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
-        /* The Premium UI Overlay */
-        .app-container {
-            position: relative; z-index: 10;
-            width: 90%; max-width: 1000px; height: 85vh;
-            background: rgba(20, 20, 30, 0.4); backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 24px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
-            display: flex; flex-direction: column;
-        }
-
-        /* Top Bar (Search/Profile) */
+        /* Top Bar */
         .top-bar {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 25px 40px; border-bottom: 1px solid rgba(255,255,255,0.05);
+            height: 40px; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px);
+            display: flex; justify-content: space-between; align-items: center; padding: 0 20px;
+            font-size: 12px; font-weight: 600; border-bottom: 1px solid var(--glass-border);
+            position: absolute; top: 0; width: 100%; z-index: 10;
         }
-        .logo { font-size: 20px; font-weight: 800; letter-spacing: 2px; color: #00ffcc; }
-        
-        /* The Album Art & Info Center */
-        .center-display {
-            flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;
-            text-align: center;
+        .top-left { display: flex; gap: 20px; color: #aaa; }
+        .top-right { display: flex; gap: 15px; align-items: center; }
+        .clock { color: white; font-weight: 800; }
+
+        /* Welcome Text */
+        .welcome-container {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            text-align: center; z-index: 1; pointer-events: none;
+        }
+        .welcome-title {
+            font-size: 100px; font-weight: 900; letter-spacing: -2px;
+            color: transparent; -webkit-text-stroke: 2px var(--red-main);
+            text-shadow: 0 0 30px var(--red-glow); margin-bottom: 10px;
+            animation: pulse 2s infinite alternate;
+        }
+        @keyframes pulse {
+            0% { text-shadow: 0 0 20px var(--red-glow); opacity: 0.8; }
+            100% { text-shadow: 0 0 50px var(--red-main); opacity: 1; }
         }
 
-        .album-art {
-            width: 220px; height: 220px; border-radius: 50%;
-            background: linear-gradient(135deg, #00ffcc, #0055ff);
-            box-shadow: 0 0 40px rgba(0, 255, 204, 0.3);
-            margin-bottom: 30px; display: flex; justify-content: center; align-items: center;
-            animation: spin 10s linear infinite; animation-play-state: paused; /* Pauses when music pauses */
-        }
-        .album-art.playing { animation-play-state: running; }
-
-        /* The vinyl record look */
-        .album-art::after {
-            content: ''; width: 50px; height: 50px; background: #000; border-radius: 50%;
-            border: 5px solid #111;
+        /* App Grid */
+        .app-grid {
+            position: absolute; top: 60px; left: 40px; z-index: 10;
+            display: grid; grid-template-columns: repeat(5, 1fr); gap: 30px;
         }
 
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-
-        h1 { font-size: 32px; font-weight: 800; margin-bottom: 10px; }
-        p { color: #aaa; font-size: 16px; margin-bottom: 40px; }
-
-        /* Upload Button */
-        .upload-btn {
-            background: #00ffcc; color: #000; padding: 15px 35px;
-            border: none; border-radius: 30px; font-weight: 800; font-size: 16px;
-            cursor: pointer; transition: 0.3s; box-shadow: 0 10px 20px rgba(0,255,204,0.2);
-        }
-        .upload-btn:hover { transform: scale(1.05); box-shadow: 0 15px 30px rgba(0,255,204,0.4); }
-
-        /* The bottom player controls */
-        .player-bar {
-            padding: 25px 40px; display: flex; align-items: center; gap: 20px;
-            background: rgba(0,0,0,0.2); border-top: 1px solid rgba(255,255,255,0.05);
-            border-radius: 0 0 24px 24px;
-        }
-        
-        .play-btn {
-            width: 50px; height: 50px; border-radius: 50%; background: #fff;
-            display: flex; justify-content: center; align-items: center; cursor: pointer;
-            transition: 0.2s;
-        }
-        .play-btn:hover { transform: scale(1.1); }
-        .play-btn::before {
-            content: '▶'; font-size: 18px; color: #000; margin-left: 3px;
-        }
-        .play-btn.playing::before { content: '⏸'; margin-left: 0; }
-
-        /* Progress Bar */
-        .progress-container {
-            flex: 1; display: flex; align-items: center; gap: 15px; font-size: 12px; color: #aaa;
-        }
-        .progress-bar {
-            flex: 1; height: 6px; background: #333; border-radius: 3px; cursor: pointer; position: relative;
-        }
-        .progress-fill {
-            height: 100%; width: 0%; background: #00ffcc; border-radius: 3px; transition: width 0.1s;
+        .app-icon {
+            width: 80px; height: 80px; border-radius: 20px;
+            background: var(--glass); backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border); display: flex; flex-direction: column;
+            justify-content: center; align-items: center; cursor: pointer;
+            transition: all 0.2s ease; text-decoration: none; color: white;
         }
 
-        /* Hidden Audio Input */
-        #audio-upload { display: none; }
+        .app-icon:hover {
+            transform: scale(1.1) translateY(-5px);
+            border-color: var(--red-main); box-shadow: 0 10px 20px var(--red-glow);
+        }
+
+        .app-icon span { font-size: 32px; margin-bottom: 5px; }
+        .app-label { font-size: 12px; font-weight: 600; text-align: center; text-shadow: 0 2px 4px black; }
+
+        /* Dock at bottom */
+        .dock {
+            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: rgba(10, 0, 0, 0.7); backdrop-filter: blur(20px);
+            padding: 15px 25px; border-radius: 30px; display: flex; gap: 20px;
+            border: 1px solid var(--glass-border); z-index: 10;
+        }
+
+        .dock-icon {
+            width: 50px; height: 50px; border-radius: 15px; background: #222;
+            display: flex; justify-content: center; align-items: center; font-size: 24px;
+            cursor: pointer; transition: 0.2s;
+        }
+        .dock-icon:hover { background: var(--red-main); box-shadow: 0 0 20px var(--red-glow); }
+
+        /* Full Screen Overlays (For Apps) */
+        .overlay {
+            position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #050000; z-index: 1000; display: none; flex-direction: column;
+            animation: slideUp 0.3s ease forwards;
+        }
+        .overlay.active { display: flex; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .overlay-header {
+            height: 50px; background: #111; display: flex; justify-content: space-between;
+            align-items: center; padding: 0 20px; border-bottom: 1px solid #333;
+        }
+        .overlay-title { font-weight: 800; color: var(--red-main); }
+        .close-btn {
+            background: var(--red-main); color: white; border: none; padding: 8px 15px;
+            border-radius: 8px; font-weight: bold; cursor: pointer;
+        }
+        .close-btn:hover { background: #cc0029; }
+
+        /* IDE specific styles */
+        .ide-container { display: flex; flex: 1; width: 100%; height: calc(100vh - 50px); }
+        .ide-code {
+            width: 50%; height: 100%; background: #1e1e1e; color: #00ffcc;
+            padding: 20px; font-family: monospace; font-size: 14px; outline: none; border: none; resize: none;
+        }
+        .ide-preview {
+            width: 50%; height: 100%; background: white; border: none;
+        }
+
+        /* Settings Modal */
+        #settings-modal { position: absolute; top:0; left:0; width:100vw; height:100vh; background: rgba(0,0,0,0.8); z-index: 2000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
+        #settings-modal.active { display: flex; }
+        .settings-box { background: #111; padding: 30px; border-radius: 16px; border: 1px solid var(--red-main); width: 400px; display: flex; flex-direction: column; gap: 15px; }
+        .settings-box input { padding: 12px; border-radius: 8px; background: #000; color: white; border: 1px solid #333; outline: none; }
+        .settings-box button { padding: 12px; background: var(--red-main); border: none; color: white; font-weight: bold; border-radius: 8px; cursor: pointer; }
+
     </style>
 </head>
 <body>
 
-    <!-- The Background Visualizer -->
-    <canvas id="visualizer-canvas"></canvas>
-
-    <!-- The Main App UI -->
-    <div class="app-container">
-        
-        <div class="top-bar">
-            <div class="logo">NEXUS AUDIO</div>
-            <div>👤</div>
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="top-left">
+            <span>VEX OS</span>
+            <span>Finder</span>
         </div>
-
-        <div class="center-display">
-            <div class="album-art" id="album-art"></div>
-            <h1 id="track-title">No Track Loaded</h1>
-            <p id="track-artist">Upload a song to visualize</p>
-            
-            <label for="audio-upload" class="upload-btn">UPLOAD AUDIO FILE</label>
-            <input type="file" id="audio-upload" accept="audio/*">
-        </div>
-
-        <div class="player-bar">
-            <div class="play-btn" id="play-btn" onclick="togglePlay()"></div>
-            
-            <div class="progress-container">
-                <span id="current-time">0:00</span>
-                <div class="progress-bar" id="progress-bar" onclick="seek(event)">
-                    <div class="progress-fill" id="progress-fill"></div>
-                </div>
-                <span id="duration">0:00</span>
-            </div>
+        <div class="top-right">
+            <span>🎵 Now Listening</span>
+            <span class="clock" id="clock">00:00 PM</span>
         </div>
     </div>
 
-    <!-- Hidden Audio Element -->
-    <audio id="audio-player"></audio>
+    <!-- Welcome Background Text -->
+    <div class="welcome-container">
+        <div class="welcome-title">WELCOME TO VEX</div>
+    </div>
+
+    <!-- App Grid -->
+    <div class="app-grid">
+        <div class="app-icon" onclick="openOverlay('code-ide')">
+            <span>💻</span><span class="app-label">Code IDE</span>
+        </div>
+        <div class="app-icon" onclick="openApp('https://www.tiktok.com')">
+            <span>🎵</span><span class="app-label">TikTok</span>
+        </div>
+        <div class="app-icon" onclick="openApp('https://www.roblox.com')">
+            <span>🟥</span><span class="app-label">Roblox</span>
+        </div>
+        <div class="app-icon" onclick="openApp('https://www.youtube.com')">
+            <span>▶️</span><span class="app-label">YouTube</span>
+        </div>
+        <div class="app-icon" onclick="openApp('https://chatgpt.com')">
+            <span>🤖</span><span class="app-label">AI Chat</span>
+        </div>
+        <div class="app-icon" onclick="openApp('https://discord.com')">
+            <span>👾</span><span class="app-label">Discord</span>
+        </div>
+        <div class="app-icon" onclick="openOverlay('terminal')">
+            <span>⌨️</span><span class="app-label">Terminal</span>
+        </div>
+        <div class="app-icon" onclick="openOverlay('notes')">
+            <span>📝</span><span class="app-label">Notes</span>
+        </div>
+    </div>
+
+    <!-- Dock -->
+    <div class="dock">
+        <div class="dock-icon" onclick="location.reload()">🌐</div>
+        <div class="dock-icon" onclick="openApp('https://google.com')">🔍</div>
+        <div class="dock-icon" onclick="openApp('https://web.roblox.com')">🎮</div>
+        <div class="dock-icon" onclick="openSettings()">⚙️</div>
+    </div>
+
+    <!-- IDE Overlay -->
+    <div id="code-ide" class="overlay">
+        <div class="overlay-header">
+            <div class="overlay-title">Live Code IDE</div>
+            <button class="close-btn" onclick="closeOverlay('code-ide')">Close</button>
+        </div>
+        <div class="ide-container">
+            <textarea class="ide-code" id="html-code" placeholder="<h1>Hello World</h1>"><h1>Hello VEX</h1>
+<style>h1 { color: red; }</style></textarea>
+            <iframe class="ide-preview" id="html-preview"></iframe>
+        </div>
+    </div>
+
+    <!-- Terminal Overlay -->
+    <div id="terminal" class="overlay">
+        <div class="overlay-header">
+            <div class="overlay-title">VEX Terminal</div>
+            <button class="close-btn" onclick="closeOverlay('terminal')">Close</button>
+        </div>
+        <div style="flex:1; background:black; color:#00ffcc; font-family:monospace; padding:20px; font-size:16px;">
+            <p>VEX OS [Version 1.0.0]</p>
+            <p>(c) VEX Corporation. All rights reserved.</p>
+            <br>
+            <p>C:\Users\VEX> <span id="cursor" style="animation: blink 1s infinite;">_</span></p>
+        </div>
+    </div>
+
+    <!-- Notes Overlay -->
+    <div id="notes" class="overlay">
+        <div class="overlay-header">
+            <div class="overlay-title">Notes</div>
+            <button class="close-btn" onclick="closeOverlay('notes')">Close</button>
+        </div>
+        <textarea style="flex:1; background:#1a1a1a; color:white; padding:20px; font-size:18px; border:none; outline:none; resize:none;" placeholder="Type your notes here..."></textarea>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal">
+        <div class="settings-box">
+            <h2 style="color:#ff0033; text-align:center;">Settings</h2>
+            <label>Change Background GIF/Image URL:</label>
+            <input type="text" id="bg-url" placeholder="https://example.com/gif.gif">
+            <label>Set Passcode:</label>
+            <input type="password" placeholder="Enter new passcode">
+            <button onclick="saveSettings()">Save & Close</button>
+            <button onclick="document.getElementById('settings-modal').classList.remove('active')" style="background:#333;">Cancel</button>
+        </div>
+    </div>
 
     <script>
-        // --- 1. SETUP CANVAS & AUDIO ENGINE ---
-        const canvas = document.getElementById('visualizer-canvas');
-        const ctx = canvas.getContext('2d');
-        const audio = document.getElementById('audio-player');
-        
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        // --- Clock ---
+        function updateClock() {
+            const now = new Date();
+            let h = now.getHours();
+            let m = now.getMinutes().toString().padStart(2, '0');
+            let ampm = h >= 12 ? 'PM' : 'AM';
+            h = h % 12 || 12;
+            document.getElementById('clock').innerText = `${h}:${m} ${ampm}`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
 
-        let audioContext;
-        let analyser;
-        let dataArray;
-        let source;
-
-        // --- 2. INITIALIZE AUDIO API ---
-        function initAudio() {
-            if (!audioContext) {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                analyser = audioContext.createAnalyser();
-                analyser.fftSize = 256; // Quality of the bars
-                
-                source = audioContext.createMediaElementSource(audio);
-                source.connect(analyser);
-                analyser.connect(audioContext.destination);
-                
-                const bufferLength = analyser.frequencyBinCount;
-                dataArray = new Uint8Array(bufferLength);
+        // --- Overlay Logic ---
+        function openOverlay(id) {
+            document.getElementById(id).classList.add('active');
+            if (id === 'code-ide') {
+                updatePreview();
             }
         }
+        function closeOverlay(id) {
+            document.getElementById(id).classList.remove('active');
+        }
 
-        // --- 3. UPLOAD MUSIC ---
-        const fileUpload = document.getElementById('audio-upload');
-        fileUpload.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (!file) return;
+        // --- Live Code IDE Logic ---
+        const codeEditor = document.getElementById('html-code');
+        const preview = document.getElementById('html-preview');
 
-            const fileURL = URL.createObjectURL(file);
-            audio.src = fileURL;
-            
-            // Update UI
-            document.getElementById('track-title').innerText = file.name.replace(/\.[^/.]+$/, ""); // Remove file extension
-            document.getElementById('track-artist').innerText = "Local File";
-            
-            // Ready to play
-            initAudio();
-            audio.load();
-        });
+        codeEditor.addEventListener('input', updatePreview);
 
-        // --- 4. PLAYER CONTROLS ---
-        const playBtn = document.getElementById('play-btn');
-        const albumArt = document.getElementById('album-art');
+        function updatePreview() {
+            const html = codeEditor.value;
+            preview.srcdoc = html;
+        }
 
-        function togglePlay() {
-            if (!audio.src) return; // Nothing uploaded
+        // --- External App Link ---
+        function openApp(url) {
+            // Opens in a new tab. If we are in a proxy, this will route through the proxy.
+            window.open(url, '_blank');
+        }
 
-            if (audio.paused) {
-                audio.play();
-                playBtn.classList.add('playing');
-                albumArt.classList.add('playing');
-                if(audioContext.state === 'suspended') audioContext.resume();
-            } else {
-                audio.pause();
-                playBtn.classList.remove('playing');
-                albumArt.classList.remove('playing');
+        // --- Settings Logic ---
+        function openSettings() {
+            document.getElementById('settings-modal').classList.add('active');
+        }
+
+        function saveSettings() {
+            const bgUrl = document.getElementById('bg-url').value;
+            if (bgUrl) {
+                document.body.style.backgroundImage = `url('${bgUrl}')`;
+                document.body.style.backgroundSize = 'cover';
+                document.body.style.animation = 'none'; // Stop the gradient animation
             }
+            document.getElementById('settings-modal').classList.remove('active');
         }
 
-        // Progress bar update
-        audio.addEventListener('timeupdate', () => {
-            if (audio.duration) {
-                const percent = (audio.currentTime / audio.duration) * 100;
-                document.getElementById('progress-fill').style.width = `${percent}%`;
-                
-                // Update time text
-                document.getElementById('current-time').innerText = formatTime(audio.currentTime);
-                document.getElementById('duration').innerText = formatTime(audio.duration);
-            }
-        });
-
-        function formatTime(seconds) {
-            const min = Math.floor(seconds / 60);
-            const sec = Math.floor(seconds % 60);
-            return `${min}:${sec < 10 ? '0' : ''}${sec}`;
-        }
-
-        function seek(e) {
-            if (!audio.duration) return;
-            const bar = document.getElementById('progress-bar');
-            const rect = bar.getBoundingClientRect();
-            const pos = (e.clientX - rect.left) / bar.offsetWidth;
-            audio.currentTime = pos * audio.duration;
-        }
-
-        // --- 5. THE VISUALIZER DRAW LOOP ---
-        function draw() {
-            requestAnimationFrame(draw);
-
-            if (!analyser) return; // Wait until music is loaded
-
-            analyser.getByteFrequencyData(dataArray);
-
-            // Clear canvas with a slight fade effect for smooth trails
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            const bufferLength = analyser.frequencyBinCount;
-            const barWidth = (canvas.width / bufferLength) * 2.5;
-            let x = 0;
-
-            for (let i = 0; i < bufferLength; i++) {
-                const barHeight = dataArray[i] * 1.5; // Scale the height
-
-                // Gradient color (Cyan to Blue to Purple)
-                const gradient = ctx.createLinearGradient(0, canvas.height, 0, canvas.height - barHeight);
-                gradient.addColorStop(0, 'rgba(0, 255, 204, 0.1)');
-                gradient.addColorStop(0.5, 'rgba(0, 170, 255, 0.8)');
-                gradient.addColorStop(1, 'rgba(138, 43, 226, 1)');
-
-                ctx.fillStyle = gradient;
-                
-                // Draw the bars from the bottom up
-                ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
-
-                x += barWidth + 2; // Spacing between bars
-            }
-        }
-
-        // Handle window resize
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        });
-
-        // Start the draw loop
-        draw();
-
+        // Initialize Preview
+        updatePreview();
     </script>
 </body>
 </html>
