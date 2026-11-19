@@ -32,11 +32,7 @@
             text-shadow: 0 0 15px rgba(0, 255, 204, 0.5);
         }
 
-        p {
-            color: #888;
-            margin-bottom: 40px;
-            font-size: 14px;
-        }
+        p { color: #888; margin-bottom: 40px; font-size: 14px; }
 
         button {
             padding: 20px 60px;
@@ -63,27 +59,23 @@
     <div class="container">
         <h1>SYSTEM PORTAL</h1>
         <p>Click the button below to launch the portal.</p>
-        <button onclick="launchPortal()">LAUNCH</button>
+        <button onclick="launchPortal()">LAUNCH TIKTOK</button>
     </div>
 
     <script>
         function launchPortal() {
-            // 1. Open a new blank window
             let newTab = window.open('about:blank', '_blank');
 
-            // 2. Write the HTML directly into the blank tab
-            // You can change the 'src' link to ANY game or website.
-            // Right now, it's loading Geometry Dash.
+            // I changed the link to TikTok to test if the domain block is the issue
             let html = `
                 <html>
-                <head><title>Google Docs</title></head> <!-- Fake title to hide it -->
+                <head><title>Google Docs</title></head>
                 <body style="margin:0; overflow:hidden; background:#000;">
-                    <iframe src="https://geometrydash.io/" style="width:100vw; height:100vh; border:none;"></iframe>
+                    <iframe src="https://www.tiktok.com" style="width:100vw; height:100vh; border:none;"></iframe>
                 </body>
                 </html>
             `;
 
-            // 3. Inject the code into the blank page
             newTab.document.write(html);
             newTab.document.close();
         }
