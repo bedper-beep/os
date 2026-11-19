@@ -57,21 +57,23 @@
 <body>
 
     <div class="container">
-        <h1>SYSTEM PORTAL</h1>
-        <p>Click the button below to launch the portal.</p>
-        <button onclick="launchPortal()">LAUNCH TIKTOK</button>
+        <h1>PROXY PORTAL</h1>
+        <p>Click the button to launch the invisible proxy.</p>
+        <button onclick="launchPortal()">LAUNCH</button>
     </div>
 
     <script>
         function launchPortal() {
+            // Open the blank tab
             let newTab = window.open('about:blank', '_blank');
 
-            // I changed the link to TikTok to test if the domain block is the issue
+            // I PUT THE XYLORA PROXY LINK HERE. 
+            // You can change it to whatever proxy you are using if Xylora is down.
             let html = `
                 <html>
-                <head><title>Google Docs</title></head>
+                <head><title>Google Docs</title></head> <!-- Fake title to hide it -->
                 <body style="margin:0; overflow:hidden; background:#000;">
-                    <iframe src="https://www.tiktok.com" style="width:100vw; height:100vh; border:none;"></iframe>
+                    <iframe src="https://xylora.dd-maison.net/" style="width:100vw; height:100vh; border:none;"></iframe>
                 </body>
                 </html>
             `;
