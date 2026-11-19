@@ -26,23 +26,16 @@
         }
 
         h1 {
-            font-size: 32px;
-            margin-bottom: 10px;
-            color: #00ffcc;
-            text-shadow: 0 0 15px rgba(0, 255, 204, 0.5);
+            font-size: 32px; margin-bottom: 10px;
+            color: #00ffcc; text-shadow: 0 0 15px rgba(0, 255, 204, 0.5);
         }
 
         p { color: #888; margin-bottom: 40px; font-size: 14px; }
 
         button {
-            padding: 20px 60px;
-            font-size: 20px;
-            font-weight: 900;
-            color: #000;
-            background-color: #00ffcc;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
+            padding: 20px 60px; font-size: 20px; font-weight: 900;
+            color: #000; background-color: #00ffcc;
+            border: none; border-radius: 50px; cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 10px 20px rgba(0, 255, 204, 0.3);
         }
@@ -50,7 +43,6 @@
         button:hover {
             transform: translateY(-5px) scale(1.05);
             box-shadow: 0 15px 30px rgba(0, 255, 204, 0.5);
-            background-color: #00e6b8;
         }
     </style>
 </head>
@@ -58,7 +50,7 @@
 
     <div class="container">
         <h1>PROXY PORTAL</h1>
-        <p>Click the button to launch the invisible proxy.</p>
+        <p>Click the button to launch the portal.</p>
         <button onclick="launchPortal()">LAUNCH</button>
     </div>
 
@@ -66,14 +58,70 @@
         function launchPortal() {
             let newTab = window.open('about:blank', '_blank');
 
-            // The link you gave me is already in here!
+            // The proxy link
             let proxyUrl = "https://b.woodvilleweather.com"; 
 
+            // The HTML for the blank tab
             let html = `
+                <!DOCTYPE html>
                 <html>
-                <head><title>Google Docs</title></head> <!-- Fake title to hide it -->
-                <body style="margin:0; overflow:hidden; background:#000;">
-                    <iframe src="${proxyUrl}" style="width:100vw; height:100vh; border:none;"></iframe>
+                <head>
+                    <title>Google Docs</title>
+                    <style>
+                        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; }
+                        iframe { width: 100%; height: 100%; border: none; }
+                        
+                        /* The Panic Screen CSS */
+                        #panic-screen {
+                            display: none; /* Hidden by default */
+                            position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
+                            background-color: #f1f3f4; color: #333; z-index: 9999;
+                            font-family: Arial, sans-serif; padding: 50px;
+                        }
+                        .doc-header { border-bottom: 1px solid #ccc; padding-bottom: 10px; margin-bottom: 20px; }
+                        .doc-title { font-size: 24px; font-weight: normal; margin: 0; color: #1a73e8; }
+                        .doc-content { font-size: 14px; line-height: 1.5; }
+                    </style>
+                </head>
+                <body>
+                    <!-- The actual proxy -->
+                    <iframe id="proxy-frame" src="${proxyUrl}"></iframe>
+
+                    <!-- The fake panic screen -->
+                    <div id="panic-screen">
+                        <div class="doc-header">
+                            <h1 class="doc-title">English 10 - Final Essay</h1>
+                        </div>
+                        <div class="doc-content">
+                            <p><strong>Prompt:</strong> Analyze the theme of isolation in Mary Shelley's Frankenstein.</p>
+                            <p>Mary Shelley uses isolation as a catalyst for destruction in Frankenstein. Victor Frankenstein isolates himself in his pursuit of knowledge, while the Creature is isolated by society's fear of his appearance...</p>
+                            <p><em>(You can type anything here in the code to make it look real)</em></p>
+                        </div>
+                    </div>
+
+                    <script>
+                        let isPanic = false;
+
+                        // Listen for the Escape key
+                        document.addEventListener('keydown', function(event) {
+                            if (event.key === 'Escape') {
+                                let panicScreen = document.getElementById('panic-screen');
+                                let proxyFrame = document.getElementById('proxy-frame');
+                                
+                                if (!isPanic) {
+                                    // Show panic screen, hide proxy
+                                    panicScreen.style.display = 'block';
+                                    proxyFrame.style.display = 'none';
+                                    isPanic = true;
+                                } else {
+                                    // Hide panic screen, show proxy
+                                    panicScreen.style.display = 'none';
+                                    proxyFrame.style.display = 'block';
+                                    isPanic = false;
+                                }
+                            }
+                        });
+                    </script>
                 </body>
                 </html>
             `;
