@@ -43,6 +43,7 @@
         button:hover {
             transform: translateY(-5px) scale(1.05);
             box-shadow: 0 15px 30px rgba(0, 255, 204, 0.5);
+            background-color: #00e6b8;
         }
     </style>
 </head>
@@ -50,7 +51,7 @@
 
     <div class="container">
         <h1>PROXY PORTAL</h1>
-        <p>Click the button to launch the portal.</p>
+        <p>Click the button to launch. Press ESC to self-destruct.</p>
         <button onclick="launchPortal()">LAUNCH</button>
     </div>
 
@@ -58,73 +59,33 @@
         function launchPortal() {
             let newTab = window.open('about:blank', '_blank');
 
-            // The proxy link
             let proxyUrl = "https://b.woodvilleweather.com"; 
 
-            // The HTML for the blank tab
-            let html = `
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <title>Google Docs</title>
-                    <style>
-                        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; }
-                        iframe { width: 100%; height: 100%; border: none; }
-                        
-                        /* The Panic Screen CSS */
-                        #panic-screen {
-                            display: none; /* Hidden by default */
-                            position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
-                            background-color: #f1f3f4; color: #333; z-index: 9999;
-                            font-family: Arial, sans-serif; padding: 50px;
-                        }
-                        .doc-header { border-bottom: 1px solid #ccc; padding-bottom: 10px; margin-bottom: 20px; }
-                        .doc-title { font-size: 24px; font-weight: normal; margin: 0; color: #1a73e8; }
-                        .doc-content { font-size: 14px; line-height: 1.5; }
-                    </style>
-                </head>
-                <body>
-                    <!-- The actual proxy -->
-                    <iframe id="proxy-frame" src="${proxyUrl}"></iframe>
-
-                    <!-- The fake panic screen -->
-                    <div id="panic-screen">
-                        <div class="doc-header">
-                            <h1 class="doc-title">English 10 - Final Essay</h1>
-                        </div>
-                        <div class="doc-content">
-                            <p><strong>Prompt:</strong> Analyze the theme of isolation in Mary Shelley's Frankenstein.</p>
-                            <p>Mary Shelley uses isolation as a catalyst for destruction in Frankenstein. Victor Frankenstein isolates himself in his pursuit of knowledge, while the Creature is isolated by society's fear of his appearance...</p>
-                            <p><em>(You can type anything here in the code to make it look real)</em></p>
-                        </div>
-                    </div>
-
-                    <script>
-                        let isPanic = false;
-
-                        // Listen for the Escape key
-                        document.addEventListener('keydown', function(event) {
-                            if (event.key === 'Escape') {
-                                let panicScreen = document.getElementById('panic-screen');
-                                let proxyFrame = document.getElementById('proxy-frame');
-                                
-                                if (!isPanic) {
-                                    // Show panic screen, hide proxy
-                                    panicScreen.style.display = 'block';
-                                    proxyFrame.style.display = 'none';
-                                    isPanic = true;
-                                } else {
-                                    // Hide panic screen, show proxy
-                                    panicScreen.style.display = 'none';
-                                    proxyFrame.style.display = 'block';
-                                    isPanic = false;
-                                }
-                            }
-                        });
-                    </script>
-                </body>
-                </html>
-            `;
+            let html = '<!DOCTYPE html>' +
+            '<html>' +
+            '<head>' +
+                '<title>Google Classroom</title>' + 
+                '<link rel="icon" href="https://ssl.gstatic.com/classroom/favicon.png">' + 
+                '<style>' +
+                    'body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; }' +
+                    'iframe { width: 100%; height: 100%; border: none; }' +
+                '</style>' +
+            '</head>' +
+            '<body>' +
+                '<iframe src="' + proxyUrl + '"></iframe>' +
+                '<script>' +
+                    // Listen for the ESC key
+                    'document.addEventListener("keydown", function(event) {' +
+                        'if (event.key === "Escape") {' +
+                            // Open the real Google Classroom in a new tab
+                            'window.open("https://classroom.google.com", "_blank");' +
+                            // Close the current game tab instantly
+                            'window.close();' +
+                        '}' +
+                    '});' +
+                '<\/script>' +
+            '</body>' +
+            '</html>';
 
             newTab.document.write(html);
             newTab.document.close();
