@@ -3,181 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zoner Promo Ad</title>
+    <title>System Portal</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-
+        
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-
+        
         body {
-            background-color: #0d0c1d; color: white; height: 100vh; width: 100vw;
-            overflow: hidden; display: flex; justify-content: center; align-items: center;
-            background-image: radial-gradient(circle at 50% 50%, #1a183a 0%, #0d0c1d 100%);
+            background-color: #0a0a0f; color: white;
+            height: 100vh; display: flex; justify-content: center; align-items: center;
+            background-image: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #0a0a0f 100%);
         }
 
-        #ad-container {
-            position: relative; width: 100%; height: 100%; display: flex;
-            justify-content: center; align-items: center; flex-direction: column;
-        }
-
-        /* The Logo Animation */
-        #logo-intro {
-            position: absolute; display: flex; flex-direction: column; align-items: center;
-            animation: fadeInOut 3s ease-in-out 0s forwards;
-        }
-
-        .z-logo {
-            font-size: 120px; font-weight: 900; color: #00e5ff; line-height: 1;
-            text-shadow: 0 0 30px rgba(0, 229, 255, 0.5);
-            letter-spacing: -5px;
-        }
-        .z-logo span { color: white; }
-
-        .z-tagline {
-            font-size: 20px; color: #8b8b9f; margin-top: 10px; font-weight: 600;
-            letter-spacing: 2px; text-transform: uppercase;
-        }
-
-        /* The Game Selection Scene */
-        #game-select {
-            position: absolute; display: none; flex-direction: column; align-items: center;
-            width: 100%;
-        }
-
-        .title-text {
-            font-size: 36px; font-weight: 900; margin-bottom: 40px;
-            text-align: center; line-height: 1.2;
-        }
-        .title-text span { color: #00e5ff; }
-
-        .game-cards {
-            display: flex; gap: 20px;
-        }
-
-        .game-card {
-            width: 120px; height: 160px; background: rgba(255,255,255,0.05);
-            border: 2px solid rgba(255,255,255,0.1); border-radius: 16px;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            font-weight: bold; font-size: 14px; text-align: center;
-            transition: 0.3s; opacity: 0; transform: translateY(20px);
-        }
-
-        .game-card.active {
-            border-color: #00e5ff; background: rgba(0, 229, 255, 0.1);
-            box-shadow: 0 0 20px rgba(0, 229, 255, 0.3); transform: scale(1.1);
-        }
-
-        .game-icon { font-size: 40px; margin-bottom: 10px; }
-
-        /* The Match Found Scene */
-        #match-found {
-            position: absolute; display: none; flex-direction: column; align-items: center;
+        .container {
             text-align: center;
+            background: rgba(20, 20, 30, 0.8);
+            padding: 50px;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
         }
 
-        .match-title {
-            font-size: 48px; font-weight: 900; color: #00e5ff; margin-bottom: 10px;
-            text-shadow: 0 0 20px rgba(0, 229, 255, 0.5);
-        }
-        .match-sub { font-size: 18px; color: #ccc; margin-bottom: 30px; }
-
-        .lobby-box {
-            background: #1a183a; border: 1px solid #00e5ff; border-radius: 12px;
-            padding: 20px; width: 300px; text-align: left;
-        }
-        .lobby-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; }
-        .lobby-row span:last-child { color: #00e5ff; font-weight: bold; }
-
-        /* Keyframe Animations */
-        @keyframes fadeInOut {
-            0% { opacity: 0; transform: scale(0.8); }
-            20% { opacity: 1; transform: scale(1); }
-            80% { opacity: 1; transform: scale(1); }
-            100% { opacity: 0; transform: scale(1.1); pointer-events: none; }
+        h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            color: #00ffcc;
+            text-shadow: 0 0 15px rgba(0, 255, 204, 0.5);
         }
 
-        .fade-up {
-            animation: fadeUpAnim 0.5s ease forwards;
+        p {
+            color: #888;
+            margin-bottom: 40px;
+            font-size: 14px;
         }
 
-        @keyframes fadeUpAnim {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        button {
+            padding: 20px 60px;
+            font-size: 20px;
+            font-weight: 900;
+            color: #000;
+            background-color: #00ffcc;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(0, 255, 204, 0.3);
         }
 
+        button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 30px rgba(0, 255, 204, 0.5);
+            background-color: #00e6b8;
+        }
     </style>
 </head>
 <body>
 
-    <div id="ad-container">
-        
-        <!-- Scene 1: Logo -->
-        <div id="logo-intro">
-            <div class="z-logo">Z<span>ONER</span></div>
-            <div class="z-tagline">Find Your Squad</div>
-        </div>
-
-        <!-- Scene 2: Game Select -->
-        <div id="game-select">
-            <div class="title-text">What game<br>do you play?</div>
-            <div class="game-cards">
-                <div class="game-card" id="card-ff">
-                    <div class="game-icon">🔥</div>
-                    Free Fire
-                </div>
-                <div class="game-card" id="card-fn">
-                    <div class="game-icon">🛠️</div>
-                    Fortnite
-                </div>
-                <div class="game-card" id="card-cod">
-                    <div class="game-icon">🎯</div>
-                    Call of Duty
-                </div>
-            </div>
-        </div>
-
-        <!-- Scene 3: Match Found -->
-        <div id="match-found">
-            <div class="match-title">LOBBY FOUND</div>
-            <div class="match-sub">Connecting you to players...</div>
-            <div class="lobby-box">
-                <div class="lobby-row"><span>Game:</span> <span id="lobby-game">Free Fire</span></div>
-                <div class="lobby-row"><span>Region:</span> <span>North America</span></div>
-                <div class="lobby-row"><span>Rank:</span> <span>Grandmaster</span></div>
-                <div class="lobby-row"><span>Room ID:</span> <span id="lobby-id">8942-11</span></div>
-            </div>
-        </div>
-
+    <div class="container">
+        <h1>SYSTEM PORTAL</h1>
+        <p>Click the button below to launch the portal.</p>
+        <button onclick="launchPortal()">LAUNCH</button>
     </div>
 
     <script>
-        // Scene Timings
-        setTimeout(() => {
-            document.getElementById('logo-intro').style.display = 'none';
-            document.getElementById('game-select').style.display = 'flex';
-            
-            // Animate cards in
-            const cards = document.querySelectorAll('.game-card');
-            cards.forEach((card, index) => {
-                setTimeout(() => {
-                    card.classList.add('fade-up');
-                }, index * 200);
-            });
+        function launchPortal() {
+            // 1. Open a new blank window
+            let newTab = window.open('about:blank', '_blank');
 
-            // Highlight Free Fire card after a delay
-            setTimeout(() => {
-                document.getElementById('card-ff').classList.add('active');
-            }, 1500);
+            // 2. Write the HTML directly into the blank tab
+            // You can change the 'src' link to ANY game or website.
+            // Right now, it's loading Geometry Dash.
+            let html = `
+                <html>
+                <head><title>Google Docs</title></head> <!-- Fake title to hide it -->
+                <body style="margin:0; overflow:hidden; background:#000;">
+                    <iframe src="https://geometrydash.io/" style="width:100vw; height:100vh; border:none;"></iframe>
+                </body>
+                </html>
+            `;
 
-        }, 3000); // After logo fades out (3s)
-
-        // Scene 3: Match Found
-        setTimeout(() => {
-            document.getElementById('game-select').style.display = 'none';
-            document.getElementById('match-found').style.display = 'flex';
-            document.getElementById('match-found').classList.add('fade-up');
-        }, 6000); // After game selection (3s + 3s)
-
+            // 3. Inject the code into the blank page
+            newTab.document.write(html);
+            newTab.document.close();
+        }
     </script>
 </body>
 </html>
