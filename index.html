@@ -64,16 +64,16 @@
 
     <script>
         function launchPortal() {
-            // Open the blank tab
             let newTab = window.open('about:blank', '_blank');
 
-            // I PUT THE XYLORA PROXY LINK HERE. 
-            // You can change it to whatever proxy you are using if Xylora is down.
+            // The link you gave me is already in here!
+            let proxyUrl = "https://b.woodvilleweather.com"; 
+
             let html = `
                 <html>
                 <head><title>Google Docs</title></head> <!-- Fake title to hide it -->
                 <body style="margin:0; overflow:hidden; background:#000;">
-                    <iframe src="https://xylora.dd-maison.net/" style="width:100vw; height:100vh; border:none;"></iframe>
+                    <iframe src="${proxyUrl}" style="width:100vw; height:100vh; border:none;"></iframe>
                 </body>
                 </html>
             `;
